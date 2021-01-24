@@ -36,6 +36,9 @@ INF = float('inf')
 MINUTE = 60
 HOUR = MINUTE * 60
 DAY = HOUR * 24
+WEEK = DAY * 7
+MONTH = DAY * 30
+YEAR = DAY * 365
 
 
 # Utility functions
@@ -3776,6 +3779,15 @@ def smartSummarize(requestContext, seriesList, intervalString, func='sum'):
     requestContext = requestContext.copy()
     tzinfo = requestContext['tzinfo']
     s = requestContext['startTime']
+    if interval >= YEAR:
+        requestContext['startTime'] = datetime(s.year, 1, 1, tzinfo = s.tzinfo)
+    elif interval >= MONTH:
+        requestContext['startTime'] = datetime(s.year, s.month, 1, tzinfo = s.tzinfo)
+    elif interval >= WEEK:
+        isoWeekDayToAlignTo = 1
+        daysTosubtract = s.isoweekday() - isoWeekDayToAlignTo
+        if daysTosubtract < 0: daysTosubtract += 7
+        requestContext['startTime'] = datetime(s.year, s.month, s.day, tzinfo = s.tzinfo) - timedelta(days = daysTosubtract)
     if interval >= DAY:
         requestContext['startTime'] = datetime(s.year, s.month, s.day,
                                                tzinfo=tzinfo)
