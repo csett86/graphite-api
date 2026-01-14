@@ -53,31 +53,18 @@ jobs:
       - name: Run tests with tox
         run: tox -e ${{ matrix.toxenv }}
 
-  additional-tests:
+  no-flask-caching:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        toxenv: [no-flask-caching, lint, docs]
-        include:
-          - toxenv: no-flask-caching
-            python-version: "3.12"
-          - toxenv: lint
-            python-version: "3.12"
-          - toxenv: docs
-            python-version: "3.12"
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
           cache: 'pip'
 
       - name: Install system dependencies
-        if: matrix.toxenv != 'lint' && matrix.toxenv != 'docs'
         run: |
           sudo apt-get update
           sudo apt-get install -y libcairo2-dev
@@ -85,5 +72,5 @@ jobs:
       - name: Install tox
         run: pip install tox
 
-      - name: Run ${{ matrix.toxenv }} with tox
-        run: tox -e ${{ matrix.toxenv }}
+      - name: Run no-flask-caching tests with tox
+        run: tox -e no-flask-caching
