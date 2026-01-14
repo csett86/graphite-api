@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "graphite-api"
+version = "1.1.3"
+description = "Graphite-web, without the interface. Just the rendering HTTP API."
+readme = "README.rst"
+requires-python = ">=3.8"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Bruno Renié", email = "bruno@renie.fr"},
+]
+keywords = ["graphite", "api", "monitoring", "visualization"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Framework :: Flask",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: System :: Monitoring",
+]
+dependencies = [
+    "Flask",
+    "packaging",
+    "PyYAML",
+    "cairocffi",
+    "pyparsing>=1.5.7",
+    "pytz",
+    "six",
+    "structlog",
+    "tzlocal",
+]
+
+[project.optional-dependencies]
+sentry = ["raven[flask]"]
+cyanite = ["cyanite"]
+cache = ["flask-caching"]
+statsd = ["statsd"]
+
+[project.urls]
+Homepage = "https://github.com/brutasse/graphite-api"
+Repository = "https://github.com/brutasse/graphite-api"
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = ["tests", "tests.*"]
+
+[tool.flake8]
+exclude = ["_vendor", ".tox", "wsp"]
+import-order-style = "smarkets"
+application-import-names = ""
