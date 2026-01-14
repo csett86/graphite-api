@@ -12,9 +12,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14-dev"]
-        toxenv:
-          - default
         include:
           - python-version: "3.8"
             toxenv: py38
@@ -30,21 +27,6 @@ jobs:
             toxenv: py313
           - python-version: "3.14-dev"
             toxenv: py314
-        exclude:
-          - python-version: "3.8"
-            toxenv: default
-          - python-version: "3.9"
-            toxenv: default
-          - python-version: "3.10"
-            toxenv: default
-          - python-version: "3.11"
-            toxenv: default
-          - python-version: "3.12"
-            toxenv: default
-          - python-version: "3.13"
-            toxenv: default
-          - python-version: "3.14-dev"
-            toxenv: default
 
     continue-on-error: ${{ matrix.python-version == '3.14-dev' }}
 
