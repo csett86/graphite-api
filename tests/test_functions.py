@@ -670,7 +670,7 @@ class FunctionsTest(TestCase):
     def test_alias_sub(self):
         seriesList = self._generate_series_list()
         substitution = "Shrubbery"
-        results = functions.aliasSub({}, seriesList, "^\w+", substitution)
+        results = functions.aliasSub({}, seriesList, r"^\w+", substitution)
         for series in results:
             self.assertTrue(
                 series.name.startswith(substitution),

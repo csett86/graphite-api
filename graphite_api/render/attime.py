@@ -54,7 +54,7 @@ def parseTimeReference(ref):
     if isinstance(ref, datetime):
         return ref
     if not ref or ref == 'now':
-        return datetime.utcnow().replace(tzinfo=pytz.utc)
+        return datetime.now(pytz.utc)
 
     # Time-of-day reference
     i = ref.find(':')
@@ -78,8 +78,7 @@ def parseTimeReference(ref):
         hour, min = 16, 0
         ref = ref[7:]
 
-    refDate = datetime.utcnow().replace(hour=hour, minute=min, second=0,
-                                        tzinfo=pytz.utc)
+    refDate = datetime.now(pytz.utc).replace(hour=hour, minute=min, second=0)
 
     # Day reference
     if ref in ('yesterday', 'today', 'tomorrow'):  # yesterday, today, tomorrow

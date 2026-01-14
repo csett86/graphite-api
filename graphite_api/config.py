@@ -23,6 +23,18 @@ else:
 
 logger = structlog.get_logger()
 
+def _get_local_timezone_name():
+    """Get the local timezone name, compatible with both old and new tzlocal."""
+    tz = get_localzone()
+    # tzlocal >= 3.0 returns ZoneInfo which has .key instead of .zone
+    if hasattr(tz, 'zone'):
+        return tz.zone
+    elif hasattr(tz, 'key'):
+        return tz.key
+    else:
+        return str(tz)
+
+
 default_conf = {
     'search_index': '/srv/graphite/index',
     'finders': [
@@ -37,7 +49,7 @@ default_conf = {
             '/srv/graphite/whisper',
         ],
     },
-    'time_zone': get_localzone().zone,
+    'time_zone': _get_local_timezone_name(),
 }
 if default_conf['time_zone'] == 'local':  # tzlocal didn't find anything
     default_conf['time_zone'] = 'UTC'
@@ -107,11 +119,11 @@ def configure(app):
     app.cache = None
     if 'cache' in config:
         try:
-            from flask.ext.cache import Cache
+            from flask_caching import Cache
         except ImportError:
             warnings.warn("'cache' is provided in the configuration but "
-                          "Flask-Cache is not installed. Please `pip install "
-                          "Flask-Cache`.")
+                          "Flask-Caching is not installed. Please `pip install "
+                          "Flask-Caching`.")
         else:
             cache_conf = {'CACHE_DEFAULT_TIMEOUT': 60,
                           'CACHE_KEY_PREFIX': 'graphite-api:'}
