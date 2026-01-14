@@ -144,11 +144,11 @@ Extra sections
 *cache*
 
   Lets you configure a cache for graph rendering. This is done via
-  `Flask-Cache <http://pythonhosted.org/Flask-Cache/>`_ which supports a
+  `Flask-Caching <https://flask-caching.readthedocs.io/>`_ which supports a
   number of backends including memcache, Redis, filesystem or in-memory
   caching.
 
-  Cache configuration maps directly to Flask-Cache's config values. For each
+  Cache configuration maps directly to Flask-Caching's config values. For each
   ``CACHE_*`` config value, set the lowercased name in the ``cache`` section,
   without the prefix. Example::
 
@@ -156,7 +156,7 @@ Extra sections
         type: redis
         redis_host: localhost
 
-  This would configure Flask-Cache with ``CACHE_TYPE = 'redis'`` and
+  This would configure Flask-Caching with ``CACHE_TYPE = 'redis'`` and
   ``CACHE_REDIS_HOST = 'localhost'``.
 
   Some cache options have default values defined by Graphite-API:

@@ -37,7 +37,7 @@ default_conf = {
             '/srv/graphite/whisper',
         ],
     },
-    'time_zone': get_localzone().zone,
+    'time_zone': str(get_localzone()),
 }
 if default_conf['time_zone'] == 'local':  # tzlocal didn't find anything
     default_conf['time_zone'] = 'UTC'
@@ -107,11 +107,11 @@ def configure(app):
     app.cache = None
     if 'cache' in config:
         try:
-            from flask.ext.cache import Cache
+            from flask_caching import Cache
         except ImportError:
             warnings.warn("'cache' is provided in the configuration but "
-                          "Flask-Cache is not installed. Please `pip install "
-                          "Flask-Cache`.")
+                          "Flask-Caching is not installed. Please `pip install "
+                          "Flask-Caching`.")
         else:
             cache_conf = {'CACHE_DEFAULT_TIMEOUT': 60,
                           'CACHE_KEY_PREFIX': 'graphite-api:'}
