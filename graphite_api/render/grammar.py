@@ -1,4 +1,7 @@
-from distutils.version import StrictVersion
+try:
+    from packaging.version import Version as StrictVersion
+except ImportError:
+    from distutils.version import StrictVersion
 
 from pyparsing import (
     __version__, alphanums, alphas, CaselessKeyword, CaselessLiteral, Combine,

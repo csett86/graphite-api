@@ -110,7 +110,7 @@ def evaluateTokens(requestContext, tokens, data_store=None, replacements=None):
                 if expression == '$'+name:
                     if not isinstance(val, six.string_types):
                         return val
-                    elif re.match('^-?[\d.]+$', val):
+                    elif re.match(r'^-?[\d.]+$', val):
                         return float(val)
                     else:
                         return val

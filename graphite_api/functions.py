@@ -938,7 +938,7 @@ def movingMedian(requestContext, seriesList, windowSize):
 
     Takes one metric or a wildcard seriesList followed by a number N of
     datapoints or a quoted string with a length of time like '1hour' or '5min'
-    (See ``from / until`` in the render\_api_ for examples of time formats).
+    (See ``from / until`` in the render_api_ for examples of time formats).
     Graphs the median of the preceding datapoints for each point on the graph.
 
     Example::
@@ -1197,7 +1197,7 @@ def movingAverage(requestContext, seriesList, windowSize):
 
     Takes one metric or a wildcard seriesList followed by a number N of
     datapoints or a quoted string with a length of time like '1hour' or '5min'
-    (See ``from / until`` in the render\_api_ for examples of time formats).
+    (See ``from / until`` in the render_api_ for examples of time formats).
     Graphs the average of the preceding datapoints for each point on the graph.
 
     Example::
@@ -1264,7 +1264,7 @@ def movingSum(requestContext, seriesList, windowSize):
 
     Takes one metric or a wildcard seriesList followed by a number N of
     datapoints or a quoted string with a length of time like '1hour' or '5min'
-    (See ``from / until`` in the render\_api_ for examples of time formats).
+    (See ``from / until`` in the render_api_ for examples of time formats).
     Graphs the sum of the preceeding datapoints for each point on the graph.
 
     Example::
@@ -1329,7 +1329,7 @@ def movingMin(requestContext, seriesList, windowSize):
 
     Takes one metric or a wildcard seriesList followed by a number N of
     datapoints or a quoted string with a length of time like '1hour' or '5min'
-    (See ``from / until`` in the render\_api_ for examples of time formats).
+    (See ``from / until`` in the render_api_ for examples of time formats).
     Graphs the minimum of the preceeding datapoints for each point on the
     graph.
 
@@ -1389,7 +1389,7 @@ def movingMax(requestContext, seriesList, windowSize):
 
     Takes one metric or a wildcard seriesList followed by a number N of
     datapoints or a quoted string with a length of time like '1hour' or '5min'
-    (See ``from / until`` in the render\_api_ for examples of time formats).
+    (See ``from / until`` in the render_api_ for examples of time formats).
     Graphs the maximum of the preceeding datapoints for each point on the
     graph.
 
@@ -1832,7 +1832,7 @@ def areaBetween(requestContext, *seriesLists):
 
 
 def aliasSub(requestContext, seriesList, search, replace):
-    """
+    r"""
     Runs series names through a regex search/replace.
 
    Example::
@@ -2523,7 +2523,7 @@ def limit(requestContext, seriesList, n):
 
 
 def paddedName(name):
-    return re.sub("(\d+)", lambda x: "{0:010}".format(int(x.group(0))), name)
+    return re.sub(r"(\d+)", lambda x: "{0:010}".format(int(x.group(0))), name)
 
 
 def sortByName(requestContext, seriesList, natural=False):
@@ -3006,7 +3006,7 @@ def linearRegression(requestContext, seriesList, startSourceAt=None,
     Takes one metric or a wildcard seriesList, followed by a quoted string
     with the time to start the line and another quoted string with the time
     to end the line. The start and end times are inclusive (default range is
-    from to until). See ``from / until`` in the render\_api_ for examples of
+    from to until). See ``from / until`` in the render_api_ for examples of
     time formats. Datapoints in the range is used to regression.
 
     Example::
@@ -3110,7 +3110,7 @@ def timeStack(requestContext, seriesList, timeShiftUnit, timeShiftStart,
               timeShiftEnd):
     """
     Takes one metric or a wildcard seriesList, followed by a quoted string
-    with the length of time (See ``from / until`` in the render\_api_ for
+    with the length of time (See ``from / until`` in the render_api_ for
     examples of time formats). Also takes a start multiplier and end
     multiplier for the length of time-
 
@@ -3162,7 +3162,7 @@ def timeShift(requestContext, seriesList, timeShift, resetEnd=True,
               alignDST=False):
     """
     Takes one metric or a wildcard seriesList, followed by a quoted string
-    with the length of time (See ``from / until`` in the render\_api_ for
+    with the length of time (See ``from / until`` in the render_api_ for
     examples of time formats).
 
     Draws the selected metrics shifted in time. If no sign is given, a minus
@@ -3379,7 +3379,7 @@ def verticalLine(requestContext, ts, label=None, color=None):
 def threshold(requestContext, value, label=None, color=None):
     """
     Takes a float F, followed by a label (in double quotes) and a color.
-    (See ``bgcolor`` in the render\_api_ for valid color names & formats.)
+    (See ``bgcolor`` in the render_api_ for valid color names & formats.)
 
     Draws a horizontal line at value F across the graph.
 

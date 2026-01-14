@@ -77,7 +77,7 @@ RequestParams = RequestParams()
 
 def request_json():
     if hasattr(request, 'get_json'):
-        return request.get_json()
+        return request.get_json(silent=True)
     else:
         return request.json
 
