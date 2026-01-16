@@ -28,10 +28,8 @@ jobs:
             toxenv: py312
           - python-version: "3.13"
             toxenv: py313
-          - python-version: "3.14-dev"
+          - python-version: "3.14"
             toxenv: py314
-
-    continue-on-error: ${{ matrix.python-version == '3.14-dev' }}
 
     steps:
       - uses: actions/checkout@v6
