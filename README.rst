@@ -9,7 +9,7 @@ Graphite-API
    :alt: Coverage Status
    :target: https://coveralls.io/r/brutasse/graphite-api?branch=master
 
-**Note:** This is a friendly fork of the upstream project at https://github.com/brutasse/graphite-api
+**Note:** This is a friendly fork of the upstream project at https://github.com/brutasse/graphite-api.
 
 Graphite-web, without the interface. Just the rendering HTTP API.
 
