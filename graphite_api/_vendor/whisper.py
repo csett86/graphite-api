@@ -32,12 +32,6 @@ import struct
 import sys
 import time
 
-izip = getattr(itertools, 'izip', zip)
-ifilter = getattr(itertools, 'ifilter', filter)
-
-if sys.version_info >= (3, 0):
-    xrange = range
-
 try:
   import fcntl
   CAN_LOCK = True
@@ -233,7 +227,7 @@ def __readHeader(fh):
 
   archives = []
 
-  for i in xrange(archiveCount):
+  for i in range(archiveCount):
     packedArchiveInfo = fh.read(archiveInfoSize)
     try:
       (offset,secondsPerPoint,points) = struct.unpack(archiveInfoFormat,packedArchiveInfo)
@@ -496,7 +490,7 @@ def __propagate(fh,header,timestamp,higher,lower):
   currentInterval = lowerIntervalStart
   step = higher['secondsPerPoint']
 
-  for i in xrange(0,len(unpackedSeries),2):
+  for i in range(0,len(unpackedSeries),2):
     pointTime = unpackedSeries[i]
     if pointTime == currentInterval:
       neighborValues[i//2] = unpackedSeries[i+1]
@@ -849,7 +843,7 @@ archive on a read and request data older than the archive's retention
   currentInterval = fromInterval
   step = archive['secondsPerPoint']
 
-  for i in xrange(0,len(unpackedSeries),2):
+  for i in range(0,len(unpackedSeries),2):
     pointTime = unpackedSeries[i]
     if pointTime == currentInterval:
       pointValue = unpackedSeries[i+1]
@@ -884,9 +878,9 @@ def file_merge(fh_from, fh_to):
     fromTime = now - archive['retention']
     (timeInfo, values) = __archive_fetch(fh_from, archive, fromTime, untilTime)
     (start, end, archive_step) = timeInfo
-    pointsToWrite = list(ifilter(
+    pointsToWrite = list(filter(
       lambda points: points[1] is not None,
-      izip(xrange(start, end, archive_step), values)))
+      zip(range(start, end, archive_step), values)))
     __archive_update_many(fh_to, headerTo, archive, pointsToWrite)
     untilTime = fromTime
   fh_from.close()
@@ -924,7 +918,7 @@ def file_diff(fh_from, fh_to, ignore_empty = False):
     (toTimeInfo, toValues) = __archive_fetch(fh_to, archive, startTime, untilTime)
     (start, end, archive_step) = ( min(fromTimeInfo[0],toTimeInfo[0]), max(fromTimeInfo[1],toTimeInfo[1]), min(fromTimeInfo[2],toTimeInfo[2]) )
 
-    points = map(lambda s: (s * archive_step + start,fromValues[s],toValues[s]), xrange(0,(end - start) // archive_step))
+    points = map(lambda s: (s * archive_step + start,fromValues[s],toValues[s]), range(0,(end - start) // archive_step))
     if ignore_empty:
       points = [p for p in points if p[1] != None and p[2] != None]
     else:

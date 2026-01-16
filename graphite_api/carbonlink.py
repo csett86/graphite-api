@@ -1,4 +1,5 @@
 import bisect
+import pickle
 import random
 import socket
 import struct
@@ -8,8 +9,6 @@ from hashlib import md5
 from importlib import import_module
 from io import BytesIO
 
-import six
-from six.moves import cPickle as pickle  # noqa
 from structlog import get_logger
 
 logger = get_logger()
@@ -54,31 +53,19 @@ def allowed_module(module, name):
         raise pickle.UnpicklingError(
             'Attempting to unpickle unsafe class %s' % name)
     if module in renames:
-        module = 'six.moves.{0}'.format(renames[module])
+        module = renames[module]
     mod = import_module(module)
     return getattr(mod, name)
 
 
-if six.PY2:
-    class SafeUnpickler(object):
-        @classmethod
-        def find_class(cls, module, name):
-            return allowed_module(module, name)
+class SafeUnpickler(pickle.Unpickler):
+    def find_class(self, module, name):
+        return allowed_module(module, name)
 
-        @classmethod
-        def loads(cls, s):
-            obj = pickle.Unpickler(BytesIO(s))
-            obj.find_global = cls.find_class
-            return obj.load()
-else:
-    class SafeUnpickler(pickle.Unpickler):
-        def find_class(self, module, name):
-            return allowed_module(module, name)
-
-        @classmethod
-        def loads(cls, s):
-            obj = SafeUnpickler(BytesIO(s))
-            return obj.load()
+    @classmethod
+    def loads(cls, s):
+        obj = SafeUnpickler(BytesIO(s))
+        return obj.load()
 
 
 class ConsistentHashRing(object):
