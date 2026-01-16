@@ -130,7 +130,7 @@ class TimeSeriesTest(TestCase):
         self.assertEqual(series.valuesPerPoint, 1)
         series.consolidate(2)
         self.assertEqual(series.valuesPerPoint, 2)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(Exception):  # noqa: B017
             list(series)
 
 

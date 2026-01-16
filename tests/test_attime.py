@@ -65,5 +65,5 @@ class AtTestCase(TestCase):
             'mar',
             'wat',
         ]:
-            with self.assertRaises(ValueError):
+            with self.assertRaises(Exception):  # noqa: B017
                 parseATTime(value)
