@@ -1,14 +1,6 @@
 Graphite-API
 ============
 
-.. image:: https://travis-ci.org/brutasse/graphite-api.svg?branch=master
-   :alt: Build Status
-   :target: https://travis-ci.org/brutasse/graphite-api
-
-.. image:: https://img.shields.io/coveralls/brutasse/graphite-api/master.svg
-   :alt: Coverage Status
-   :target: https://coveralls.io/r/brutasse/graphite-api?branch=master
-
 **Note:** This is a friendly fork of the upstream project at https://github.com/brutasse/graphite-api.
 
 Graphite-web, without the interface. Just the rendering HTTP API.
@@ -38,7 +30,7 @@ Difference from graphite-web
 * JSON data in request bodies is supported, additionally to form data and
   querystring parameters.
 * Ceres integration will be as an external backend.
-* Compatibility with python 2 and 3.
+* Compatibility with python 3.
 * Easy to install and configure.
 
 Goals
@@ -51,17 +43,14 @@ Goals
 Non-goals
 ---------
 
-* Support for very old Python versions (Python 2.6 is still supported but
-  maybe not for long).
+* Support for very old Python versions
 * Built-in support for every metric storage system in the world. Whisper is
   included by default, other storages are added via 3rd-party backends.
 
 Documentation
 -------------
 
-`On readthedocs.org`_ or in the ``docs/`` directory.
-
-.. _On readthedocs.org: https://graphite-api.readthedocs.io/en/latest/
+In the ``docs/`` directory.
 
 Hacking
 -------
