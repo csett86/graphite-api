@@ -1249,7 +1249,7 @@ class LineGraph(Graph):
             hideNull = params.get('hideNullFromLegend', False)
             for series in self.data:
                 if series.name:
-                    if not(hideNull and all(v is None for v in list(series))):
+                    if not (hideNull and all(v is None for v in list(series))):
                         elements.append((
                             unquote_plus(series.name),
                             series.color,

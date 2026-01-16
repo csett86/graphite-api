@@ -1,7 +1,7 @@
 import datetime
 import time
-import pytz
 
+import pytz
 from graphite_api.render.attime import parseATTime
 
 from . import TestCase
@@ -65,5 +65,5 @@ class AtTestCase(TestCase):
             'mar',
             'wat',
         ]:
-            with self.assertRaises(Exception):
+            with self.assertRaises(ValueError):
                 parseATTime(value)

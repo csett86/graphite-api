@@ -11,7 +11,7 @@ class IntervalTestCase(TestCase):
         i = Interval(0, 1)
         j = Interval(1, 2)
         k = Interval(0, 1)
-        l = Interval(0, 0)
+        empty = Interval(0, 0)
         self.assertNotEqual(i, j)
         self.assertEqual(i, k)
         self.assertEqual(hash(i), hash(k))
@@ -22,7 +22,7 @@ class IntervalTestCase(TestCase):
         self.assertTrue(j > i)
 
         self.assertTrue(i)
-        self.assertFalse(l)
+        self.assertFalse(empty)
 
         self.assertEqual(repr(i), '<Interval: (0, 1)>')
 
@@ -32,9 +32,9 @@ class IntervalTestCase(TestCase):
         self.assertEqual(i.union(j), Interval(0, 2))
 
         with self.assertRaises(TypeError):
-            j.union(l)
+            j.union(empty)
 
-        self.assertEqual(union_overlapping([i, j, k, l]),
+        self.assertEqual(union_overlapping([i, j, k, empty]),
                          [Interval(0, 2)])
 
     def test_interval_set(self):

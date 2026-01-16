@@ -23,8 +23,10 @@ else:
 
 logger = structlog.get_logger()
 
+
 def _get_local_timezone_name():
-    """Get the local timezone name, compatible with both old and new tzlocal."""
+    """Get the local timezone name, compatible with both old and new
+    tzlocal."""
     tz = get_localzone()
     # tzlocal >= 3.0 returns ZoneInfo which has .key instead of .zone
     if hasattr(tz, 'zone'):
@@ -95,8 +97,9 @@ def configure(app):
             config = yaml.safe_load(f)
             config['path'] = config_file
     else:
-        warnings.warn("Unable to find configuration file at {0}, using "
-                      "default config.".format(config_file))
+        warnings.warn(
+            "Unable to find configuration file at {0}, using "
+            "default config.".format(config_file), stacklevel=2)
         config = {}
 
     configure_logging(config)
@@ -109,9 +112,10 @@ def configure(app):
         try:
             from statsd import StatsClient
         except ImportError:
-            warnings.warn("'statsd' is provided in the configuration but "
-                          "the statsd client is not installed. Please `pip "
-                          "install statsd`.")
+            warnings.warn(
+                "'statsd' is provided in the configuration but "
+                "the statsd client is not installed. Please `pip "
+                "install statsd`.", stacklevel=2)
         else:
             c = config['statsd']
             app.statsd = StatsClient(c['host'], c.get('port', 8125))
@@ -121,9 +125,10 @@ def configure(app):
         try:
             from flask_caching import Cache
         except ImportError:
-            warnings.warn("'cache' is provided in the configuration but "
-                          "Flask-Caching is not installed. Please `pip install "
-                          "Flask-Caching`.")
+            warnings.warn(
+                "'cache' is provided in the configuration but "
+                "Flask-Caching is not installed. Please `pip install "
+                "Flask-Caching`.", stacklevel=2)
         else:
             cache_conf = {'CACHE_DEFAULT_TIMEOUT': 60,
                           'CACHE_KEY_PREFIX': 'graphite-api:'}
@@ -155,9 +160,10 @@ def configure(app):
         try:
             from raven.contrib.flask import Sentry
         except ImportError:
-            warnings.warn("'sentry_dsn' is provided in the configuration but "
-                          "the sentry client is not installed. Please `pip "
-                          "install raven[flask]`.")
+            warnings.warn(
+                "'sentry_dsn' is provided in the configuration but "
+                "the sentry client is not installed. Please `pip "
+                "install raven[flask]`.", stacklevel=2)
         else:
             Sentry(app, dsn=config['sentry_dsn'])
 

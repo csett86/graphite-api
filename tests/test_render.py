@@ -414,7 +414,7 @@ class RenderTest(TestCase):
         lines = response.data.decode('utf-8').strip().split('\n')
         # 59 is a time race cond
         self.assertTrue(len(lines) in [59, 60])
-        self.assertFalse(any([l.strip().split(',')[2] for l in lines]))
+        self.assertFalse(any([line.strip().split(',')[2] for line in lines]))
 
         response = self.app.get(self.url, query_string={'target': 'test',
                                                         'format': 'svg',

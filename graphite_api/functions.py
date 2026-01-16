@@ -2424,9 +2424,9 @@ def removeBetweenPercentile(requestContext, seriesList, n):
     lowPercentiles = [_getPercentile(col, 100-n) for col in transposed]
     highPercentiles = [_getPercentile(col, n) for col in transposed]
 
-    return [l for l in seriesList
+    return [series for series in seriesList
             if sum([not lowPercentiles[index] < val < highPercentiles[index]
-                    for index, val in enumerate(l)]) > 0]
+                    for index, val in enumerate(series)]) > 0]
 
 
 def removeAbovePercentile(requestContext, seriesList, n):
@@ -3780,14 +3780,19 @@ def smartSummarize(requestContext, seriesList, intervalString, func='sum'):
     tzinfo = requestContext['tzinfo']
     s = requestContext['startTime']
     if interval >= YEAR:
-        requestContext['startTime'] = datetime(s.year, 1, 1, tzinfo = s.tzinfo)
+        requestContext['startTime'] = datetime(s.year, 1, 1,
+                                               tzinfo=s.tzinfo)
     elif interval >= MONTH:
-        requestContext['startTime'] = datetime(s.year, s.month, 1, tzinfo = s.tzinfo)
+        requestContext['startTime'] = datetime(s.year, s.month, 1,
+                                               tzinfo=s.tzinfo)
     elif interval >= WEEK:
         isoWeekDayToAlignTo = 1
         daysTosubtract = s.isoweekday() - isoWeekDayToAlignTo
-        if daysTosubtract < 0: daysTosubtract += 7
-        requestContext['startTime'] = datetime(s.year, s.month, s.day, tzinfo = s.tzinfo) - timedelta(days = daysTosubtract)
+        if daysTosubtract < 0:
+            daysTosubtract += 7
+        requestContext['startTime'] = datetime(
+            s.year, s.month, s.day, tzinfo=s.tzinfo
+        ) - timedelta(days=daysTosubtract)
     if interval >= DAY:
         requestContext['startTime'] = datetime(s.year, s.month, s.day,
                                                tzinfo=tzinfo)

@@ -1,20 +1,18 @@
 import copy
 import math
 import time
-
 from datetime import datetime
 
 import pytz
+from graphite_api import functions
+from graphite_api.app import app
+from graphite_api.render.attime import parseATTime
+from graphite_api.render.datalib import TimeSeries
 
 try:
     from unittest.mock import patch, call, MagicMock
 except ImportError:
     from mock import patch, call, MagicMock
-
-from graphite_api import functions
-from graphite_api.app import app
-from graphite_api.render.attime import parseATTime
-from graphite_api.render.datalib import TimeSeries
 
 from . import TestCase
 
@@ -25,6 +23,15 @@ def return_greater(series, value):
 
 def return_less(series, value):
     return [i for i in series if i is not None and i < value]
+
+
+# Default configuration for _generate_series_list
+_DEFAULT_SERIES_CONFIG = (
+    range(101),
+    range(2, 103),
+    [1] * 2 + [None] * 90 + [1] * 2 + [None] * 7,
+    []
+)
 
 
 class FunctionsTest(TestCase):
@@ -444,12 +451,9 @@ class FunctionsTest(TestCase):
         n_percentile(90, [[50], [91], [181], [271], [90], [180], [270], [270]])
         n_percentile(95, [[50], [96], [191], [286], [95], [190], [285], [285]])
 
-    def _generate_series_list(self, config=(
-        range(101),
-        range(2, 103),
-        [1] * 2 + [None] * 90 + [1] * 2 + [None] * 7,
-        []
-    )):
+    def _generate_series_list(self, config=None):
+        if config is None:
+            config = _DEFAULT_SERIES_CONFIG
         seriesList = []
 
         now = int(time.time())

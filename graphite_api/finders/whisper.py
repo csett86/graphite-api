@@ -157,7 +157,8 @@ class GzippedWhisperReader(WhisperReader):
     def get_intervals(self):
         fh = gzip.GzipFile(self.fs_path, 'rb')
         try:
-            info = getattr(whisper, '__readHeader')(fh)  # evil, but necessary.
+            # evil, but necessary - access private method
+            info = whisper.__readHeader(fh)
         finally:
             fh.close()
 
