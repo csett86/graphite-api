@@ -6,7 +6,7 @@ from .render.grammar import grammar
 
 
 def pathsFromTarget(requestContext, target):
-    tokens = grammar.parseString(target)
+    tokens = grammar.parse_string(target)
     paths = list(pathsFromTokens(requestContext, tokens))
     return paths
 
@@ -60,7 +60,7 @@ def pathsFromTokens(requestContext, tokens, replacements=None):
 
 
 def evaluateTarget(requestContext, target, data_store=None):
-    tokens = grammar.parseString(target)
+    tokens = grammar.parse_string(target)
 
     if data_store is None:
         paths = list(pathsFromTokens(requestContext, tokens))

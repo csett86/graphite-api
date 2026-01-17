@@ -1,7 +1,7 @@
 from pyparsing import (
     alphanums, alphas, CaselessKeyword, CaselessLiteral, Combine,
-    delimitedList, FollowedBy, Forward, Group, LineEnd, Literal, OneOrMore,
-    Optional, printables, quotedString, Regex, Word, ZeroOrMore,
+    DelimitedList, FollowedBy, Forward, Group, LineEnd, Literal, OneOrMore,
+    Optional, printables, quoted_string, Regex, Word, ZeroOrMore,
 )
 
 grammar = Forward()
@@ -17,7 +17,7 @@ sciNumber = Combine(
     (floatNumber | intNumber) + CaselessLiteral('e') + intNumber
 )('scientific')
 
-aString = quotedString('string')
+aString = quoted_string('string')
 
 # Use lookahead to match only numbers in a list (can't remember why this
 # is necessary)
@@ -63,8 +63,8 @@ arg = Group(
 kwarg = Group(argname + equal + arg)('kwargs*')
 
 # lookahead to prevent failing on equals
-args = delimitedList(~kwarg + arg)
-kwargs = delimitedList(kwarg)
+args = DelimitedList(~kwarg + arg)
+kwargs = DelimitedList(kwarg)
 
 call = Group(
     funcname + leftParen +
@@ -86,7 +86,7 @@ partialPathElem = Combine(
 
 matchEnum = Combine(
     leftBrace +
-    delimitedList(partialPathElem, combine=True) +
+    DelimitedList(partialPathElem, combine=True) +
     rightBrace
 )
 
@@ -94,7 +94,7 @@ pathElement = Combine(
     Group(partialPathElem | matchEnum) +
     ZeroOrMore(matchEnum | partialPathElem)
 )
-pathExpression = delimitedList(pathElement,
+pathExpression = DelimitedList(pathElement,
                                delim='.', combine=True)('pathExpression')
 
 litarg = Group(
@@ -103,8 +103,8 @@ litarg = Group(
 litkwarg = Group(argname + equal + litarg)('kwargs*')
 
 # lookahead to prevent failing on equals
-litargs = delimitedList(~litkwarg + litarg)
-litkwargs = delimitedList(litkwarg)
+litargs = DelimitedList(~litkwarg + litarg)
+litkwargs = DelimitedList(litkwarg)
 
 template = Group(
     Literal('template') + leftParen +
