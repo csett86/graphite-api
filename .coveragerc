@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = graphite_api
+source = graphite_render
 
 [report]
 omit = *_vendor*

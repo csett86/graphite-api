@@ -117,7 +117,7 @@ Example::
 The Render API -- ``/render``
 =============================
 
-Graphite-API provides a ``/render`` endpoint for generating graphs
+Graphite-Render provides a ``/render`` endpoint for generating graphs
 and retrieving raw data. This endpoint accepts various arguments via query
 string parameters, form data or JSON data.
 
@@ -697,7 +697,7 @@ fontName
 *Default: 'Sans'*
 
 Change the font used to render text on the graph The font must be installed
-on the Graphite-API server.
+on the Graphite-Render server.
 
 Example::
 
@@ -1162,7 +1162,7 @@ Example::
 tz
 ``
 
-*Default: The timezone specified in the graphite-api configuration*
+*Default: The timezone specified in the graphite-render configuration*
 
 Time zone to convert all times into.
 

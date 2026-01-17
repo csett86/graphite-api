@@ -3,7 +3,7 @@ import json
 import os
 import time
 
-from graphite_api._vendor import whisper
+from graphite_render._vendor import whisper
 
 from . import TestCase, WHISPER_DIR
 

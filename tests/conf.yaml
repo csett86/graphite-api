@@ -1,4 +1,4 @@
-search_index: /tmp/graphite-api-index
+search_index: /tmp/graphite-render-index
 time_zone: UTC
 allowed_origins:
   - example.com
@@ -13,7 +13,7 @@ logging:
     stdout:
       class: logging.StreamHandler
   loggers:
-    graphite_api:
+    graphite_render:
       handlers:
         - stdout
       propagate: true

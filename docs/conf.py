@@ -21,7 +21,7 @@ source_suffix = '.rst'
 
 master_doc = 'index'
 
-project = 'Graphite-API'
+project = 'Graphite-Render'
 copyright = u'2014, Bruno Renié'
 
 version = '1.1.4'
@@ -34,24 +34,24 @@ pygments_style = 'sphinx'
 html_theme = 'sphinx_rtd_theme'
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
-htmlhelp_basename = 'Graphite-APIdoc'
+htmlhelp_basename = 'Graphite-Renderdoc'
 
 latex_elements = {
 }
 
 latex_documents = [
-    ('index', 'Graphite-API.tex', 'Graphite-API Documentation',
+    ('index', 'Graphite-Render.tex', 'Graphite-Render Documentation',
      'Bruno Renié', 'manual'),
 ]
 
 man_pages = [
-    ('index', 'graphite-api', 'Graphite-API Documentation',
+    ('index', 'graphite-render', 'Graphite-Render Documentation',
      ['Bruno Renié'], 1)
 ]
 
 texinfo_documents = [
-    ('index', 'Graphite-API', 'Graphite-API Documentation',
-     'Bruno Renié', 'Graphite-API', 'One line description of project.',
+    ('index', 'Graphite-Render', 'Graphite-Render Documentation',
+     'Bruno Renié', 'Graphite-Render', 'One line description of project.',
      'Miscellaneous'),
 ]
 
@@ -63,7 +63,7 @@ class RenderFunctionDocumenter(autodoc.FunctionDocumenter):
     def can_document_member(cls, member, membername, isattr, parent):
         return autodoc.FunctionDocumenter.can_document_member(
             member, membername, isattr, parent
-        ) and parent.name == 'graphite_api.functions'
+        ) and parent.name == 'graphite_render.functions'
 
     def format_args(self):
         args = super(RenderFunctionDocumenter, self).format_args()

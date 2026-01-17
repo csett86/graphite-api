@@ -12,13 +12,13 @@ try:
 except ImportError:
     import unittest
 
-from graphite_api._vendor import whisper
-from graphite_api.app import app
-from graphite_api.finders.whisper import WhisperFinder
-from graphite_api.storage import Store
+from graphite_render._vendor import whisper
+from graphite_render.app import app
+from graphite_render.finders.whisper import WhisperFinder
+from graphite_render.storage import Store
 
 
-DATA_DIR = '/tmp/graphite-api-data.{0}'.format(os.getpid())
+DATA_DIR = '/tmp/graphite-render-data.{0}'.format(os.getpid())
 WHISPER_DIR = os.path.join(DATA_DIR, 'whisper')
 SEARCH_INDEX = os.path.join(DATA_DIR, 'index')
 

@@ -10,32 +10,32 @@ First, you need to install Gunicorn. The easiest way is to use ``pip``::
 
     $ pip install gunicorn
 
-If you have installed Graphite-API in a virtualenv, install Gunicorn in the
+If you have installed Graphite-Render in a virtualenv, install Gunicorn in the
 same virtualenv::
 
     $ /usr/share/python/graphite/bin/pip install gunicorn
 
-Next, create the script that will run Graphite-API using your process watcher
+Next, create the script that will run Graphite-Render using your process watcher
 of choice.
 
 *Upstart*
 
 ::
 
-    description "Graphite-API server"
+    description "Graphite-Render server"
     start on runlevel [2345]
     stop on runlevel [!2345]
 
     respawn
 
-    exec gunicorn -w2 graphite_api.app:app -b 127.0.0.1:8888
+    exec gunicorn -w2 graphite_render.app:app -b 127.0.0.1:8888
 
 *Supervisor*
 
 ::
 
-    [program:graphite-api]
-    command = gunicorn -w2 graphite_api.app:app -b 127.0.0.1:8888
+    [program:graphite-render]
+    command = gunicorn -w2 graphite_render.app:app -b 127.0.0.1:8888
     autostart = true
     autorestart = true
 
@@ -43,12 +43,12 @@ of choice.
 
 ::
 
-    # This is /etc/systemd/system/graphite-api.socket
+    # This is /etc/systemd/system/graphite-render.socket
     [Unit]
-    Description=graphite-api socket
+    Description=graphite-render socket
     
     [Socket]
-    ListenStream=/run/graphite-api.sock
+    ListenStream=/run/graphite-render.sock
     ListenStream=127.0.0.1:8888
     
     [Install]
@@ -56,13 +56,13 @@ of choice.
 
 ::
 
-    # This is /etc/systemd/system/graphite-api.service
+    # This is /etc/systemd/system/graphite-render.service
     [Unit]
-    Description=Graphite-API service
-    Requires=graphite-api.socket
+    Description=Graphite-Render service
+    Requires=graphite-render.socket
     
     [Service]
-    ExecStart=/usr/bin/gunicorn -w2 graphite_api.app:app
+    ExecStart=/usr/bin/gunicorn -w2 graphite_render.app:app
     Restart=on-failure
     #User=graphite
     #Group=graphite
@@ -75,7 +75,7 @@ of choice.
 
 .. note::
 
-    If you have installed Graphite-API and Gunicorn in a virtualenv, you
+    If you have installed Graphite-Render and Gunicorn in a virtualenv, you
     need to use the full path to Gunicorn. Instead of ``gunicorn``, use
     ``/usr/share/python/graphite/bin/gunicorn`` (assuming your virtualenv is
     at ``/usr/share/python/graphite``).
@@ -122,13 +122,13 @@ See the `mod_wsgi InstallationInstructions`_ for installation instructions.
 
 .. _mod_wsgi InstallationInstructions: https://code.google.com/p/modwsgi/wiki/InstallationInstructions
 
-Then create the graphite-api.wsgi:
+Then create the graphite-render.wsgi:
 
 .. code-block:: bash
 
-    # /var/www/wsgi-scripts/graphite-api.wsgi
+    # /var/www/wsgi-scripts/graphite-render.wsgi
 
-    from graphite_api.app import app as application
+    from graphite_render.app import app as application
 
 Finally, configure the apache vhost:
 
@@ -143,12 +143,12 @@ Finally, configure the apache vhost:
     Listen 8013
     <VirtualHost *:8013>
 
-        WSGIDaemonProcess graphite-api processes=5 threads=5 display-name='%{GROUP}' inactivity-timeout=120
-        WSGIProcessGroup graphite-api
+        WSGIDaemonProcess graphite-render processes=5 threads=5 display-name='%{GROUP}' inactivity-timeout=120
+        WSGIProcessGroup graphite-render
         WSGIApplicationGroup %{GLOBAL}
-        WSGIImportScript /var/www/wsgi-scripts/graphite-api.wsgi process-group=graphite-api application-group=%{GLOBAL}
+        WSGIImportScript /var/www/wsgi-scripts/graphite-render.wsgi process-group=graphite-render application-group=%{GLOBAL}
 
-        WSGIScriptAlias / /var/www/wsgi-scripts/graphite-api.wsgi
+        WSGIScriptAlias / /var/www/wsgi-scripts/graphite-render.wsgi
 
         <Directory /var/www/wsgi-scripts/>
             Order deny,allow
@@ -171,25 +171,25 @@ Restart apache::
 Docker
 ------
 
-Create a ``graphite-api.yaml`` configuration file with your desired config.
+Create a ``graphite-render.yaml`` configuration file with your desired config.
 
 Create a ``Dockerfile``::
 
-    FROM brutasse/graphite-api
+    FROM brutasse/graphite-render
 
 Build your container::
 
-    docker build -t graphite-api .
+    docker build -t graphite-render .
 
 Run it::
 
-    docker run -t -i -p 8888:8888 graphite-api
+    docker run -t -i -p 8888:8888 graphite-render
 
 ``/srv/graphite`` is a docker ``VOLUME``. You can use that to provide whisper
-data from the host (or from another docker container) to the graphite-api
+data from the host (or from another docker container) to the graphite-render
 container::
 
-    docker run -t -i -v /path/to/graphite:/srv/graphite -p 8888:8888 graphite-api
+    docker run -t -i -v /path/to/graphite:/srv/graphite -p 8888:8888 graphite-render
 
 This container has all the :ref:`extra packages <extras>` included. Cyanite
 backend and Sentry integration are available.
@@ -199,8 +199,8 @@ Nginx + uWSGI
 
 First, you need to install uWSGI with Python support. On Debian, install ``uwsgi-plugin-python``.
 
-Then create the uWSGI file for Graphite-API in
-``/etc/uwsgi/apps-available/graphite-api.ini``:
+Then create the uWSGI file for Graphite-Render in
+``/etc/uwsgi/apps-available/graphite-render.ini``:
 
 .. code-block:: ini
 
@@ -208,26 +208,26 @@ Then create the uWSGI file for Graphite-API in
     processes = 2
     socket = localhost:8080
     plugins = python27
-    module = graphite_api.app:app
+    module = graphite_render.app:app
 
-If you installed Graphite-API in a virtualenv, specify the virtualenv path:
+If you installed Graphite-Render in a virtualenv, specify the virtualenv path:
 
 .. code-block:: ini
 
     home = /var/www/wsgi-scripts/env
 
-If you need a custom location for Graphite-API's config file, set the
+If you need a custom location for Graphite-Render's config file, set the
 environment variable like this:
 
 .. code-block:: ini
 
     env = GRAPHITE_API_CONFIG=/var/www/wsgi-scripts/config.yml
 
-Enable ``graphite-api.ini`` and restart uWSGI:
+Enable ``graphite-render.ini`` and restart uWSGI:
 
 .. code-block:: bash
 
-    $ ln -s /etc/uwsgi/apps-available/graphite-api.ini /etc/uwsgi/apps-enabled
+    $ ln -s /etc/uwsgi/apps-available/graphite-render.ini /etc/uwsgi/apps-enabled
     $ service uwsgi restart
 
 Finally, configure the nginx vhost:
@@ -256,11 +256,11 @@ Other deployment methods
 ------------------------
 
 They currently aren't described here but there are several other ways to serve
-Graphite-API:
+Graphite-Render:
 
 * nginx + circus + chaussette
 
 If you feel like contributing some documentation, feel free to open pull a
-request on the `Graphite-API repository`_.
+request on the `Graphite-Render repository`_.
 
-.. _Graphite-API repository: https://github.com/brutasse/graphite-api
+.. _Graphite-Render repository: https://github.com/brutasse/graphite-render

@@ -38,11 +38,11 @@ def _get_local_timezone_name():
 default_conf = {
     'search_index': '/srv/graphite/index',
     'finders': [
-        'graphite_api.finders.whisper.WhisperFinder',
+        'graphite_render.finders.whisper.WhisperFinder',
     ],
     'functions': [
-        'graphite_api.functions.SeriesFunctions',
-        'graphite_api.functions.PieFunctions',
+        'graphite_render.functions.SeriesFunctions',
+        'graphite_render.functions.PieFunctions',
     ],
     'whisper': {
         'directories': [
@@ -67,7 +67,7 @@ class StructlogFormatter(logging.Formatter):
         self._bound = structlog.BoundLoggerBase(None, processors, {})
 
     def format(self, record):
-        if not record.name.startswith('graphite_api'):
+        if not record.name.startswith('graphite_render'):
             kw = dict(((k, v) for k, v in record.__dict__.items()
                        if k not in NON_EXTRA))
             kw['logger'] = record.name
@@ -89,7 +89,7 @@ def error_handler(e):
 
 def configure(app):
     config_file = os.environ.get('GRAPHITE_API_CONFIG',
-                                 '/etc/graphite-api.yaml')
+                                 '/etc/graphite-render.yaml')
     if os.path.exists(config_file):
         with open(config_file) as f:
             config = yaml.safe_load(f)
@@ -126,7 +126,7 @@ def configure(app):
                           "Flask-Caching`.")
         else:
             cache_conf = {'CACHE_DEFAULT_TIMEOUT': 60,
-                          'CACHE_KEY_PREFIX': 'graphite-api:'}
+                          'CACHE_KEY_PREFIX': 'graphite-render:'}
             for key, value in config['cache'].items():
                 cache_conf['CACHE_{0}'.format(key.upper())] = value
             app.cache = Cache(app, config=cache_conf)
@@ -187,7 +187,7 @@ def configure_logging(config):
         'level': 'DEBUG',
         'propagate': False,
     })
-    config['logging']['loggers'].setdefault('graphite_api', {
+    config['logging']['loggers'].setdefault('graphite_render', {
         'handlers': ['raw'],
         'level': 'DEBUG',
     })
