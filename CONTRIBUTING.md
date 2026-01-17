@@ -11,5 +11,4 @@ of indications:
   bug and proves your fix is actually working.
 
 Pull requests must pass the travis builds to get merged. Please validate that
-your code passes flake8 checks and that the documentation builds without
-warnings.
+the documentation builds without warnings.
