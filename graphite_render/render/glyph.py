@@ -463,7 +463,7 @@ class _AxisTics:
             if type(value) is float:
                 return "{:.1f} {}".format(value, prefix)
             else:
-                return "%d %s" % (int(value), prefix)
+                return f"{int(value)} {prefix}"
         elif span > 3:
             return "{:.1f} {}".format(float(value), prefix)
         elif span > 0.1:

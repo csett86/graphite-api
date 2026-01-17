@@ -56,7 +56,7 @@ class TestCase(unittest.TestCase):
     def write_series(self, series, retentions=((1, 180),)):
         file_name = os.path.join(
             WHISPER_DIR,
-            '{}.wsp'.format(series.pathExpression.replace('.', os.sep)))
+            f'{series.pathExpression.replace(".", os.sep)}.wsp')
         dir_name = os.path.dirname(file_name)
         if not os.path.isdir(dir_name):
             os.makedirs(dir_name)

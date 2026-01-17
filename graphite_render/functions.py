@@ -3326,7 +3326,7 @@ def aggregateLine(requestContext, seriesList, func='avg'):
         if value is not None:
             name = 'aggregateLine({}, {:g})'.format(series.name, value)
         else:
-            name = 'aggregateLine(%s, None)' % (series.name)
+            name = f'aggregateLine({series.name}, None)'
 
         [series] = constantLine(requestContext, value)
         series.name = name

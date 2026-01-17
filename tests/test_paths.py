@@ -39,7 +39,7 @@ class PathsTest(TestCase):
         """
         path_1 = 'test.1.metric'
         path_2 = 'test.2.metric'
-        target = 'sumSeries({},{})'.format(path_1, path_2)
+        target = f'sumSeries({path_1},{path_2})'
         expected = [path_1, path_2]
         self.validate_paths(expected, pathsFromTarget({}, target))
 
@@ -51,7 +51,7 @@ class PathsTest(TestCase):
         """
         path_a = 'test.a.metric'
         path_b = 'test.b.metric'
-        target = 'someFunc({},b={})'.format(path_a, path_b)
+        target = f'someFunc({path_a},b={path_b})'
         expected = [path_a, path_b]
         self.validate_paths(expected, pathsFromTarget({}, target))
 

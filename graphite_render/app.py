@@ -503,8 +503,7 @@ def render():
         if request_options['format'] == 'raw':
             response = StringIO()
             for series in context['data']:
-                response.write("%s,%d,%d,%d|" % (
-                    series.name, series.start, series.end, series.step))
+                response.write(f"{series.name},{series.start},{series.end},{series.step}|")
                 response.write(','.join(map(repr, series)))
                 response.write('\n')
             response.seek(0)
