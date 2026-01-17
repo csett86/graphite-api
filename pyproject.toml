@@ -37,7 +37,7 @@ dependencies = [
     "Flask",
     "PyYAML",
     "cairocffi",
-    "pyparsing>2.0.0",
+    "pyparsing>=3.0.0",
     "structlog",
     "tzlocal",
 ]
