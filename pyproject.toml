@@ -41,6 +41,7 @@ dependencies = [
     "pyparsing>=1.5.7",
     "pytz",
     "structlog",
+    "tzlocal",
 ]
 
 [project.optional-dependencies]
