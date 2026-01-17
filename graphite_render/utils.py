@@ -23,7 +23,7 @@ def is_pattern(s):
     return '*' in s or '?' in s or '[' in s or '{' in s
 
 
-class RequestParams(object):
+class RequestParams:
     """Dict-like structure that allows accessing request params
     whatever their origin (json body, form body, request args)."""
 
@@ -90,8 +90,8 @@ def hash_request():
     if request.form:
         keys.update(request.form.keys())
     keys.update(request.args.keys())
-    params = u",".join([
-        u"{0}={1}".format(key, u"&".join(sorted(RequestParams.getlist(key))))
+    params = ",".join([
+        "{}={}".format(key, "&".join(sorted(RequestParams.getlist(key))))
         for key in sorted(keys) if not key.startswith('_')
     ])
     md5 = hashlib.md5()

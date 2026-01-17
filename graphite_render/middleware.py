@@ -1,7 +1,7 @@
 from urllib.parse import urlparse
 
 
-class CORS(object):
+class CORS:
     """
     Simple middleware that adds CORS headers.
     """
@@ -32,7 +32,7 @@ class CORS(object):
         return self.app(environ, custom_start_response)
 
 
-class TrailingSlash(object):
+class TrailingSlash:
     """
     Middleware that strips trailing slashes from URLs.
     """

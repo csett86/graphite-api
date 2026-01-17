@@ -5,7 +5,7 @@ from .intervals import IntervalSet
 logger = get_logger()
 
 
-class MultiReader(object):
+class MultiReader:
     __slots__ = ('nodes',)
 
     def __init__(self, nodes):

@@ -2,7 +2,7 @@ INFINITY = float('inf')
 NEGATIVE_INFINITY = -INFINITY
 
 
-class IntervalSet(object):
+class IntervalSet:
     __slots__ = ('intervals', 'size')
 
     def __init__(self, intervals, disjoint=False):
@@ -72,12 +72,12 @@ class IntervalSet(object):
         return IntervalSet(sorted(self.intervals + other.intervals))
 
 
-class Interval(object):
+class Interval:
     __slots__ = ('start', 'end', 'tuple', 'size')
 
     def __init__(self, start, end):
         if end - start < 0:
-            raise ValueError("Invalid interval start=%s end=%s" % (start, end))
+            raise ValueError("Invalid interval start={} end={}".format(start, end))
 
         self.start = start
         self.end = end

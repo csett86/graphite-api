@@ -14,9 +14,9 @@ from structlog import get_logger
 logger = get_logger()
 
 pickle_safe = {
-    'copy_reg': set(['_reconstructor']),
-    '__builtin__': set(['object', 'list']),
-    'collections': set(['deque']),
+    'copy_reg': {'_reconstructor'},
+    '__builtin__': {'object', 'list'},
+    'collections': {'deque'},
 }
 renames = {
     'copy_reg': 'copyreg',
@@ -68,7 +68,7 @@ class SafeUnpickler(pickle.Unpickler):
         return obj.load()
 
 
-class ConsistentHashRing(object):
+class ConsistentHashRing:
     def __init__(self, nodes, replica_count=100, hash_type='carbon_ch'):
         self.ring = []
         self.ring_len = len(self.ring)
@@ -81,7 +81,7 @@ class ConsistentHashRing(object):
 
     def compute_ring_position(self, key):
         if self.hash_type == 'fnv1a_ch':
-            big_hash = '{0:x}'.format(int(fnv32a(str(key))))
+            big_hash = f'{int(fnv32a(str(key))):x}'
             small_hash = int(big_hash[:4], 16) ^ int(big_hash[4:], 16)
         else:
             big_hash = md5(str(key).encode()).hexdigest()
@@ -131,7 +131,7 @@ class ConsistentHashRing(object):
         return nodes
 
 
-class CarbonLinkPool(object):
+class CarbonLinkPool:
     def __init__(self, hosts, timeout=1, retry_delay=15,
                  carbon_prefix='carbon', replication_factor=1,
                  hashing_keyfunc=lambda x: x, hashing_type='carbon_ch'):

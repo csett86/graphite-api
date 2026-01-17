@@ -15,4 +15,4 @@ class JSONEncoder(json.JSONEncoder):
                 pass
         elif hasattr(o, '__iter__'):
             return [i for i in o]
-        return super(JSONEncoder, self).default(o)
+        return super().default(o)

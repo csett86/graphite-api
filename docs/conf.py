@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# coding: utf-8
 
 import os
 import re
@@ -22,7 +21,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 project = 'Graphite-Render'
-copyright = u'2014, Bruno Renié'
+copyright = '2014, Bruno Renié'
 
 version = '1.1.5'
 release = '1.1.5'
@@ -66,7 +65,7 @@ class RenderFunctionDocumenter(autodoc.FunctionDocumenter):
         ) and parent.name == 'graphite_render.functions'
 
     def format_args(self):
-        args = super(RenderFunctionDocumenter, self).format_args()
+        args = super().format_args()
         if args is not None:
             return re.sub('requestContext, ', '', args)
 
@@ -81,7 +80,7 @@ def setup(app):
 add_module_names = False
 
 
-class Mock(object):
+class Mock:
     __all__ = []
 
     def __init__(self, *args, **kwargs):

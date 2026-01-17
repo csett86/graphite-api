@@ -30,7 +30,7 @@ def jsonify(data, status=200, headers=None):
     body = json.dumps(data, cls=JSONEncoder)
     if jsonp:
         headers['Content-Type'] = 'text/javascript'
-        body = '{0}({1})'.format(jsonp, body)
+        body = f'{jsonp}({body})'
     else:
         headers['Content-Type'] = 'application/json'
     return body, status, headers
@@ -71,7 +71,7 @@ def dashboard_find():
 
 @app.route('/dashboard/load/<name>', methods=methods)
 def dashboard_load(name):
-    return jsonify({'error': "Dashboard '{0}' does not exist.".format(name)},
+    return jsonify({'error': f"Dashboard '{name}' does not exist."},
                    status=404)
 
 
@@ -115,7 +115,7 @@ def metrics_find():
 
     format = RequestParams.get('format', 'treejson')
     if format not in ['treejson', 'completer', 'nodelist', 'json']:
-        errors['format'] = 'unrecognized format: "{0}".'.format(format)
+        errors['format'] = f'unrecognized format: "{format}".'
 
     if 'query' not in RequestParams:
         errors['query'] = 'this parameter is required.'
@@ -208,7 +208,7 @@ def recurse(query, index):
         if node.is_leaf:
             index.add(node.path)
         else:
-            recurse('{0}.*'.format(node.path), index)
+            recurse(f'{node.path}.*', index)
 
 
 @app.route('/metrics/index.json', methods=methods)
@@ -265,7 +265,7 @@ def render():
         request_options['graphClass'] = graph_class
     except KeyError:
         errors['graphType'] = (
-            "Invalid graphType '{0}', must be one of '{1}'.".format(
+            "Invalid graphType '{}', must be one of '{}'.".format(
                 graph_type, "', '".join(sorted(GraphTypes))))
     request_options['pieMode'] = RequestParams.get('pieMode', 'average')
     targets = RequestParams.getlist('target')
@@ -315,7 +315,7 @@ def render():
         try:
             tzinfo = pytz.timezone(tz)
         except pytz.UnknownTimeZoneError:
-            errors['tz'] = "Unknown timezone: '{0}'.".format(tz)
+            errors['tz'] = f"Unknown timezone: '{tz}'."
     request_options['tzinfo'] = tzinfo
 
     # Get the time interval for time-oriented graph types
@@ -359,7 +359,7 @@ def render():
     headers = {
         'Last-Modified': http_date(time.time()),
         'Expires': http_date(time.time() + (cache_timeout or 60)),
-        'Cache-Control': 'max-age={0}'.format(cache_timeout or 60)
+        'Cache-Control': f'max-age={cache_timeout or 60}'
     } if use_cache else {
         'Pragma': 'no-cache',
         'Cache-Control': 'no-cache',
@@ -393,7 +393,7 @@ def render():
                 try:
                     value = float(value)
                 except ValueError:
-                    errors['target'] = "Invalid target: '{0}'.".format(target)
+                    errors['target'] = f"Invalid target: '{target}'."
                 context['data'].append((name, value))
             else:
                 series_list = evaluateTarget(context, target, data_store)
@@ -503,10 +503,10 @@ def render():
         if request_options['format'] == 'raw':
             response = StringIO()
             for series in context['data']:
-                response.write(u"%s,%d,%d,%d|" % (
+                response.write("%s,%d,%d,%d|" % (
                     series.name, series.start, series.end, series.step))
-                response.write(u','.join(map(repr, series)))
-                response.write(u'\n')
+                response.write(','.join(map(repr, series)))
+                response.write('\n')
             response.seek(0)
             headers['Content-Type'] = 'text/plain'
             response = (response.read(), 200, headers)
@@ -528,7 +528,7 @@ def render():
 
     if use_svg and 'jsonp' in request_options:
         headers['Content-Type'] = 'text/javascript'
-        response = ('{0}({1})'.format(request_options['jsonp'],
+        response = ('{}({})'.format(request_options['jsonp'],
                                       json.dumps(image.decode('utf-8'))),
                     200, headers)
     else:

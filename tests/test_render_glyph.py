@@ -19,7 +19,7 @@ class glyphStandaloneFunctionTest(TestCase):
             config = [range(101), range(101), [1, None, None, None, None]]
 
         for i, c in enumerate(config):
-            name = "collectd.test-db{0}.load.value".format(i + 1)
+            name = f"collectd.test-db{i + 1}.load.value"
             seriesList.append(TimeSeries(name, 0, 1, 1, c))
         return seriesList
 

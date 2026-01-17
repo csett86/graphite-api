@@ -260,14 +260,14 @@ class MetricsTests(TestCase):
         os.makedirs(parent)
 
         for metric in ['load', 'memory', 'cpu']:
-            db = os.path.join(parent, '{0}.wsp'.format(metric))
+            db = os.path.join(parent, f'{metric}.wsp')
             whisper.create(db, [(1, 60)])
 
         response = self.app.get(url)
         self.assertJSON(response, [
-            u'collectd.cpu',
-            u'collectd.load',
-            u'collectd.memory',
+            'collectd.cpu',
+            'collectd.load',
+            'collectd.memory',
         ])
         response = self.app.get(url, query_string={'jsonp': 'bar'})
         self.assertEqual(

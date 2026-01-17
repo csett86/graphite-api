@@ -55,8 +55,7 @@ def pathsFromTokens(requestContext, tokens, replacements=None):
                                       replacements)
                       for kwarg in tokens.call.kwargs])
 
-    for path in itertools.chain(*iters):
-        yield path
+    yield from itertools.chain(*iters)
 
 
 def evaluateTarget(requestContext, target, data_store=None):
@@ -128,10 +127,10 @@ def evaluateTokens(requestContext, tokens, data_store=None, replacements=None):
         args = [evaluateTokens(requestContext, arg, data_store, replacements)
                 for arg in tokens.call.args]
         requestContext['args'] = tokens.call.args
-        kwargs = dict([(kwarg.argname,
+        kwargs = {kwarg.argname:
                         evaluateTokens(requestContext, kwarg.args[0],
-                                       data_store, replacements))
-                       for kwarg in tokens.call.kwargs])
+                                       data_store, replacements)
+                       for kwarg in tokens.call.kwargs}
         ret = func(requestContext, *args, **kwargs)
         return ret
 

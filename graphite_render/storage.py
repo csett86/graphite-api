@@ -8,7 +8,7 @@ from .readers import MultiReader
 from .utils import is_pattern
 
 
-class Store(object):
+class Store:
     def __init__(self, finders=None):
         self.finders = finders
 
@@ -53,7 +53,7 @@ class Store(object):
                 yield LeafNode(path, reader)
 
 
-class FindQuery(object):
+class FindQuery:
     def __init__(self, pattern, startTime, endTime):
         self.pattern = pattern
         self.startTime = startTime
@@ -74,5 +74,5 @@ class FindQuery(object):
         else:
             endString = time.ctime(self.endTime)
 
-        return '<FindQuery: %s from %s until %s>' % (self.pattern, startString,
+        return '<FindQuery: {} from {} until {}>'.format(self.pattern, startString,
                                                      endString)

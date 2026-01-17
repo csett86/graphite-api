@@ -11,10 +11,10 @@ class EncoderTestCase(TestCase):
             encoder.default(object())
 
         self.assertEqual(encoder.default(dict({1: 2})), {1: 2})
-        self.assertEqual(encoder.default(set([4, 5, 6])), [4, 5, 6])
+        self.assertEqual(encoder.default({4, 5, 6}), [4, 5, 6])
         self.assertEqual(encoder.default(DummyObject()), [7, 8, 9])
 
 
-class DummyObject(object):
+class DummyObject:
     def tolist(self):
         return list([7, 8, 9])

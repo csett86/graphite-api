@@ -18,7 +18,7 @@ from graphite_render.finders.whisper import WhisperFinder
 from graphite_render.storage import Store
 
 
-DATA_DIR = '/tmp/graphite-render-data.{0}'.format(os.getpid())
+DATA_DIR = f'/tmp/graphite-render-data.{os.getpid()}'
 WHISPER_DIR = os.path.join(DATA_DIR, 'whisper')
 SEARCH_INDEX = os.path.join(DATA_DIR, 'index')
 
@@ -56,7 +56,7 @@ class TestCase(unittest.TestCase):
     def write_series(self, series, retentions=((1, 180),)):
         file_name = os.path.join(
             WHISPER_DIR,
-            '{0}.wsp'.format(series.pathExpression.replace('.', os.sep)))
+            '{}.wsp'.format(series.pathExpression.replace('.', os.sep)))
         dir_name = os.path.dirname(file_name)
         if not os.path.isdir(dir_name):
             os.makedirs(dir_name)

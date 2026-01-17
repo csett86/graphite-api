@@ -1,4 +1,3 @@
-# coding: utf-8
 import json
 import os
 import time
@@ -333,7 +332,7 @@ class RenderTest(TestCase):
                 self.assertFalse('Expires' in response.headers)
             else:
                 self.assertEqual(response.headers['Cache-Control'],
-                                 'max-age={0}'.format(
+                                 'max-age={}'.format(
                                      qs.get('cacheTimeout', 60)))
                 self.assertNotEqual(response.headers['Cache-Control'],
                                     'no-cache')

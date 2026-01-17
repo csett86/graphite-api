@@ -19,7 +19,7 @@ except ImportError:
 logger = get_logger()
 
 
-class WhisperFinder(object):
+class WhisperFinder:
     def __init__(self, config):
         self.directories = config['whisper']['directories']
         self.carbonlink = None
@@ -97,8 +97,7 @@ class WhisperFinder(object):
         if patterns:  # we've still got more directories to traverse
             for subdir in matching_subdirs:
                 absolute_path = os.path.join(current_dir, subdir)
-                for match in self._find_paths(absolute_path, patterns):
-                    yield match
+                yield from self._find_paths(absolute_path, patterns)
 
         else:  # we've got the last pattern
             if not has_wildcard:
@@ -111,7 +110,7 @@ class WhisperFinder(object):
                 yield os.path.join(current_dir, _basename)
 
 
-class WhisperReader(object):
+class WhisperReader:
 
     __slots__ = ('fs_path', 'real_metric_path', 'carbonlink')
 

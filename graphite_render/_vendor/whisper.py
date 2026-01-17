@@ -69,7 +69,7 @@ if CAN_FALLOCATE:
     def _py_fallocate(fd, offset, len_):
       res = _fallocate(fd.fileno(), offset, len_)
       if res != 0:
-        raise IOError(res, 'fallocate')
+        raise OSError(res, 'fallocate')
     fallocate = _py_fallocate
   del libc
   del libc_name
@@ -99,7 +99,7 @@ aggregationTypeToMethod = dict({
   4: 'max',
   5: 'min'
 })
-aggregationMethodToType = dict([[v,k] for k,v in aggregationTypeToMethod.items()])
+aggregationMethodToType = {v:k for k,v in aggregationTypeToMethod.items()}
 aggregationMethods = aggregationTypeToMethod.values()
 
 debug = startBlock = endBlock = lambda *a,**k: None
@@ -176,10 +176,10 @@ class CorruptWhisperFile(WhisperException):
     self.path = path
 
   def __repr__(self):
-    return "<CorruptWhisperFile[%s] %s>" % (self.path, self.error)
+    return "<CorruptWhisperFile[{}] {}>".format(self.path, self.error)
 
   def __str__(self):
-    return "%s (%s)" % (self.error, self.path)
+    return "{} ({})".format(self.error, self.path)
 
 def enableDebug():
   global open, debug, startBlock, endBlock
@@ -208,7 +208,7 @@ def enableDebug():
     __timingBlocks[name] = time.time()
 
   def endBlock(name):
-    debug("%s took %.5f seconds" % (name,time.time() - __timingBlocks.pop(name)))
+    debug("{} took {:.5f} seconds".format(name,time.time() - __timingBlocks.pop(name)))
 
 
 def __readHeader(fh):
@@ -765,7 +765,7 @@ def file_fetch(fh, fromTime, untilTime, now = None):
   # If the range of data is from too far in the past or fully in the future, we
   # return nothing
   if (fromTime > untilTime):
-    raise InvalidTimeInterval("Invalid time interval: from time '%s' is after until time '%s'" % (fromTime, untilTime))
+    raise InvalidTimeInterval("Invalid time interval: from time '{}' is after until time '{}'".format(fromTime, untilTime))
 
   oldestTime = now - header['maxRetention']
   # Range is in the future

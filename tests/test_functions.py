@@ -9,7 +9,7 @@ import pytz
 try:
     from unittest.mock import patch, call, MagicMock
 except ImportError:
-    from mock import patch, call, MagicMock
+    from unittest.mock import patch, call, MagicMock
 
 from graphite_render import functions
 from graphite_render.app import app
@@ -455,7 +455,7 @@ class FunctionsTest(TestCase):
         now = int(time.time())
 
         for i, c in enumerate(config):
-            name = "collectd.test-db{0}.load.value".format(i + 1)
+            name = f"collectd.test-db{i + 1}.load.value"
             series = TimeSeries(name, now - 101, now, 1, c)
             series.pathExpression = name
             seriesList.append(series)
@@ -498,7 +498,7 @@ class FunctionsTest(TestCase):
         limit = len(seriesList) - 1
         results = functions.limit({}, seriesList, limit)
         self.assertEqual(len(results), limit,
-                         "More than {0} results returned".format(limit))
+                         f"More than {limit} results returned")
 
     def _verify_series_options(self, seriesList, name, value):
         """
@@ -586,7 +586,7 @@ class FunctionsTest(TestCase):
                     result_val = results[counter][i]
                     self.assertEqual(
                         transform, result_val,
-                        "Transformed value should be {0}, not {1}".format(
+                        "Transformed value should be {}, not {}".format(
                             transform, result_val))
 
     def test_transform_null_reference(self):
@@ -611,7 +611,7 @@ class FunctionsTest(TestCase):
                     result_val = results[counter][i]
                     self.assertEqual(
                         transform, result_val,
-                        "Transformed value should be {0}, not {1}".format(
+                        "Transformed value should be {}, not {}".format(
                             transform, result_val))
 
     def test_transform_null_reference_empty(self):
@@ -635,7 +635,7 @@ class FunctionsTest(TestCase):
                     result_val = results[counter][i]
                     self.assertEqual(
                         transform, result_val,
-                        "Transformed value should be {0}, not {1}".format(
+                        "Transformed value should be {}, not {}".format(
                             transform, result_val))
 
     def test_group(self):
@@ -674,7 +674,7 @@ class FunctionsTest(TestCase):
         for series in results:
             self.assertTrue(
                 series.name.startswith(substitution),
-                "aliasSub should replace the name with {0}".format(
+                "aliasSub should replace the name with {}".format(
                     substitution))
 
     # TODO: Add tests for * globbing and {} matching to this

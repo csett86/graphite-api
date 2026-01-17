@@ -1,4 +1,4 @@
-class Node(object):
+class Node:
     __slots__ = ('name', 'path', 'local', 'is_leaf')
 
     def __init__(self, path):
@@ -8,7 +8,7 @@ class Node(object):
         self.is_leaf = False
 
     def __repr__(self):
-        return '<%s[%x]: %s>' % (self.__class__.__name__, id(self), self.path)
+        return '<{}[{:x}]: {}>'.format(self.__class__.__name__, id(self), self.path)
 
 
 class BranchNode(Node):
@@ -19,7 +19,7 @@ class LeafNode(Node):
     __slots__ = ('reader', 'is_leaf')
 
     def __init__(self, path, reader):
-        super(LeafNode, self).__init__(path)
+        super().__init__(path)
         self.reader = reader
         self.is_leaf = True
 
@@ -36,4 +36,4 @@ class LeafNode(Node):
         return self.reader.get_intervals()
 
     def __repr__(self):
-        return '<LeafNode[%x]: %s (%s)>' % (id(self), self.path, self.reader)
+        return '<LeafNode[{:x}]: {} ({})>'.format(id(self), self.path, self.reader)

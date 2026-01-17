@@ -56,10 +56,10 @@ if default_conf['time_zone'] == 'local':  # tzlocal didn't find anything
 
 
 # attributes of a classical log record
-NON_EXTRA = set(['module', 'filename', 'levelno', 'exc_text', 'pathname',
+NON_EXTRA = {'module', 'filename', 'levelno', 'exc_text', 'pathname',
                  'lineno', 'msg', 'funcName', 'relativeCreated',
                  'levelname', 'msecs', 'threadName', 'name', 'created',
-                 'process', 'processName', 'thread'])
+                 'process', 'processName', 'thread'}
 
 
 class StructlogFormatter(logging.Formatter):
@@ -68,8 +68,8 @@ class StructlogFormatter(logging.Formatter):
 
     def format(self, record):
         if not record.name.startswith('graphite_render'):
-            kw = dict(((k, v) for k, v in record.__dict__.items()
-                       if k not in NON_EXTRA))
+            kw = {k: v for k, v in record.__dict__.items()
+                       if k not in NON_EXTRA}
             kw['logger'] = record.name
             return self._bound._process_event(
                 record.levelname.lower(), record.getMessage(), kw)[0]
@@ -95,7 +95,7 @@ def configure(app):
             config = yaml.safe_load(f)
             config['path'] = config_file
     else:
-        warnings.warn("Unable to find configuration file at {0}, using "
+        warnings.warn("Unable to find configuration file at {}, using "
                       "default config.".format(config_file))
         config = {}
 
@@ -128,7 +128,7 @@ def configure(app):
             cache_conf = {'CACHE_DEFAULT_TIMEOUT': 60,
                           'CACHE_KEY_PREFIX': 'graphite-render:'}
             for key, value in config['cache'].items():
-                cache_conf['CACHE_{0}'.format(key.upper())] = value
+                cache_conf[f'CACHE_{key.upper()}'] = value
             app.cache = Cache(app, config=cache_conf)
 
     loaded_config = {'functions': {}}

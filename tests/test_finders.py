@@ -7,7 +7,7 @@ import time
 try:
     from unittest.mock import patch
 except ImportError:
-    from mock import patch
+    from unittest.mock import patch
 
 from graphite_render._vendor import whisper
 from graphite_render.app import app
@@ -52,7 +52,7 @@ class FinderTest(TestCase):
         self.assertEqual(len(series), 10)
 
 
-class DummyReader(object):
+class DummyReader:
     __slots__ = ('path',)
 
     def __init__(self, path):
@@ -68,14 +68,14 @@ class DummyReader(object):
         return IntervalSet([Interval(time.time() - 3600, time.time())])
 
 
-class DummyFinder(object):
+class DummyFinder:
     def find_nodes(self, query):
         if query.pattern == 'foo':
             yield BranchNode('foo')
 
         elif query.pattern == 'bar.*':
             for i in range(10):
-                path = 'bar.{0}'.format(i)
+                path = f'bar.{i}'
                 yield LeafNode(path, DummyReader(path))
 
 

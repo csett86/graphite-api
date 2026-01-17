@@ -95,11 +95,11 @@ class TimeSeries(list):
             "Invalid consolidation function: '%s'" % self.consolidationFunc)
 
     def __repr__(self):
-        return 'TimeSeries(name=%s, start=%s, end=%s, step=%s)' % (
+        return 'TimeSeries(name={}, start={}, end={}, step={})'.format(
             self.name, self.start, self.end, self.step)
 
 
-class DataStore(object):
+class DataStore:
     """
     Simple object to store results of multi fetches.
     Also aids in looking up data by pathExpressions.

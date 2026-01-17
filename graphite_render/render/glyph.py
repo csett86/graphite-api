@@ -349,9 +349,9 @@ class _AxisTics:
         problem, using name in the error message.
         """
         if math.isnan(value):
-            raise GraphError('Encountered NaN %s' % (name,))
+            raise GraphError('Encountered NaN {}'.format(name))
         elif math.isinf(value):
-            raise GraphError('Encountered infinite %s' % (name,))
+            raise GraphError('Encountered infinite {}'.format(name))
         return value
 
     @staticmethod
@@ -456,20 +456,20 @@ class _AxisTics:
         if prefix:
             prefix += " "
         if value < 0.1:
-            return "%g %s" % (float(value), prefix)
+            return "{:g} {}".format(float(value), prefix)
         elif value < 1.0:
-            return "%.2f %s" % (float(value), prefix)
+            return "{:.2f} {}".format(float(value), prefix)
         if span > 10 or spanPrefix != prefix:
             if type(value) is float:
-                return "%.1f %s" % (value, prefix)
+                return "{:.1f} {}".format(value, prefix)
             else:
                 return "%d %s" % (int(value), prefix)
         elif span > 3:
-            return "%.1f %s" % (float(value), prefix)
+            return "{:.1f} {}".format(float(value), prefix)
         elif span > 0.1:
-            return "%.2f %s" % (float(value), prefix)
+            return "{:.2f} {}".format(float(value), prefix)
         else:
-            return "%g %s" % (float(value), prefix)
+            return "{:g} {}".format(float(value), prefix)
 
 
 class _LinearAxisTics(_AxisTics):
@@ -605,7 +605,7 @@ class _LinearAxisTics(_AxisTics):
         if self.minValueSource == 'data':
             # Start labels at the greatest multiple of step <= minValue:
             self.bottom = self.step * math.floor(
-                (self.minValue / self.step + EPSILON))
+                self.minValue / self.step + EPSILON)
         else:
             self.bottom = self.minValue
 
@@ -613,7 +613,7 @@ class _LinearAxisTics(_AxisTics):
             # Extend the top of our graph to the lowest
             # step multiple >= maxValue:
             self.top = self.step * math.ceil(
-                (self.maxValue / self.step - EPSILON))
+                self.maxValue / self.step - EPSILON)
             # ...but never exceed a user-specified limit:
             if (
                 self.axisLimit is not None and
@@ -694,7 +694,7 @@ class _LogAxisTics(_AxisTics):
         return values
 
 
-class Graph(object):
+class Graph:
     customizable = ('width', 'height', 'margin', 'bgcolor', 'fgcolor',
                     'fontName', 'fontSize', 'fontBold', 'fontItalic',
                     'colorList', 'template', 'yAxisSide', 'outputFormat')
@@ -794,7 +794,7 @@ class Graph(object):
         else:
             raise ValueError("Must specify an RGB 3-tuple, an html color "
                              "string, or a known color alias!")
-        r, g, b = [float(c) / 255.0 for c in (r, g, b)]
+        r, g, b = (float(c) / 255.0 for c in (r, g, b))
         self.ctx.set_source_rgba(r, g, b, alpha)
 
     def setFont(self, **params):
@@ -1266,7 +1266,7 @@ class LineGraph(Graph):
         self.startTime = min([series.start for series in self.data])
         if (
             self.lineMode == 'staircase' or
-            set([len(series) for series in self.data]) == set([2])
+            {len(series) for series in self.data} == {2}
         ):
             self.endTime = max([series.end for series in self.data])
         else:
@@ -2081,7 +2081,7 @@ class PieGraph(Graph):
         self.valueLabelsMin = float(params.get('valueLabelsMin', 5))
         self.valueLabels = params.get('valueLabels', 'percent')
         assert self.valueLabels in self.validValueLabels, (
-            "valueLabels=%s must be one of %s" % (
+            "valueLabels={} must be one of {}".format(
                 self.valueLabels, self.validValueLabels))
         if self.valueLabels != 'none':
             self.drawLabels()
@@ -2232,7 +2232,7 @@ def format_units(v, step=None, system="si", units=None):
             if v2 - math.floor(v2) < 0.00000000001 and v > 1:
                 v2 = float(math.floor(v2))
             if units:
-                prefix = "%s%s" % (prefix, units)
+                prefix = "{}{}".format(prefix, units)
             return v2, prefix
 
     if v - math.floor(v) < 0.00000000001 and v > 1:
