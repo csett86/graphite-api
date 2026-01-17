@@ -22,15 +22,16 @@ try:
 except ModuleNotFoundError:
     # Fallback to regex parsing for Python < 3.11
     pass
-except (FileNotFoundError, KeyError) as e:
-    raise RuntimeError(f"Could not read version from pyproject.toml: {e}")
+except (FileNotFoundError, KeyError):
+    # File doesn't exist or version key missing, try regex fallback
+    pass
 
-# Use regex fallback if tomllib is not available
+# Use regex fallback if tomllib is not available or failed
 if _version is None:
     try:
         with open(_pyproject_path, 'r', encoding='utf-8') as f:
             content = f.read()
-            match = re.search(r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
+            match = re.search(r'^version\s*=\s*["\']([^"\'\n\r]+)["\']', content, re.MULTILINE)
             if match:
                 _version = match.group(1)
             else:
