@@ -1921,7 +1921,7 @@ def cactiStyle(requestContext, seriesList, system=None, units=None):
 
 def _getFirstPathExpression(name):
     """Returns the first metric path in an expression."""
-    tokens = grammar.parseString(name)
+    tokens = grammar.parse_string(name)
     pathExpression = None
     while pathExpression is None:
         if tokens.pathExpression:
