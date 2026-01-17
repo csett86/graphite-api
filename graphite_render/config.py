@@ -152,7 +152,7 @@ def configure(app):
                 'memcache': 'flask_caching.backends.memcache.MemcachedCache',
                 'gaememcached': 'flask_caching.backends.memcache.GAEMemcachedCache',
             }
-            
+
             cache_conf = {'CACHE_DEFAULT_TIMEOUT': 60,
                           'CACHE_KEY_PREFIX': 'graphite-render:'}
             for key, value in config['cache'].items():
