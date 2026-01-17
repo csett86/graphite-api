@@ -1,4 +1,26 @@
 Graphite-Render releases
+========================
+
+1.1.6 -- 2026-01-17
+-------------------
+
+* No functional changes, just metadata updates.
+
+1.1.5 -- 2026-01-17
+-------------------
+
+* Rename project to graphite-render and module to graphite_render
+* Remove Python 2 compatibility code
+* Remove flake8 usage and references
+
+1.1.4 -- 2026-01-16
+-------------------
+
+* Add Python 3.12, 3.13, 3.14 compatibility
+* Convert to modern Python packaging standards (PEP 517/518/621)
+
+
+Graphite-Api releases
 =====================
 
 1.1.3 -- 2016-05-23

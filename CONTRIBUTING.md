@@ -1,4 +1,4 @@
-Contributions to Graphite-API are welcome! Before you start, here are a couple
+Contributions to Graphite-Render are welcome! Before you start, here are a couple
 of indications:
 
 * If you want to report a bug, please search in the existing issues to see if
@@ -10,5 +10,4 @@ of indications:
 * If you're fixing a bug, please add a regression test that reproduces the
   bug and proves your fix is actually working.
 
-Pull requests must pass the travis builds to get merged. Please validate that
-the documentation builds without warnings.
+Pull requests must pass the github actions checks builds to get merged.

@@ -2,18 +2,6 @@
 Installation
 ============
 
-Debian / Ubuntu: native package
-===============================
-
-If you run Debian 8 or Ubuntu 14.04 LTS, you can use one of the available
-packages which provides a self-contained build of graphite-render. Builds are
-available on the `releases`_ page.
-
-.. _releases: https://github.com/brutasse/graphite-render/releases
-
-Once installed, Graphite-api should be running as a service and available on
-port 8888. The package contains all the :ref:`optional dependencies <extras>`.
-
 Python package
 ==============
 
@@ -22,15 +10,9 @@ Prerequisites
 
 Installing Graphite-Render requires:
 
-* Python 2 (2.6 and above) or 3 (3.3 and above), with development files. On
-  debian/ubuntu, you'll want to install ``python-dev``.
+* Python 3 (3.8 and above).
 
-* ``gcc``. On debian/ubuntu, install ``build-essential``.
-
-* Cairo, including development files. On debian/ubuntu, install the
-  ``libcairo2-dev`` package.
-
-* ``libffi`` with development files, ``libffi-dev`` on debian/ubuntu.
+* Cairo. On debian/ubuntu, install the ``libcairo2`` package.
 
 * Pip, the Python package manager. On debian/ubuntu, install ``python-pip``.
 
