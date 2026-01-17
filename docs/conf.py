@@ -13,17 +13,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), os.pardir))
 _pyproject_path = os.path.join(os.path.dirname(__file__), os.pardir, 'pyproject.toml')
 
 try:
-    # Try using tomllib (Python 3.11+) or tomli (if installed)
-    try:
-        import tomllib
-    except ModuleNotFoundError:
-        import tomli as tomllib
-    
+    # Try using tomllib (Python 3.11+)
+    import tomllib
     with open(_pyproject_path, 'rb') as f:
         _pyproject_data = tomllib.load(f)
         _version = _pyproject_data['project']['version']
-except (ModuleNotFoundError, ImportError):
-    # Fallback to regex parsing for Python < 3.11 without tomli
+except ModuleNotFoundError:
+    # Fallback to regex parsing for Python < 3.11
     with open(_pyproject_path, 'r') as f:
         content = f.read()
         match = re.search(r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
