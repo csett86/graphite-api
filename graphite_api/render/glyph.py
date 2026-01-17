@@ -18,12 +18,10 @@ import math
 import re
 from datetime import datetime, timedelta
 from io import BytesIO
+from urllib.parse import unquote_plus
 
 import cairocffi as cairo
 import pytz
-import six
-from six.moves import range
-from six.moves.urllib.parse import unquote_plus
 
 from .datalib import TimeSeries
 from ..utils import to_seconds
@@ -318,8 +316,8 @@ UnitSystems = {
 
 
 def force_text(value):
-    if not isinstance(value, six.string_types):
-        value = six.text_type(value)
+    if not isinstance(value, str):
+        value = str(value)
     return value
 
 
@@ -779,7 +777,7 @@ class Graph(object):
             r, g, b = value
         elif value in colorAliases:
             r, g, b = colorAliases[value]
-        elif isinstance(value, six.string_types) and len(value) >= 6:
+        elif isinstance(value, str) and len(value) >= 6:
             s = value
             if s.startswith('#'):
                 s = s[1:]

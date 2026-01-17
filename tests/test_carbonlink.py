@@ -1,3 +1,4 @@
+import pickle
 import struct
 
 try:
@@ -7,7 +8,6 @@ except ImportError:
 
 from graphite_api import carbonlink
 from graphite_api.carbonlink import CarbonLinkPool, ConsistentHashRing
-from six.moves import cPickle as pickle
 
 from . import TestCase
 

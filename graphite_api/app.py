@@ -7,7 +7,6 @@ from datetime import datetime
 from io import BytesIO, StringIO
 
 import pytz
-import six
 from flask import Flask
 from structlog import get_logger
 from werkzeug.http import http_date
@@ -420,7 +419,7 @@ def render():
         request_options['format'] = request_options.get('format')
 
         if request_options['format'] == 'csv':
-            response = BytesIO() if six.PY2 else StringIO()
+            response = StringIO()
             writer = csv.writer(response, dialect='excel')
             for series in context['data']:
                 for index, value in enumerate(series):

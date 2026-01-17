@@ -1,8 +1,6 @@
 import itertools
 import re
 
-import six
-
 from .render.datalib import fetchData, TimeSeries
 from .render.grammar import grammar
 
@@ -108,7 +106,7 @@ def evaluateTokens(requestContext, tokens, data_store=None, replacements=None):
             for name in replacements:
                 val = replacements[name]
                 if expression == '$'+name:
-                    if not isinstance(val, six.string_types):
+                    if not isinstance(val, str):
                         return val
                     elif re.match(r'^-?[\d.]+$', val):
                         return float(val)

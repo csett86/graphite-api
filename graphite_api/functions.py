@@ -19,11 +19,9 @@ import re
 import time
 from collections import defaultdict
 from datetime import datetime, timedelta
-from functools import partial
+from functools import partial, reduce
+from itertools import zip_longest
 from operator import is_not, itemgetter
-
-import six
-from six.moves import map, reduce, zip_longest
 
 from .render.attime import parseATTime, parseTimeOffset
 from .render.datalib import fetchData, TimeSeries
@@ -872,7 +870,7 @@ def exponentialMovingAverage(requestContext, seriesList, windowSize):
     if not seriesList:
         return []
     windowInterval = None
-    if isinstance(windowSize, six.string_types):
+    if isinstance(windowSize, str):
         delta = parseTimeOffset(windowSize)
         windowInterval = abs(delta.seconds + (delta.days * 86400))
 
@@ -898,7 +896,7 @@ def exponentialMovingAverage(requestContext, seriesList, windowSize):
         else:
             windowPoints = int(windowSize)
 
-        if isinstance(windowSize, six.string_types):
+        if isinstance(windowSize, str):
             newName = 'exponentialMovingAverage(%s,"%s")' % (
                 series.name, windowSize)
         else:
@@ -950,7 +948,7 @@ def movingMedian(requestContext, seriesList, windowSize):
     if not seriesList:
         return []
     windowInterval = None
-    if isinstance(windowSize, six.string_types):
+    if isinstance(windowSize, str):
         delta = parseTimeOffset(windowSize)
         windowInterval = to_seconds(delta)
 
@@ -973,7 +971,7 @@ def movingMedian(requestContext, seriesList, windowSize):
         else:
             windowPoints = int(windowSize)
 
-        if isinstance(windowSize, six.string_types):
+        if isinstance(windowSize, str):
             newName = 'movingMedian(%s,"%s")' % (series.name, windowSize)
         else:
             newName = "movingMedian(%s,%s)" % (series.name, windowSize)
@@ -1209,7 +1207,7 @@ def movingAverage(requestContext, seriesList, windowSize):
     if not seriesList:
         return []
     windowInterval = None
-    if isinstance(windowSize, six.string_types):
+    if isinstance(windowSize, str):
         delta = parseTimeOffset(windowSize)
         windowInterval = to_seconds(delta)
 
@@ -1232,7 +1230,7 @@ def movingAverage(requestContext, seriesList, windowSize):
         else:
             windowPoints = int(windowSize)
 
-        if isinstance(windowSize, six.string_types):
+        if isinstance(windowSize, str):
             newName = 'movingAverage(%s,"%s")' % (series.name, windowSize)
         else:
             newName = "movingAverage(%s,%s)" % (series.name, windowSize)
@@ -1276,7 +1274,7 @@ def movingSum(requestContext, seriesList, windowSize):
     if not seriesList:
         return []
     windowInterval = None
-    if isinstance(windowSize, six.string_types):
+    if isinstance(windowSize, str):
         delta = parseTimeOffset(windowSize)
         windowInterval = abs(delta.seconds + (delta.days * 86400))
 
@@ -1299,7 +1297,7 @@ def movingSum(requestContext, seriesList, windowSize):
         else:
             windowPoints = int(windowSize)
 
-        if isinstance(windowSize, six.string_types):
+        if isinstance(windowSize, str):
             newName = 'movingSum(%s,"%s")' % (series.name, windowSize)
         else:
             newName = "movingSum(%s,%s)" % (series.name, windowSize)
@@ -1342,7 +1340,7 @@ def movingMin(requestContext, seriesList, windowSize):
     if not seriesList:
         return []
     windowInterval = None
-    if isinstance(windowSize, six.string_types):
+    if isinstance(windowSize, str):
         delta = parseTimeOffset(windowSize)
         windowInterval = abs(delta.seconds + (delta.days * 86400))
 
@@ -1365,7 +1363,7 @@ def movingMin(requestContext, seriesList, windowSize):
         else:
             windowPoints = int(windowSize)
 
-        if isinstance(windowSize, six.string_types):
+        if isinstance(windowSize, str):
             newName = 'movingMin(%s,"%s")' % (series.name, windowSize)
         else:
             newName = "movingMin(%s,%s)" % (series.name, windowSize)
@@ -1402,7 +1400,7 @@ def movingMax(requestContext, seriesList, windowSize):
     if not seriesList:
         return []
     windowInterval = None
-    if isinstance(windowSize, six.string_types):
+    if isinstance(windowSize, str):
         delta = parseTimeOffset(windowSize)
         windowInterval = abs(delta.seconds + (delta.days * 86400))
 
@@ -1425,7 +1423,7 @@ def movingMax(requestContext, seriesList, windowSize):
         else:
             windowPoints = int(windowSize)
 
-        if isinstance(windowSize, six.string_types):
+        if isinstance(windowSize, str):
             newName = 'movingMax(%s,"%s")' % (series.name, windowSize)
         else:
             newName = "movingMax(%s,%s)" % (series.name, windowSize)
