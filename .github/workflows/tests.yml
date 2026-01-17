@@ -90,6 +90,10 @@ jobs:
             
             Please investigate the failure and fix any issues.`;
             
+            const commentBody = `Another test failure occurred on ${new Date().toISOString()}.
+            
+            **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+            
             // Check if there's already an open issue with the same title
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -106,7 +110,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: existingIssue.number,
-                body: `Another test failure occurred on ${new Date().toISOString()}.\n\n**Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`
+                body: commentBody
               });
             } else {
               // Create a new issue
