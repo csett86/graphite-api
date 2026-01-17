@@ -80,7 +80,7 @@ jobs:
     if: always() && (needs.test.result == 'failure' || needs.test.result == 'cancelled' || needs.build.result == 'failure' || needs.build.result == 'cancelled') && github.event_name == 'schedule'
     steps:
       - name: Create issue on failure
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const title = 'Scheduled Tests Failed';
