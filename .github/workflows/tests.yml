@@ -84,15 +84,18 @@ jobs:
         with:
           script: |
             const title = 'Scheduled Tests Failed';
-            const body = `The scheduled tests run failed on ${new Date().toISOString()}.
+            const workflowUrl = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
+            const timestamp = new Date().toISOString();
             
-            **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            const body = `The scheduled tests run failed on ${timestamp}.
+            
+            **Workflow Run:** ${workflowUrl}
             
             Please investigate the failure and fix any issues.`;
             
-            const commentBody = `Another test failure occurred on ${new Date().toISOString()}.
+            const commentBody = `Another test failure occurred on ${timestamp}.
             
-            **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+            **Workflow Run:** ${workflowUrl}`;
             
             // Check if there's already an open issue with the same title
             const issues = await github.rest.issues.listForRepo({
