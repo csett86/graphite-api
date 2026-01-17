@@ -109,15 +109,20 @@ def load_by_path(path):
     return getattr(finder, klass)
 
 
-def normalize_cache_type(cache_type):
+def normalize_cache_type(cache_type: str) -> str:
     """
     Convert short cache type names to full backend class paths.
     
+    This function maps short cache type names (e.g., 'simple', 'redis') to their
+    full backend class paths to avoid deprecation warnings in flask_caching.
+    If the provided type is not in the mapping (e.g., already a full path or an
+    unknown type), it is returned unchanged.
+    
     Args:
-        cache_type: Short cache type name (e.g., 'simple') or full path
+        cache_type: Short cache type name (e.g., 'simple') or full backend path
         
     Returns:
-        Full backend class path
+        Full backend class path, or the original value if not found in mapping
     """
     return CACHE_TYPE_MAPPING.get(cache_type, cache_type)
 
