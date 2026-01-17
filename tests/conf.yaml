@@ -4,7 +4,7 @@ allowed_origins:
   - example.com
   - foo.example.com:8888
 cache:
-  type: simple
+  type: flask_caching.backends.simplecache.SimpleCache
   default_timeout: 0
 logging:
   version: 1
