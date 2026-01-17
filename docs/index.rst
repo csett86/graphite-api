@@ -4,7 +4,7 @@ Graphite-Render documentation
 .. raw:: html
 
    <p>
-   <a class="reference external image-reference" href="https://github.com/csett86/graphite-render"><img alt="GitHub project" src="https://img.shields.io/badge/GitHub-graphite--api-green.svg" style="height: 18px !important; width: auto !important;"></a>
+   <a class="reference external image-reference" href="https://github.com/csett86/graphite-render"><img alt="GitHub project" src="https://img.shields.io/badge/GitHub-graphite--render-green.svg" style="height: 18px !important; width: auto !important;"></a>
 
    <a class="reference external image-reference" href="https://pypi.org/p/graphite-render"><img alt="PyPI version" src="https://img.shields.io/pypi/v/graphite-render.svg" style="height: 18px !important; width: auto !important;"></a>
    </p>
