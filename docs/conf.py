@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), os.pardir))
 
 # Read version from pyproject.toml
 _pyproject_path = os.path.join(os.path.dirname(__file__), os.pardir, 'pyproject.toml')
+_version = None
 
 try:
     # Try using tomllib (Python 3.11+)
@@ -18,15 +19,24 @@ try:
     with open(_pyproject_path, 'rb') as f:
         _pyproject_data = tomllib.load(f)
         _version = _pyproject_data['project']['version']
-except (ModuleNotFoundError, FileNotFoundError, KeyError, Exception):
-    # Fallback to regex parsing for Python < 3.11 or if tomllib fails
-    with open(_pyproject_path, 'r', encoding='utf-8') as f:
-        content = f.read()
-        match = re.search(r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
-        if match:
-            _version = match.group(1)
-        else:
-            raise RuntimeError("Could not extract version from pyproject.toml")
+except ModuleNotFoundError:
+    # Fallback to regex parsing for Python < 3.11
+    pass
+except (FileNotFoundError, KeyError) as e:
+    raise RuntimeError(f"Could not read version from pyproject.toml: {e}")
+
+# Use regex fallback if tomllib is not available
+if _version is None:
+    try:
+        with open(_pyproject_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            match = re.search(r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
+            if match:
+                _version = match.group(1)
+            else:
+                raise RuntimeError("Could not extract version from pyproject.toml using regex")
+    except FileNotFoundError as e:
+        raise RuntimeError(f"pyproject.toml not found: {e}")
 
 extensions = [
     'sphinx.ext.autodoc',
