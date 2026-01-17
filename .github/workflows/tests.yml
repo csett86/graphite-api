@@ -5,9 +5,13 @@ on:
     branches:
       - main
   pull_request:
+  schedule:
+    # Run monthly on the 1st at 00:00 UTC
+    - cron: '0 0 1 * *'
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   test:
@@ -69,3 +73,55 @@ jobs:
         with:
           name: dist
           path: dist/
+
+  create-issue-on-failure:
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    if: always() && (needs.test.result == 'failure' || needs.test.result == 'cancelled' || needs.build.result == 'failure' || needs.build.result == 'cancelled') && github.event_name == 'schedule'
+    steps:
+      - name: Create issue on failure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = 'Scheduled Tests Failed';
+            const workflowUrl = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
+            const timestamp = new Date().toISOString();
+            
+            const body = `The scheduled test run failed on ${timestamp}.
+            
+            **Workflow Run:** ${workflowUrl}
+            
+            Please investigate the failure and fix any issues.`;
+            
+            const commentBody = `Another test failure occurred on ${timestamp}.
+            
+            **Workflow Run:** ${workflowUrl}`;
+            
+            // Check if there's already an open issue with the same title
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: ['automated-test-failure']
+            });
+            
+            const existingIssue = issues.data.find(issue => issue.title === title);
+            
+            if (existingIssue) {
+              // Add a comment to the existing issue
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existingIssue.number,
+                body: commentBody
+              });
+            } else {
+              // Create a new issue
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['automated-test-failure']
+              });
+            }
