@@ -11,6 +11,7 @@ requires-python = ">=3.8"
 license = {text = "Apache-2.0"}
 authors = [
     {name = "Bruno Renié", email = "bruno@renie.fr"},
+    {name = "Christoph Settgast", email = "csett86_git@quicksands.de"},
 ]
 keywords = ["graphite", "api", "monitoring", "visualization"]
 classifiers = [
