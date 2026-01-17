@@ -166,8 +166,11 @@ def configure(app):
                           'CACHE_KEY_PREFIX': 'graphite-render:'}
             for key, value in config['cache'].items():
                 # Convert short cache type names to full paths
-                if key == 'type' and value in CACHE_TYPE_MAPPING:
-                    cache_conf['CACHE_TYPE'] = CACHE_TYPE_MAPPING[value]
+                if key == 'type':
+                    if value in CACHE_TYPE_MAPPING:
+                        cache_conf['CACHE_TYPE'] = CACHE_TYPE_MAPPING[value]
+                    else:
+                        cache_conf['CACHE_TYPE'] = value
                 else:
                     cache_conf['CACHE_{0}'.format(key.upper())] = value
             app.cache = Cache(app, config=cache_conf)
