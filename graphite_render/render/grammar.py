@@ -1,10 +1,5 @@
-try:
-    from packaging.version import Version as StrictVersion
-except ImportError:
-    from distutils.version import StrictVersion
-
 from pyparsing import (
-    __version__, alphanums, alphas, CaselessKeyword, CaselessLiteral, Combine,
+    alphanums, alphas, CaselessKeyword, CaselessLiteral, Combine,
     delimitedList, FollowedBy, Forward, Group, LineEnd, Literal, OneOrMore,
     Optional, printables, quotedString, Regex, Word, ZeroOrMore,
 )
@@ -118,9 +113,5 @@ template = Group(
     rightParen
 )('template')
 
-if StrictVersion(__version__) >= StrictVersion('2.0.0'):
-    expression <<= Group(template | call | pathExpression)('expression')
-    grammar <<= expression
-else:
-    expression << (Group(template | call | pathExpression)('expression'))
-    grammar << expression
+expression <<= Group(template | call | pathExpression)('expression')
+grammar <<= expression
