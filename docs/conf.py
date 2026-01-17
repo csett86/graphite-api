@@ -9,6 +9,29 @@ from sphinx.ext import autodoc
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), os.pardir))
 
+# Read version from pyproject.toml
+_pyproject_path = os.path.join(os.path.dirname(__file__), os.pardir, 'pyproject.toml')
+
+try:
+    # Try using tomllib (Python 3.11+) or tomli (if installed)
+    try:
+        import tomllib
+    except ModuleNotFoundError:
+        import tomli as tomllib
+    
+    with open(_pyproject_path, 'rb') as f:
+        _pyproject_data = tomllib.load(f)
+        _version = _pyproject_data['project']['version']
+except (ModuleNotFoundError, ImportError):
+    # Fallback to regex parsing for Python < 3.11 without tomli
+    with open(_pyproject_path, 'r') as f:
+        content = f.read()
+        match = re.search(r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
+        if match:
+            _version = match.group(1)
+        else:
+            raise RuntimeError("Could not extract version from pyproject.toml")
+
 extensions = [
     'sphinx.ext.autodoc',
 ]
@@ -37,8 +60,8 @@ root_doc = 'index'
 project = 'Graphite-Render'
 copyright = u'2014, Bruno Renié'
 
-version = '1.1.6'
-release = '1.1.6'
+version = _version
+release = _version
 
 exclude_patterns = ['_build']
 
