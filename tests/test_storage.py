@@ -1,6 +1,6 @@
 import time
 
-from graphite_api.storage import FindQuery
+from graphite_render.storage import FindQuery
 
 from . import TestCase
 

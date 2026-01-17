@@ -1,17 +1,17 @@
 Storage finders
 ---------------
 
-Graphite-API searches and fetches metrics from time series databases using an
-interface called *finders*. The default finder provided with Graphite-API is
+Graphite-Render searches and fetches metrics from time series databases using an
+interface called *finders*. The default finder provided with Graphite-Render is
 the one that integrates with Whisper databases.
 
-Customizing finders can be done in the ``finders`` section of the Graphite-API
+Customizing finders can be done in the ``finders`` section of the Graphite-Render
 configuration file:
 
 .. code-block:: yaml
 
     finders:
-      - graphite_api.finders.whisper.WhisperFinder
+      - graphite_render.finders.whisper.WhisperFinder
 
 Several values are allowed, to let you store different kinds of metrics at
 different places or smoothly handle transitions from one time series database
@@ -38,7 +38,7 @@ query:
 
 .. code-block:: python
 
-    from graphite_api.node import LeafNode, BranchNode
+    from graphite_render.node import LeafNode, BranchNode
 
     class CustomFinder(object):
         def find_nodes(self, query):
@@ -57,7 +57,7 @@ methods: ``fetch()`` and ``get_intervals()``:
 
 .. code-block:: python
 
-    from graphite_api.intervals import IntervalSet, Interval
+    from graphite_render.intervals import IntervalSet, Interval
 
     class CustomReader(object):
         __slots__ = ('path',)  # __slots__ is recommended to save memory on readers
@@ -130,7 +130,7 @@ look at third-party finders to get some inspiration:
 Configuration
 ^^^^^^^^^^^^^
 
-Graphite-API instantiates finders and passes it its whole parsed configuration
+Graphite-Render instantiates finders and passes it its whole parsed configuration
 file, as a Python data structure. External finders can require extra sections
 in the configuration file to setup access to the time series database they
 communicate with. For instance, let's say your ``CustomFinder`` needs two

@@ -1,4 +1,4 @@
-Graphite-API
+Graphite-Render
 ============
 
 **Note:** This is a friendly fork of the upstream project at https://github.com/brutasse/graphite-api.

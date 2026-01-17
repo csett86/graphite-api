@@ -2,7 +2,7 @@ import datetime
 import time
 import pytz
 
-from graphite_api.render.attime import parseATTime
+from graphite_render.render.attime import parseATTime
 
 from . import TestCase
 

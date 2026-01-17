@@ -1,12 +1,12 @@
 Configuration
 =============
 
-/etc/graphite-api.yaml
+/etc/graphite-render.yaml
 ----------------------
 
-The configuration file for Graphite-API lives at ``/etc/graphite-api.yaml``
+The configuration file for Graphite-Render lives at ``/etc/graphite-render.yaml``
 and uses the YAML format. Creating the configuration file is optional: if
-Graphite-API doesn't find the file, sane defaults are used. They are described
+Graphite-Render doesn't find the file, sane defaults are used. They are described
 below.
 
 Default values
@@ -16,10 +16,10 @@ Default values
 
     search_index: /srv/graphite/index
     finders:
-      - graphite_api.finders.whisper.WhisperFinder
+      - graphite_render.finders.whisper.WhisperFinder
     functions:
-      - graphite_api.functions.SeriesFunctions
-      - graphite_api.functions.PieFunctions
+      - graphite_render.functions.SeriesFunctions
+      - graphite_render.functions.PieFunctions
     whisper:
       directories:
         - /srv/graphite/whisper
@@ -34,7 +34,7 @@ Default sections
 *search_index*
 
   The location of the search index used for searching metrics. Note that it
-  needs to be a file that is writable by the Graphite-API process.
+  needs to be a file that is writable by the Graphite-Render process.
 
 *finders*
 
@@ -54,7 +54,7 @@ Default sections
 
 *time_zone*
 
-  The time zone to use when generating graphs. By default, Graphite-API tries
+  The time zone to use when generating graphs. By default, Graphite-Render tries
   to detect your system timezone. If detection fails it falls back to UTC. You
   can also manually override it if you want another value than your system's
   timezone.
@@ -110,7 +110,7 @@ Extra sections
 
 *sentry_dsn*
 
-  This is useful if you want to send Graphite-API's exceptions to a `Sentry`_
+  This is useful if you want to send Graphite-Render's exceptions to a `Sentry`_
   instance for easier debugging.
 
   Example::
@@ -119,10 +119,10 @@ Extra sections
 
   .. note::
 
-      Sentry integration requires Graphite-API to be installed with the
+      Sentry integration requires Graphite-Render to be installed with the
       corresponding extra dependency::
 
-          $ pip install graphite-api[sentry]
+          $ pip install graphite-render[sentry]
 
 .. _Sentry: https://docs.getsentry.com
 
@@ -159,23 +159,23 @@ Extra sections
   This would configure Flask-Cache with ``CACHE_TYPE = 'redis'`` and
   ``CACHE_REDIS_HOST = 'localhost'``.
 
-  Some cache options have default values defined by Graphite-API:
+  Some cache options have default values defined by Graphite-Render:
 
   * ``default_timeout``: 60
 
-  * ``key_prefix``: ``'graphite-api:``.
+  * ``key_prefix``: ``'graphite-render:``.
 
   .. note::
 
       Caching functionality requires you to install the cache extra dependency
       but also the underlying driver. E.g. for redis, you'll need::
 
-          $ pip install graphite-api[cache] redis
+          $ pip install graphite-render[cache] redis
 
 *statsd*
 
   Attaches a statsd object to the application, which can be used for
-  instrumentation. Currently Graphite-API itself doesn't use this,
+  instrumentation. Currently Graphite-Render itself doesn't use this,
   but some backends do, like `Graphite-Influxdb`_.
 
   Example::
@@ -200,8 +200,8 @@ Extra sections
 Custom location
 ---------------
 
-If you need the Graphite-API config file to be stored in another place than
-``/etc/graphite-api.yaml``, you can set a custom location using the
+If you need the Graphite-Render config file to be stored in another place than
+``/etc/graphite-render.yaml``, you can set a custom location using the
 ``GRAPHITE_API_CONFIG`` environment variable::
 
     export GRAPHITE_API_CONFIG=/var/lib/graphite/config.yaml

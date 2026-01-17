@@ -1,4 +1,4 @@
-from graphite_api.encoders import JSONEncoder
+from graphite_render.encoders import JSONEncoder
 
 from . import TestCase
 

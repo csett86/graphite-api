@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "graphite-api"
+name = "graphite-render"
 version = "1.1.4"
 description = "Graphite-web, without the interface. Just the rendering HTTP API."
 readme = "README.rst"
@@ -51,8 +51,8 @@ cache = ["flask-caching"]
 statsd = ["statsd"]
 
 [project.urls]
-Homepage = "https://github.com/brutasse/graphite-api"
-Repository = "https://github.com/brutasse/graphite-api"
+Homepage = "https://github.com/brutasse/graphite-render"
+Repository = "https://github.com/brutasse/graphite-render"
 
 [tool.setuptools]
 zip-safe = false

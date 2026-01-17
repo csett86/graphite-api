@@ -1,7 +1,7 @@
 Custom functions
 ================
 
-Just like with storage finders, it is possible to extend Graphite-API to add
+Just like with storage finders, it is possible to extend Graphite-Render to add
 custom processing functions.
 
 To give an example, let's implement a function that reverses the time series,
@@ -30,12 +30,12 @@ Once you've created your function, declare it in a dictionnary:
         'reverseSeries': reverseSeries,
     }
 
-Add your module to the Graphite-API Python path and add it to the
+Add your module to the Graphite-Render Python path and add it to the
 configuration:
 
 .. code-block:: yaml
 
     functions:
-      - graphite_api.functions.SeriesFunctions
-      - graphite_api.functions.PieFunctions
+      - graphite_render.functions.SeriesFunctions
+      - graphite_render.functions.PieFunctions
       - reverse.ReverseFunctions

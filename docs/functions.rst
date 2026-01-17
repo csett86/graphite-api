@@ -18,5 +18,5 @@ To pass multiple series lists to a function which only takes one, use the
 List of functions
 -----------------
 
-.. automodule:: graphite_api.functions
+.. automodule:: graphite_render.functions
    :members:

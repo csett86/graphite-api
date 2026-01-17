@@ -6,8 +6,8 @@ try:
 except ImportError:
     from mock import patch
 
-from graphite_api import carbonlink
-from graphite_api.carbonlink import CarbonLinkPool, ConsistentHashRing
+from graphite_render import carbonlink
+from graphite_render.carbonlink import CarbonLinkPool, ConsistentHashRing
 
 from . import TestCase
 

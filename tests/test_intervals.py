@@ -1,4 +1,4 @@
-from graphite_api.intervals import Interval, IntervalSet, union_overlapping
+from graphite_render.intervals import Interval, IntervalSet, union_overlapping
 
 from . import TestCase
 
