@@ -36,7 +36,7 @@ if _version is None:
                 _version = match.group(1)
             else:
                 raise RuntimeError("Could not extract version from pyproject.toml using regex")
-    except FileNotFoundError as e:
+    except FileNotFoundError:
         raise RuntimeError(f"pyproject.toml not found at {_pyproject_path}. Ensure you are running from the docs directory.")
 
 # Final safety check
