@@ -13,8 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License."""
 import calendar
 import hashlib
-
-import pytz
+from datetime import timezone
 
 from flask import request
 
@@ -111,4 +110,4 @@ def epoch(dt):
     """
     Returns the epoch timestamp of a timezone-aware datetime object.
     """
-    return calendar.timegm(dt.astimezone(pytz.utc).timetuple())
+    return calendar.timegm(dt.astimezone(timezone.utc).timetuple())
