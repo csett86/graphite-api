@@ -109,6 +109,19 @@ def load_by_path(path):
     return getattr(finder, klass)
 
 
+def normalize_cache_type(cache_type):
+    """
+    Convert short cache type names to full backend class paths.
+    
+    Args:
+        cache_type: Short cache type name (e.g., 'simple') or full path
+        
+    Returns:
+        Full backend class path
+    """
+    return CACHE_TYPE_MAPPING.get(cache_type, cache_type)
+
+
 def error_handler(e):
     return make_response(traceback.format_exc(), 500,
                          {'Content-Type': 'text/plain'})
@@ -165,14 +178,12 @@ def configure(app):
             cache_conf = {'CACHE_DEFAULT_TIMEOUT': 60,
                           'CACHE_KEY_PREFIX': 'graphite-render:'}
             for key, value in config['cache'].items():
-                # Convert short cache type names to full paths
+                cache_key = 'CACHE_{0}'.format(key.upper())
+                # Convert short cache type names to full backend paths
                 if key == 'type':
-                    if value in CACHE_TYPE_MAPPING:
-                        cache_conf['CACHE_TYPE'] = CACHE_TYPE_MAPPING[value]
-                    else:
-                        cache_conf['CACHE_TYPE'] = value
+                    cache_conf[cache_key] = normalize_cache_type(value)
                 else:
-                    cache_conf['CACHE_{0}'.format(key.upper())] = value
+                    cache_conf[cache_key] = value
             app.cache = Cache(app, config=cache_conf)
 
     loaded_config = {'functions': {}}
