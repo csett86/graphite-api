@@ -90,13 +90,23 @@ def error_handler(e):
 def configure(app):
     config_file = os.environ.get('GRAPHITE_API_CONFIG',
                                  '/etc/graphite-render.yaml')
+    fallback_config_file = '/etc/graphite-api.yml'
+    
+    # Try the primary config file
     if os.path.exists(config_file):
         with open(config_file) as f:
             config = yaml.safe_load(f)
             config['path'] = config_file
+    # Try the fallback config file
+    elif os.path.exists(fallback_config_file):
+        with open(fallback_config_file) as f:
+            config = yaml.safe_load(f)
+            config['path'] = fallback_config_file
+        logger.info("using fallback configuration file", path=fallback_config_file)
+    # Use default config if neither exists
     else:
-        warnings.warn("Unable to find configuration file at {0}, using "
-                      "default config.".format(config_file))
+        warnings.warn("Unable to find configuration file at {0} or {1}, using "
+                      "default config.".format(config_file, fallback_config_file))
         config = {}
 
     configure_logging(config)

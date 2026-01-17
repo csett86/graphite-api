@@ -1,13 +1,21 @@
 Configuration
 =============
 
-/etc/graphite-render.yaml
-----------------------
+Configuration File Location
+---------------------------
 
-The configuration file for Graphite-Render lives at ``/etc/graphite-render.yaml``
-and uses the YAML format. Creating the configuration file is optional: if
-Graphite-Render doesn't find the file, sane defaults are used. They are described
-below.
+The configuration file for Graphite-Render uses the YAML format. Creating the 
+configuration file is optional: if Graphite-Render doesn't find a configuration 
+file, sane defaults are used.
+
+Graphite-Render searches for configuration files in the following order:
+
+1. ``/etc/graphite-render.yaml`` (or the path specified in the 
+   ``GRAPHITE_API_CONFIG`` environment variable)
+2. ``/etc/graphite-api.yml`` (fallback for compatibility with graphite-api)
+
+If neither file is found, Graphite-Render uses default configuration values 
+described below.
 
 Default values
 ``````````````
