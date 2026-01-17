@@ -1,19 +1,5 @@
-def _compare_version(version_str, target_str):
-    """Simple version comparison for major.minor.patch format.
-    
-    Returns True if version_str >= target_str.
-    """
-    try:
-        # Split version strings and pad with zeros to ensure 3 parts
-        version_parts = tuple(int(x) for x in (version_str.split('.') + ['0', '0', '0'])[:3])
-        target_parts = tuple(int(x) for x in (target_str.split('.') + ['0', '0', '0'])[:3])
-        return version_parts >= target_parts
-    except (ValueError, AttributeError):
-        # If parsing fails, assume newer version
-        return True
-
 from pyparsing import (
-    __version__, alphanums, alphas, CaselessKeyword, CaselessLiteral, Combine,
+    alphanums, alphas, CaselessKeyword, CaselessLiteral, Combine,
     delimitedList, FollowedBy, Forward, Group, LineEnd, Literal, OneOrMore,
     Optional, printables, quotedString, Regex, Word, ZeroOrMore,
 )
@@ -127,9 +113,5 @@ template = Group(
     rightParen
 )('template')
 
-if _compare_version(__version__, '2.0.0'):
-    expression <<= Group(template | call | pathExpression)('expression')
-    grammar <<= expression
-else:
-    expression << (Group(template | call | pathExpression)('expression'))
-    grammar << expression
+expression <<= Group(template | call | pathExpression)('expression')
+grammar <<= expression
