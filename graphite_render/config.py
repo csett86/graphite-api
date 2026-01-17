@@ -62,6 +62,25 @@ NON_EXTRA = set(['module', 'filename', 'levelno', 'exc_text', 'pathname',
                  'process', 'processName', 'thread'])
 
 
+# Mapping of short cache type names to full backend class paths
+# to avoid deprecation warnings in flask_caching
+CACHE_TYPE_MAPPING = {
+    'simple': 'flask_caching.backends.simplecache.SimpleCache',
+    'simplecache': 'flask_caching.backends.simplecache.SimpleCache',
+    'null': 'flask_caching.backends.nullcache.NullCache',
+    'nullcache': 'flask_caching.backends.nullcache.NullCache',
+    'filesystem': 'flask_caching.backends.filesystemcache.FileSystemCache',
+    'filesystemcache': 'flask_caching.backends.filesystemcache.FileSystemCache',
+    'redis': 'flask_caching.backends.rediscache.RedisCache',
+    'rediscache': 'flask_caching.backends.rediscache.RedisCache',
+    'uwsgi': 'flask_caching.backends.uwsgicache.UWSGICache',
+    'uwsgicache': 'flask_caching.backends.uwsgicache.UWSGICache',
+    'memcached': 'flask_caching.backends.memcache.MemcachedCache',
+    'memcache': 'flask_caching.backends.memcache.MemcachedCache',
+    'gaememcached': 'flask_caching.backends.memcache.GAEMemcachedCache',
+}
+
+
 class StructlogFormatter(logging.Formatter):
     def __init__(self, *args, **kwargs):
         self._bound = structlog.BoundLoggerBase(None, processors, {})
@@ -135,30 +154,12 @@ def configure(app):
                           "Flask-Caching is not installed. Please `pip install "
                           "Flask-Caching`.")
         else:
-            # Mapping of short cache type names to full backend class paths
-            # to avoid deprecation warnings in flask_caching
-            cache_type_mapping = {
-                'simple': 'flask_caching.backends.simplecache.SimpleCache',
-                'simplecache': 'flask_caching.backends.simplecache.SimpleCache',
-                'null': 'flask_caching.backends.nullcache.NullCache',
-                'nullcache': 'flask_caching.backends.nullcache.NullCache',
-                'filesystem': 'flask_caching.backends.filesystemcache.FileSystemCache',
-                'filesystemcache': 'flask_caching.backends.filesystemcache.FileSystemCache',
-                'redis': 'flask_caching.backends.rediscache.RedisCache',
-                'rediscache': 'flask_caching.backends.rediscache.RedisCache',
-                'uwsgi': 'flask_caching.backends.uwsgicache.UWSGICache',
-                'uwsgicache': 'flask_caching.backends.uwsgicache.UWSGICache',
-                'memcached': 'flask_caching.backends.memcache.MemcachedCache',
-                'memcache': 'flask_caching.backends.memcache.MemcachedCache',
-                'gaememcached': 'flask_caching.backends.memcache.GAEMemcachedCache',
-            }
-
             cache_conf = {'CACHE_DEFAULT_TIMEOUT': 60,
                           'CACHE_KEY_PREFIX': 'graphite-render:'}
             for key, value in config['cache'].items():
                 # Convert short cache type names to full paths
-                if key == 'type' and value in cache_type_mapping:
-                    cache_conf['CACHE_TYPE'] = cache_type_mapping[value]
+                if key == 'type' and value in CACHE_TYPE_MAPPING:
+                    cache_conf['CACHE_TYPE'] = CACHE_TYPE_MAPPING[value]
                 else:
                     cache_conf['CACHE_{0}'.format(key.upper())] = value
             app.cache = Cache(app, config=cache_conf)
