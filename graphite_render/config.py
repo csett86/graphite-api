@@ -63,18 +63,26 @@ NON_EXTRA = set(['module', 'filename', 'levelno', 'exc_text', 'pathname',
 
 
 # Mapping of short cache type names to full backend class paths
-# to avoid deprecation warnings in flask_caching
+# to avoid deprecation warnings in flask_caching.
+# Both short (e.g., 'simple') and longer forms (e.g., 'simplecache') are
+# supported for backward compatibility with existing configurations.
 CACHE_TYPE_MAPPING = {
+    # Simple in-memory cache
     'simple': 'flask_caching.backends.simplecache.SimpleCache',
     'simplecache': 'flask_caching.backends.simplecache.SimpleCache',
+    # Null cache (no caching)
     'null': 'flask_caching.backends.nullcache.NullCache',
     'nullcache': 'flask_caching.backends.nullcache.NullCache',
+    # Filesystem cache
     'filesystem': 'flask_caching.backends.filesystemcache.FileSystemCache',
     'filesystemcache': 'flask_caching.backends.filesystemcache.FileSystemCache',
+    # Redis cache
     'redis': 'flask_caching.backends.rediscache.RedisCache',
     'rediscache': 'flask_caching.backends.rediscache.RedisCache',
+    # uWSGI cache
     'uwsgi': 'flask_caching.backends.uwsgicache.UWSGICache',
     'uwsgicache': 'flask_caching.backends.uwsgicache.UWSGICache',
+    # Memcached
     'memcached': 'flask_caching.backends.memcache.MemcachedCache',
     'memcache': 'flask_caching.backends.memcache.MemcachedCache',
     'gaememcached': 'flask_caching.backends.memcache.GAEMemcachedCache',
