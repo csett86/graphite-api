@@ -60,8 +60,3 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 exclude = ["tests", "tests.*"]
-
-[tool.flake8]
-exclude = ["_vendor", ".tox", "wsp"]
-import-order-style = "smarkets"
-application-import-names = ""
