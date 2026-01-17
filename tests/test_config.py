@@ -71,7 +71,7 @@ class TestConfigFallback(unittest.TestCase):
                 configure(app)
                 
                 # Check that a warning was issued about both files
-                warning_messages = [str(warning.message) for warning in w]
+                warning_messages = [str(warning.message) if hasattr(warning, 'message') else str(warning) for warning in w]
                 found_config_warning = any(
                     "Unable to find configuration file" in msg and
                     "/etc/graphite-api.yml" in msg
