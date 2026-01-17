@@ -11,10 +11,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from time import daylight
-
-import pytz
+from zoneinfo import ZoneInfo
 
 months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
           'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
@@ -24,7 +23,7 @@ weekdays = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
 def parseATTime(s, tzinfo=None, now=None):
     if tzinfo is None:
         from ..app import app
-        tzinfo = pytz.timezone(app.config['TIME_ZONE'])
+        tzinfo = ZoneInfo(app.config['TIME_ZONE'])
     s = s.strip().lower().replace('_', '').replace(',', '').replace(' ', '')
     if s.isdigit():
         if (
@@ -37,7 +36,7 @@ def parseATTime(s, tzinfo=None, now=None):
         else:
             return datetime.fromtimestamp(int(s), tzinfo)
     elif ':' in s and len(s) == 13:
-        return tzinfo.localize(datetime.strptime(s, '%H:%M%Y%m%d'), daylight)
+        return datetime.strptime(s, '%H:%M%Y%m%d').replace(tzinfo=tzinfo)
     if '+' in s:
         ref, offset = s.split('+', 1)
         offset = '+' + offset
@@ -54,7 +53,7 @@ def parseTimeReference(ref):
     if isinstance(ref, datetime):
         return ref
     if not ref or ref == 'now':
-        return datetime.now(pytz.utc)
+        return datetime.now(timezone.utc)
 
     # Time-of-day reference
     i = ref.find(':')
@@ -78,7 +77,7 @@ def parseTimeReference(ref):
         hour, min = 16, 0
         ref = ref[7:]
 
-    refDate = datetime.now(pytz.utc).replace(hour=hour, minute=min, second=0)
+    refDate = datetime.now(timezone.utc).replace(hour=hour, minute=min, second=0)
 
     # Day reference
     if ref in ('yesterday', 'today', 'tomorrow'):  # yesterday, today, tomorrow

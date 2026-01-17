@@ -38,7 +38,6 @@ dependencies = [
     "PyYAML",
     "cairocffi",
     "pyparsing>2.0.0",
-    "pytz",
     "structlog",
     "tzlocal",
 ]

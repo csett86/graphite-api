@@ -5,8 +5,8 @@ import time
 from collections import defaultdict
 from datetime import datetime
 from io import BytesIO, StringIO
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-import pytz
 from flask import Flask
 from structlog import get_logger
 from werkzeug.http import http_date
@@ -309,12 +309,12 @@ def render():
                         continue
             graph_options[opt] = value
 
-    tzinfo = pytz.timezone(app.config['TIME_ZONE'])
+    tzinfo = ZoneInfo(app.config['TIME_ZONE'])
     tz = RequestParams.get('tz')
     if tz:
         try:
-            tzinfo = pytz.timezone(tz)
-        except pytz.UnknownTimeZoneError:
+            tzinfo = ZoneInfo(tz)
+        except ZoneInfoNotFoundError:
             errors['tz'] = "Unknown timezone: '{0}'.".format(tz)
     request_options['tzinfo'] = tzinfo
 

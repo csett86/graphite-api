@@ -17,7 +17,6 @@ extensions = [
 autodoc_mock_imports = [
     'cairocffi',
     'flask',
-    'pytz',
     'pyparsing',
     'structlog',
     'tzlocal',

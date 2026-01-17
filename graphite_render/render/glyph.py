@@ -19,9 +19,9 @@ import re
 from datetime import datetime, timedelta
 from io import BytesIO
 from urllib.parse import unquote_plus
+from zoneinfo import ZoneInfo
 
 import cairocffi as cairo
-import pytz
 
 from .datalib import TimeSeries
 from ..utils import to_seconds
@@ -1815,9 +1815,9 @@ class LineGraph(Graph):
     def setupXAxis(self):
         from ..app import app
         if self.userTimeZone:
-            tzinfo = pytz.timezone(self.userTimeZone)
+            tzinfo = ZoneInfo(self.userTimeZone)
         else:
-            tzinfo = pytz.timezone(app.config['TIME_ZONE'])
+            tzinfo = ZoneInfo(app.config['TIME_ZONE'])
 
         self.start_dt = datetime.fromtimestamp(self.startTime, tzinfo)
         self.end_dt = datetime.fromtimestamp(self.endTime, tzinfo)

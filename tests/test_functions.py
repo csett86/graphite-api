@@ -2,9 +2,8 @@ import copy
 import math
 import time
 
-from datetime import datetime
-
-import pytz
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 try:
     from unittest.mock import patch, call, MagicMock
@@ -526,9 +525,9 @@ class FunctionsTest(TestCase):
 
     def test_vertical_line(self):
         result = functions.verticalLine({
-            'startTime': datetime(1970, 1, 1, 1, 0, 0, 0, pytz.utc),
-            'endTime': datetime(1970, 1, 1, 1, 2, 0, 0, pytz.utc),
-            'tzinfo': pytz.timezone('UTC'),
+            'startTime': datetime(1970, 1, 1, 1, 0, 0, 0, timezone.utc),
+            'endTime': datetime(1970, 1, 1, 1, 2, 0, 0, timezone.utc),
+            'tzinfo': ZoneInfo('UTC'),
         }, "01:0019700101", "foo")
         expectedResult = [TimeSeries('foo', 3600, 3600, 1.0, [1.0, 1.0])]
         expectedResult[0].options = {'drawAsInfinite': True}
@@ -536,9 +535,9 @@ class FunctionsTest(TestCase):
 
     def test_vertical_line_color(self):
         result = functions.verticalLine({
-            'startTime': datetime(1970, 1, 1, 1, 0, 0, 0, pytz.utc),
-            'endTime': datetime(1970, 1, 1, 1, 2, 0, 0, pytz.utc),
-            'tzinfo': pytz.timezone('UTC'),
+            'startTime': datetime(1970, 1, 1, 1, 0, 0, 0, timezone.utc),
+            'endTime': datetime(1970, 1, 1, 1, 2, 0, 0, timezone.utc),
+            'tzinfo': ZoneInfo('UTC'),
         }, "01:0019700101", "foo", "white")
         expectedResult = [TimeSeries('foo', 3600, 3600, 1.0, [1.0, 1.0])]
         expectedResult[0].options = {'drawAsInfinite': True}
@@ -548,17 +547,17 @@ class FunctionsTest(TestCase):
     def test_vertical_line_before_start(self):
         with self.assertRaises(ValueError):
             functions.verticalLine({
-                'startTime': datetime(1971, 1, 1, 1, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1971, 1, 1, 1, 2, 0, 0, pytz.utc),
-                'tzinfo': pytz.timezone('UTC'),
+                'startTime': datetime(1971, 1, 1, 1, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1971, 1, 1, 1, 2, 0, 0, timezone.utc),
+                'tzinfo': ZoneInfo('UTC'),
             }, "01:0019700101", "foo")
 
     def test_vertical_line_after_end(self):
         with self.assertRaises(ValueError):
             functions.verticalLine({
-                'startTime': datetime(1970, 1, 1, 1, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 1, 2, 0, 0, pytz.utc),
-                'tzinfo': pytz.timezone('UTC'),
+                'startTime': datetime(1970, 1, 1, 1, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 1, 2, 0, 0, timezone.utc),
+                'tzinfo': ZoneInfo('UTC'),
             }, "01:0019710101", "foo")
 
     def test_line_width(self):
@@ -1072,8 +1071,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.exponentialMovingAverage({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 10)
 
@@ -1110,8 +1109,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.exponentialMovingAverage({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 10)
 
@@ -1137,8 +1136,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.exponentialMovingAverage({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 60)
 
@@ -1177,16 +1176,16 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.exponentialMovingAverage({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 60)
             self.assertEqual(result, expectedResults[0])
 
             result = functions.exponentialMovingAverage({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, "-1min")
             self.assertEqual(result, expectedResults[1])
@@ -1223,8 +1222,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingMedian({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 10)
 
@@ -1259,8 +1258,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingMedian({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 10)
 
@@ -1286,8 +1285,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingMedian({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 60)
 
@@ -1319,16 +1318,16 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingMedian({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 60)
             self.assertEqual(result, expectedResults[0])
 
             result = functions.movingMedian({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, "-1min")
             self.assertEqual(result, expectedResults[1])
@@ -1418,8 +1417,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingAverage({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 10)
 
@@ -1455,8 +1454,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingAverage({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 10)
 
@@ -1482,8 +1481,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingAverage({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 60)
 
@@ -1520,16 +1519,16 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingAverage({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 60)
             self.assertEqual(result, expectedResults[0])
 
             result = functions.movingAverage({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, "-1min")
             self.assertEqual(result, expectedResults[1])
@@ -1566,8 +1565,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingMin({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 10)
 
@@ -1602,8 +1601,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingMin({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 10)
 
@@ -1629,8 +1628,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingMin({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 60)
 
@@ -1662,16 +1661,16 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingMin({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 60)
             self.assertEqual(result, expectedResults[0])
 
             result = functions.movingMin({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, "-1min")
             self.assertEqual(result, expectedResults[1])
@@ -1708,8 +1707,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingMax({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 10)
 
@@ -1744,8 +1743,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingMax({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 10)
 
@@ -1771,8 +1770,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingMax({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 60)
 
@@ -1804,16 +1803,16 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingMax({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 60)
             self.assertEqual(result, expectedResults[0])
 
             result = functions.movingMax({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, "-1min")
             self.assertEqual(result, expectedResults[1])
@@ -1850,8 +1849,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingSum({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 10)
 
@@ -1886,8 +1885,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingSum({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 10)
 
@@ -1913,8 +1912,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingSum({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 60)
 
@@ -1946,16 +1945,16 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.movingSum({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, 60)
             self.assertEqual(result, expectedResults[0])
 
             result = functions.movingSum({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series, "-1min")
             self.assertEqual(result, expectedResults[1])
@@ -2430,8 +2429,8 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.holtWintersForecast({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 2, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 2, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 2, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 2, 1, 0, 9, 0, 0, timezone.utc),
                 'data': [],
             }, series)
         self.assertEqual(result, expectedResults)
@@ -2511,24 +2510,24 @@ class FunctionsTest(TestCase):
         with patch('graphite_render.functions.evaluateTokens', mock_evaluate):
             result = functions.holtWintersConfidenceBands({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 2, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 2, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 2, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 2, 1, 0, 9, 0, 0, timezone.utc),
                 'data': []
                 }, series)
             self.assertEqual(result, expectedResults[0])
 
             result = functions.holtWintersConfidenceArea({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 2, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 2, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 2, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 2, 1, 0, 9, 0, 0, timezone.utc),
                 'data': []
                 }, series)
             self.assertEqual(result, expectedResults[1])
 
             result = functions.holtWintersAberration({
                 'args': ({}, {}),
-                'startTime': datetime(1970, 2, 1, 0, 0, 0, 0, pytz.utc),
-                'endTime': datetime(1970, 2, 1, 0, 9, 0, 0, pytz.utc),
+                'startTime': datetime(1970, 2, 1, 0, 0, 0, 0, timezone.utc),
+                'endTime': datetime(1970, 2, 1, 0, 9, 0, 0, timezone.utc),
                 'data': []
                 }, series)
             self.assertEqual(result, expectedResults[2])
@@ -2658,8 +2657,8 @@ class FunctionsTest(TestCase):
             TimeSeries('0', 0, 600, 300, [0, 0, 0]),
         ]
         ctx = {
-            'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-            'endTime': datetime(1970, 1, 1, 0, 10, 0, 0, pytz.utc),
+            'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+            'endTime': datetime(1970, 1, 1, 0, 10, 0, 0, timezone.utc),
         }
         result = functions.countSeries(ctx)
         self.assertEqual(result, expectedResult)
@@ -2717,7 +2716,7 @@ class FunctionsTest(TestCase):
         ctx = {
             'startTime': parseATTime('-1min'),
             'endTime': parseATTime('now'),
-            'tzinfo': pytz.timezone('UTC'),
+            'tzinfo': ZoneInfo('UTC'),
         }
         series = self._generate_series_list(config=[range(100)])
         for s in series:
@@ -2754,7 +2753,7 @@ class FunctionsTest(TestCase):
         ctx = {
             'startTime': parseATTime('-1min'),
             'endTime': parseATTime('now'),
-            'tzinfo': pytz.timezone('UTC'),
+            'tzinfo': ZoneInfo('UTC'),
         }
         series = self._generate_series_list(config=[list(range(99)) + [None]])
         for s in series:
@@ -2828,8 +2827,8 @@ class FunctionsTest(TestCase):
         ]
 
         results = functions.timeSlice({
-            'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, pytz.utc),
-            'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, pytz.utc),
+            'startTime': datetime(1970, 1, 1, 0, 0, 0, 0, timezone.utc),
+            'endTime': datetime(1970, 1, 1, 0, 9, 0, 0, timezone.utc),
             'data': [],
         }, series, '00:03 19700101', '00:08 19700101')
         self.assertEqual(results, expected)
