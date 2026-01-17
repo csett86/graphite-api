@@ -15,11 +15,26 @@ extensions = [
     'sphinx.ext.autodoc',
 ]
 
+# Mock imports for dependencies not needed for documentation
+autodoc_mock_imports = [
+    'cairocffi',
+    'flask',
+    'pytz',
+    'pyparsing',
+    'structlog',
+    'tzlocal',
+    'werkzeug',
+    'yaml',
+    'packaging',
+]
+
 templates_path = ['_templates']
 
-source_suffix = '.rst'
+source_suffix = {
+    '.rst': 'restructuredtext',
+}
 
-master_doc = 'index'
+root_doc = 'index'
 
 project = 'Graphite-Render'
 copyright = u'2014, Bruno Renié'
@@ -32,7 +47,6 @@ exclude_patterns = ['_build']
 pygments_style = 'sphinx'
 
 html_theme = 'sphinx_rtd_theme'
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 htmlhelp_basename = 'Graphite-Renderdoc'
 
@@ -71,7 +85,7 @@ class RenderFunctionDocumenter(autodoc.FunctionDocumenter):
             return re.sub('requestContext, ', '', args)
 
 
-suppress_warnings = ['app.add_directive']
+suppress_warnings = ['app.add_directive', 'autodoc.import_object']
 
 
 def setup(app):
@@ -79,28 +93,3 @@ def setup(app):
 
 
 add_module_names = False
-
-
-class Mock(object):
-    __all__ = []
-
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def __call__(self, *args, **kwargs):
-        return Mock()
-
-    @classmethod
-    def __getattr__(cls, name):
-        if name in ('__file__', '__path__'):
-            return '/dev/null'
-        elif name[0] == name[0].upper():
-            mockType = type(name, (), {})
-            mockType.__module__ = __name__
-            return mockType
-        else:
-            return Mock()
-
-
-for mod_name in ['cairocffi']:
-    sys.modules[mod_name] = Mock()

@@ -1,5 +1,5 @@
 Graphite-Render documentation
-==========================
+=============================
 
 .. raw:: html
 
