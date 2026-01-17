@@ -264,9 +264,9 @@ def render():
         request_options['graphType'] = graph_type
         request_options['graphClass'] = graph_class
     except KeyError:
+        graph_types_str = "', '".join(sorted(GraphTypes))
         errors['graphType'] = (
-            "Invalid graphType '{}', must be one of '{}'.".format(
-                graph_type, "', '".join(sorted(GraphTypes))))
+            f"Invalid graphType '{graph_type}', must be one of '{graph_types_str}'.")
     request_options['pieMode'] = RequestParams.get('pieMode', 'average')
     targets = RequestParams.getlist('target')
     if not len(targets):
@@ -527,8 +527,7 @@ def render():
 
     if use_svg and 'jsonp' in request_options:
         headers['Content-Type'] = 'text/javascript'
-        response = ('{}({})'.format(request_options['jsonp'],
-                                      json.dumps(image.decode('utf-8'))),
+        response = (f'{request_options["jsonp"]}({json.dumps(image.decode("utf-8"))})',
                     200, headers)
     else:
         if use_svg:

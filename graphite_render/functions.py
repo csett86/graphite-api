@@ -1884,7 +1884,7 @@ def cactiStyle(requestContext, seriesList, system=None, units=None):
                 return "%.2f%s" % format_units(x, system=system)
         else:
             if units:
-                return "{:.2f} {}".format(x, units)
+                return f"{x:.2f} {units}"
             else:
                 return "%.2f" % x
     nameLen = max([0] + [len(series.name) for series in seriesList])
@@ -1991,7 +1991,7 @@ def legendValue(requestContext, seriesList, *valueTypes):
         valueFunc = valueFuncs.get(valueType, lambda s: '(?)')
         if system is None:
             for series in seriesList:
-                series.name += " ({}: {})".format(valueType, valueFunc(series))
+                series.name += f" ({valueType}: {valueFunc(series)})"
         else:
             for series in seriesList:
                 value = valueFunc(series)
@@ -3963,8 +3963,7 @@ def summarize(requestContext, seriesList, intervalString, func='sum',
         if alignToFrom:
             newEnd += interval
 
-        newName = "summarize({}, \"{}\", \"{}\"{})".format(
-            series.name, intervalString, func, alignToFrom and ", true" or "")
+        newName = f'summarize({series.name}, "{intervalString}", "{func}"{", true" if alignToFrom else ""})'
         newSeries = TimeSeries(newName, newStart, newEnd, interval, newValues)
         newSeries.pathExpression = newName
         results.append(newSeries)
