@@ -15,7 +15,7 @@ authors = [
 ]
 keywords = ["graphite", "api", "monitoring", "visualization"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 6 - Mature",
     "Environment :: Web Environment",
     "Framework :: Flask",
     "Intended Audience :: Developers",
