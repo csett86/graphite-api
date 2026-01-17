@@ -36,7 +36,7 @@ Difference from graphite-web
 Goals
 -----
 
-* Solid codebase. Strict flake8 compatibility, good test coverage.
+* Solid codebase. Good test coverage.
 * Ease of installation/use/configuration.
 * Compatibility with the original Graphite-web API and 3rd-party dashboards.
 
