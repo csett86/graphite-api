@@ -37,7 +37,11 @@ if _version is None:
             else:
                 raise RuntimeError("Could not extract version from pyproject.toml using regex")
     except FileNotFoundError as e:
-        raise RuntimeError(f"pyproject.toml not found: {e}")
+        raise RuntimeError(f"pyproject.toml not found at {_pyproject_path}. Ensure you are running from the docs directory.")
+
+# Final safety check
+if _version is None:
+    raise RuntimeError("Failed to extract version from pyproject.toml")
 
 extensions = [
     'sphinx.ext.autodoc',
