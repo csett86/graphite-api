@@ -24,8 +24,8 @@ master_doc = 'index'
 project = 'Graphite-Render'
 copyright = u'2014, Bruno Renié'
 
-version = '1.1.4'
-release = '1.1.4'
+version = '1.1.5'
+release = '1.1.5'
 
 exclude_patterns = ['_build']
 
