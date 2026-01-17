@@ -23,22 +23,32 @@ else:
 logger = structlog.get_logger()
 
 def _get_local_timezone_name():
-    """Get the local timezone name using standard library zoneinfo."""
+    """Get the local timezone name using standard library zoneinfo.
+    
+    Note: This implementation is Unix-specific (uses /etc/localtime).
+    On Windows or other platforms, it will fallback to UTC.
+    """
     try:
         # Python 3.9+ has zoneinfo in standard library
         from zoneinfo import ZoneInfo
         
-        # Try to get timezone from /etc/localtime symlink
+        # Try to get timezone from /etc/localtime symlink (Unix-specific)
         if os.path.exists('/etc/localtime'):
             try:
                 # Read symlink to get timezone name
                 tz_path = os.path.realpath('/etc/localtime')
                 if '/zoneinfo/' in tz_path:
                     tz_name = tz_path.split('/zoneinfo/')[-1]
-                    # Validate it's a real timezone
-                    ZoneInfo(tz_name)
-                    return tz_name
-            except (OSError, ValueError, KeyError):
+                    # Validate it's a real timezone by attempting to create ZoneInfo
+                    # This ensures the extracted name is valid before returning it
+                    try:
+                        ZoneInfo(tz_name)
+                        return tz_name
+                    except (ValueError, KeyError):
+                        # Invalid timezone name, fall through to UTC
+                        pass
+            except OSError:
+                # Failed to read /etc/localtime, fall through to UTC
                 pass
         
         # Fallback to UTC if we can't determine local timezone
