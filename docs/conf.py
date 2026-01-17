@@ -18,9 +18,9 @@ try:
     with open(_pyproject_path, 'rb') as f:
         _pyproject_data = tomllib.load(f)
         _version = _pyproject_data['project']['version']
-except ModuleNotFoundError:
-    # Fallback to regex parsing for Python < 3.11
-    with open(_pyproject_path, 'r') as f:
+except (ModuleNotFoundError, FileNotFoundError, KeyError, Exception):
+    # Fallback to regex parsing for Python < 3.11 or if tomllib fails
+    with open(_pyproject_path, 'r', encoding='utf-8') as f:
         content = f.read()
         match = re.search(r'^version\s*=\s*["\']([^"\']+)["\']', content, re.MULTILINE)
         if match:
