@@ -10,7 +10,6 @@ import yaml
 from flask import make_response
 from structlog.processors import (format_exc_info, JSONRenderer,
                                   KeyValueRenderer)
-from tzlocal import get_localzone
 
 from . import DEBUG
 from .middleware import CORS, TrailingSlash
@@ -24,15 +23,34 @@ else:
 logger = structlog.get_logger()
 
 def _get_local_timezone_name():
-    """Get the local timezone name, compatible with both old and new tzlocal."""
-    tz = get_localzone()
-    # tzlocal >= 3.0 returns ZoneInfo which has .key instead of .zone
-    if hasattr(tz, 'zone'):
-        return tz.zone
-    elif hasattr(tz, 'key'):
-        return tz.key
-    else:
-        return str(tz)
+    """Get the local timezone name using standard library zoneinfo."""
+    try:
+        # Python 3.9+ has zoneinfo in standard library
+        from zoneinfo import ZoneInfo
+        import time
+        
+        # Get local timezone name from the system
+        tz_name = time.tzname[time.daylight]
+        
+        # Try to create a ZoneInfo with common timezone name
+        # If /etc/localtime exists, try to read it
+        if os.path.exists('/etc/localtime'):
+            try:
+                # Read symlink to get timezone name
+                tz_path = os.path.realpath('/etc/localtime')
+                if '/zoneinfo/' in tz_path:
+                    tz_name = tz_path.split('/zoneinfo/')[-1]
+                    # Validate it's a real timezone
+                    ZoneInfo(tz_name)
+                    return tz_name
+            except (OSError, ValueError, KeyError):
+                pass
+        
+        # Fallback to UTC if we can't determine local timezone
+        return 'UTC'
+    except ImportError:
+        # Fallback for Python < 3.9 (though we require 3.8+)
+        return 'UTC'
 
 
 default_conf = {
@@ -51,8 +69,6 @@ default_conf = {
     },
     'time_zone': _get_local_timezone_name(),
 }
-if default_conf['time_zone'] == 'local':  # tzlocal didn't find anything
-    default_conf['time_zone'] = 'UTC'
 
 
 # attributes of a classical log record

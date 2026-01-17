@@ -1,7 +1,16 @@
-try:
-    from packaging.version import Version as StrictVersion
-except ImportError:
-    from distutils.version import StrictVersion
+def _compare_version(version_str, target_str):
+    """Simple version comparison for major.minor.patch format.
+    
+    Returns True if version_str >= target_str.
+    """
+    try:
+        # Split version strings and convert to tuples of integers
+        version_parts = tuple(int(x) for x in version_str.split('.')[:3])
+        target_parts = tuple(int(x) for x in target_str.split('.')[:3])
+        return version_parts >= target_parts
+    except (ValueError, AttributeError):
+        # If parsing fails, assume newer version
+        return True
 
 from pyparsing import (
     __version__, alphanums, alphas, CaselessKeyword, CaselessLiteral, Combine,
@@ -118,7 +127,7 @@ template = Group(
     rightParen
 )('template')
 
-if StrictVersion(__version__) >= StrictVersion('2.0.0'):
+if _compare_version(__version__, '2.0.0'):
     expression <<= Group(template | call | pathExpression)('expression')
     grammar <<= expression
 else:
