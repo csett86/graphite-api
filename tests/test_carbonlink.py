@@ -1,10 +1,7 @@
 import pickle
 import struct
 
-try:
-    from unittest.mock import patch
-except ImportError:
-    from unittest.mock import patch
+from unittest.mock import patch
 
 from graphite_render import carbonlink
 from graphite_render.carbonlink import CarbonLinkPool, ConsistentHashRing

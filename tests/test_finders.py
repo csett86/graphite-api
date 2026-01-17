@@ -4,10 +4,7 @@ import random
 import shutil
 import time
 
-try:
-    from unittest.mock import patch
-except ImportError:
-    from unittest.mock import patch
+from unittest.mock import patch
 
 from graphite_render._vendor import whisper
 from graphite_render.app import app
