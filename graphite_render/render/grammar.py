@@ -4,9 +4,9 @@ def _compare_version(version_str, target_str):
     Returns True if version_str >= target_str.
     """
     try:
-        # Split version strings and convert to tuples of integers
-        version_parts = tuple(int(x) for x in version_str.split('.')[:3])
-        target_parts = tuple(int(x) for x in target_str.split('.')[:3])
+        # Split version strings and pad with zeros to ensure 3 parts
+        version_parts = tuple(int(x) for x in (version_str.split('.') + ['0', '0', '0'])[:3])
+        target_parts = tuple(int(x) for x in (target_str.split('.') + ['0', '0', '0'])[:3])
         return version_parts >= target_parts
     except (ValueError, AttributeError):
         # If parsing fails, assume newer version

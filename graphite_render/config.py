@@ -27,13 +27,8 @@ def _get_local_timezone_name():
     try:
         # Python 3.9+ has zoneinfo in standard library
         from zoneinfo import ZoneInfo
-        import time
         
-        # Get local timezone name from the system
-        tz_name = time.tzname[time.daylight]
-        
-        # Try to create a ZoneInfo with common timezone name
-        # If /etc/localtime exists, try to read it
+        # Try to get timezone from /etc/localtime symlink
         if os.path.exists('/etc/localtime'):
             try:
                 # Read symlink to get timezone name
