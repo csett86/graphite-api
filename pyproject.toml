@@ -7,8 +7,8 @@ name = "graphite-render"
 version = "1.1.6"
 description = "based on graphite-api, which is based graphite-web, but maintained for python3."
 readme = "README.rst"
-requires-python = ">=3.8"
-license = {text = "Apache-2.0"}
+requires-python = ">=3.9"
+license = "Apache-2.0"
 authors = [
     {name = "Bruno Renié", email = "bruno@renie.fr"},
     {name = "Christoph Settgast", email = "csett86_git@quicksands.de"},
@@ -23,7 +23,6 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
