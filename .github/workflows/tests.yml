@@ -97,6 +97,11 @@ jobs:
           name: docs
           path: docs/_build/html/
 
+      - name: Deploy preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./docs/_build/html/
+
   create-issue-on-failure:
     runs-on: ubuntu-latest
     needs: [test, build, docs]
