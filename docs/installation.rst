@@ -10,7 +10,7 @@ Prerequisites
 
 Installing Graphite-Render requires:
 
-* Python 3 (3.8 and above).
+* Python 3 (3.9 and above).
 
 * Cairo. On debian/ubuntu, install the ``libcairo2`` package.
 

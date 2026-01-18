@@ -33,7 +33,7 @@ find useful. Namely:
 * The Graphite-Render application is completely stateless and doesn't need a SQL
   database. It only needs to talk to a time series database.
 
-* Python 3.8+ is supported.
+* Python 3.9+ is supported.
 
 * The HTTP API accepts JSON data additionnaly to form data and querystring
   parameters.

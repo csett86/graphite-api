@@ -73,6 +73,9 @@ jobs:
 
   docs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v6
 
@@ -96,6 +99,11 @@ jobs:
         with:
           name: docs
           path: docs/_build/html/
+
+      - name: Deploy preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./docs/_build/html/
 
   create-issue-on-failure:
     runs-on: ubuntu-latest

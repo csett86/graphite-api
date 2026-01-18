@@ -51,7 +51,7 @@ exclude_patterns = ['_build']
 
 pygments_style = 'sphinx'
 
-html_theme = 'alabaster'
+html_theme = 'classic'
 
 htmlhelp_basename = 'Graphite-Renderdoc'
 

@@ -1,6 +1,18 @@
 Graphite-Render releases
 ========================
 
+1.1.8 -- 2026-01-17
+-------------------
+
+* Update to pyparsing >=3 and adapt to pep8 compatible names before the old names brake in pyparsing 4 later
+
+1.1.7 -- 2026-01-17
+-------------------
+
+* Add fallback configuration from /etc/graphite-api.yml for graphite-api compatibility
+* Bump minimal python version to 3.9
+* Replace pytz with standard library zoneinfo (requires python 3.9)
+
 1.1.6 -- 2026-01-17
 -------------------
 
