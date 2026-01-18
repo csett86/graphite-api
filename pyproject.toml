@@ -47,6 +47,7 @@ sentry = ["raven[flask]"]
 cyanite = ["cyanite"]
 cache = ["flask-caching"]
 statsd = ["statsd"]
+docs = ["sphinx"]
 
 [project.urls]
 Homepage = "https://github.com/csett86/graphite-render"
