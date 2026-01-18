@@ -21,10 +21,20 @@ from io import BytesIO
 from urllib.parse import unquote_plus
 from zoneinfo import ZoneInfo
 
-import cairocffi as cairo
-
 from .datalib import TimeSeries
 from ..utils import to_seconds
+
+# Lazy import for cairocffi - only loaded when actually used in the render pipeline
+cairo = None
+
+
+def _get_cairo():
+    """Lazily import cairocffi when needed for rendering."""
+    global cairo
+    if cairo is None:
+        import cairocffi as cairo_module
+        cairo = cairo_module
+    return cairo
 
 
 INFINITY = float('inf')
@@ -737,7 +747,7 @@ class Graph(object):
         self.loadTemplate(params.get('template', 'default'))
 
         opts = self.ctx.get_font_options()
-        opts.set_antialias(cairo.ANTIALIAS_NONE)
+        opts.set_antialias(self.cairo.ANTIALIAS_NONE)
         self.ctx.set_font_options(opts)
 
         self.foregroundColor = params.get('fgcolor', self.defaultForeground)
@@ -755,22 +765,23 @@ class Graph(object):
 
     def setupCairo(self, outputFormat='png'):
         self.outputFormat = outputFormat
+        self.cairo = _get_cairo()
         if outputFormat == 'png':
-            self.surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
-                                              self.width, self.height)
+            self.surface = self.cairo.ImageSurface(self.cairo.FORMAT_ARGB32,
+                                                   self.width, self.height)
         elif outputFormat == 'svg':
             self.surfaceData = BytesIO()
-            self.surface = cairo.SVGSurface(self.surfaceData,
-                                            self.width, self.height)
+            self.surface = self.cairo.SVGSurface(self.surfaceData,
+                                                 self.width, self.height)
         elif outputFormat == 'pdf':
             self.surfaceData = BytesIO()
-            self.surface = cairo.PDFSurface(self.surfaceData,
-                                            self.width, self.height)
+            self.surface = self.cairo.PDFSurface(self.surfaceData,
+                                                 self.width, self.height)
             res_x, res_y = self.surface.get_fallback_resolution()
             self.width = float(self.width / res_x) * 72
             self.height = float(self.height / res_y) * 72
             self.surface.set_size(self.width, self.height)
-        self.ctx = cairo.Context(self.surface)
+        self.ctx = self.cairo.Context(self.surface)
 
     def setColor(self, value, alpha=1.0, forceAlpha=False):
         if isinstance(value, tuple) and len(value) == 3:
@@ -1395,14 +1406,14 @@ class LineGraph(Graph):
         else:
             self.ctx.set_dash([], 0)
         self.ctx.set_line_cap({
-            'butt': cairo.LINE_CAP_BUTT,
-            'round': cairo.LINE_CAP_ROUND,
-            'square': cairo.LINE_CAP_SQUARE,
+            'butt': self.cairo.LINE_CAP_BUTT,
+            'round': self.cairo.LINE_CAP_ROUND,
+            'square': self.cairo.LINE_CAP_SQUARE,
         }[linecap])
         self.ctx.set_line_join({
-            'miter': cairo.LINE_JOIN_MITER,
-            'round': cairo.LINE_JOIN_ROUND,
-            'bevel': cairo.LINE_JOIN_BEVEL,
+            'miter': self.cairo.LINE_JOIN_MITER,
+            'round': self.cairo.LINE_JOIN_ROUND,
+            'bevel': self.cairo.LINE_JOIN_BEVEL,
         }[linejoin])
 
         # check whether there is an stacked metric
