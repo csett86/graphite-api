@@ -36,6 +36,7 @@ classifiers = [
 dependencies = [
     "Flask",
     "PyYAML",
+    "cairocffi",
     "pyparsing>=3.0.0",
     "structlog",
     "tzlocal",
@@ -47,7 +48,6 @@ cyanite = ["cyanite"]
 cache = ["flask-caching"]
 statsd = ["statsd"]
 docs = ["sphinx"]
-cairo = ["cairocffi"]
 
 [project.urls]
 Homepage = "https://github.com/csett86/graphite-render"

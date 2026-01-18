@@ -14,7 +14,7 @@ Installing Graphite-Render requires:
 
 * Pip, the Python package manager. On debian/ubuntu, install ``python-pip``.
 
-* **For image rendering (PNG/SVG/PDF graphs):** Cairo. On debian/ubuntu, install the ``libcairo2`` package.
+* For image rendering (PNG/SVG/PDF graphs): Cairo. On debian/ubuntu, install the ``libcairo2`` package.
 
 Global installation
 -------------------
@@ -22,10 +22,6 @@ Global installation
 To install Graphite-Render globally on your system, run as root::
 
     $ pip install graphite-render
-
-For image rendering support (PNG/SVG/PDF graphs), install with the cairo extra::
-
-    $ pip install graphite-render[cairo]
 
 Isolated installation (virtualenv)
 ----------------------------------
@@ -36,7 +32,7 @@ you can install it in a virtualenv.
 ::
 
     $ virtualenv /usr/share/python/graphite
-    $ /usr/share/python/graphite/bin/pip install graphite-render[cairo]
+    $ /usr/share/python/graphite/bin/pip install graphite-render
 
 .. _extras:
 
@@ -46,9 +42,6 @@ Extra dependencies
 When you install ``graphite-render``, all the dependencies for running a Graphite
 server that uses Whisper as a storage backend are installed. You can specify
 extra dependencies:
-
-* For image rendering (PNG/SVG/PDF): ``pip install graphite-render[cairo]``.
-  You'll also need Cairo installed on your system (``libcairo2`` on debian/ubuntu).
 
 * For `Sentry`_ integration: ``pip install graphite-render[sentry]``.
 
@@ -65,4 +58,4 @@ extra dependencies:
 
 You can also combine several extra dependencies::
 
-    $ pip install graphite-render[cairo,sentry,cyanite]
+    $ pip install graphite-render[sentry,cyanite]

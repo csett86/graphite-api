@@ -38,7 +38,7 @@ def _get_cairo():
         except ImportError as e:
             raise ImportError(
                 "cairocffi is required for image rendering but is not installed. "
-                "Install it with: pip install graphite-render[cairo]"
+                "Install it with: pip install cairocffi"
             ) from e
     return cairo
 

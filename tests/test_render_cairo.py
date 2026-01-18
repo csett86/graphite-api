@@ -1,6 +1,5 @@
 # coding: utf-8
 """Tests that require Cairo for image rendering (PNG/SVG/PDF)."""
-import json
 import os
 import time
 
