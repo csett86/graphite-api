@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Configuration &#8212; Graphite-Render 1.1.8 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=df104e6e"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Deployment" href="deployment.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="deployment.html" title="Deployment"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Configuration</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h1>
+<section id="configuration-file-location">
+<h2>Configuration File Location<a class="headerlink" href="#configuration-file-location" title="Link to this heading">¶</a></h2>
+<p>The configuration file for Graphite-Render uses the YAML format. Creating the
+configuration file is optional: if Graphite-Render doesn’t find a configuration
+file, sane defaults are used.</p>
+<p>Graphite-Render searches for configuration files in the following order:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/graphite-render.yaml</span></code> (or the path specified in the
+<code class="docutils literal notranslate"><span class="pre">GRAPHITE_API_CONFIG</span></code> environment variable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/graphite-api.yml</span></code> (fallback for compatibility with graphite-api)</p></li>
+</ol>
+<p>If neither file is found, Graphite-Render uses default configuration values
+described below.</p>
+<section id="default-values">
+<h3>Default values<a class="headerlink" href="#default-values" title="Link to this heading">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">search_index</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/srv/graphite/index</span>
+<span class="nt">finders</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">graphite_render.finders.whisper.WhisperFinder</span>
+<span class="nt">functions</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">graphite_render.functions.SeriesFunctions</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">graphite_render.functions.PieFunctions</span>
+<span class="nt">whisper</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">directories</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/srv/graphite/whisper</span>
+<span class="nt">time_zone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;system timezone&gt; or UTC</span>
+</pre></div>
+</div>
+</section>
+<section id="config-sections">
+<h3>Config sections<a class="headerlink" href="#config-sections" title="Link to this heading">¶</a></h3>
+<section id="default-sections">
+<h4>Default sections<a class="headerlink" href="#default-sections" title="Link to this heading">¶</a></h4>
+<p><em>search_index</em></p>
+<blockquote>
+<div><p>The location of the search index used for searching metrics. Note that it
+needs to be a file that is writable by the Graphite-Render process.</p>
+</div></blockquote>
+<p><em>finders</em></p>
+<blockquote>
+<div><p>A list of python paths to the storage finders you want to use when fetching
+metrics.</p>
+</div></blockquote>
+<p><em>functions</em></p>
+<blockquote>
+<div><p>A list of python paths to function definitions for transforming / analyzing
+time series data.</p>
+</div></blockquote>
+<p><em>whisper</em></p>
+<blockquote>
+<div><p>The configuration information for whisper. Only relevant when using
+WhisperFinder. Simply holds a <code class="docutils literal notranslate"><span class="pre">directories</span></code> key listing all directories
+containing whisper data.</p>
+</div></blockquote>
+<p><em>time_zone</em></p>
+<blockquote>
+<div><p>The time zone to use when generating graphs. By default, Graphite-Render tries
+to detect your system timezone. If detection fails it falls back to UTC. You
+can also manually override it if you want another value than your system’s
+timezone.</p>
+</div></blockquote>
+</section>
+<section id="extra-sections">
+<h4>Extra sections<a class="headerlink" href="#extra-sections" title="Link to this heading">¶</a></h4>
+<p><em>carbon</em></p>
+<blockquote>
+<div><p>Configuration information for reading data from carbon’s cache. Items:</p>
+<dl class="simple">
+<dt><em>hosts</em></dt><dd><p>List of carbon-cache hosts, in the format <code class="docutils literal notranslate"><span class="pre">hostname:port[:instance]</span></code>.</p>
+</dd>
+<dt><em>timeout</em></dt><dd><p>Socket timeout for carbon connections, in seconds.</p>
+</dd>
+<dt><em>retry_delay</em></dt><dd><p>Time to wait before trying to re-establish a failed carbon connection, in
+seconds.</p>
+</dd>
+<dt><em>hashing_keyfunc</em></dt><dd><p>Python path to a hashing function for metrics. If you use Carbon with
+consistent hashing and a custom function, you need to point to the same
+hashing function.</p>
+</dd>
+<dt><em>hashing_type</em></dt><dd><p>Type of metric hashing function. The default <code class="docutils literal notranslate"><span class="pre">carbon_ch</span></code> is Graphite’s
+traditional consistent-hashing implementation. Alternatively, you can use
+<code class="docutils literal notranslate"><span class="pre">fnv1a_ch</span></code>, which supports the Fowler-Noll-Vo hash function (FNV-1a) hash
+implementation offered by the carbon-c-relay project.
+Default: <code class="docutils literal notranslate"><span class="pre">carbon_ch</span></code></p>
+</dd>
+<dt><em>carbon_prefix</em></dt><dd><p>Prefix for carbon’s internal metrics. When querying metrics starting with
+this prefix, requests are made to all carbon-cache instances instead of
+one instance selected by the key function. Default: <code class="docutils literal notranslate"><span class="pre">carbon</span></code>.</p>
+</dd>
+<dt><em>replication_factor</em></dt><dd><p>The replication factor of your carbon setup. Default: <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">carbon</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">hosts</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">127.0.0.1:7002</span>
+<span class="w">  </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">  </span><span class="nt">retry_delay</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15</span>
+<span class="w">  </span><span class="nt">carbon_prefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">carbon</span>
+<span class="w">  </span><span class="nt">replication_factor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>sentry_dsn</em></p>
+<blockquote>
+<div><p>This is useful if you want to send Graphite-Render’s exceptions to a <a class="reference external" href="https://docs.getsentry.com">Sentry</a>
+instance for easier debugging.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sentry_dsn</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">key</span><span class="p">:</span><span class="n">secret</span><span class="nd">@app</span><span class="o">.</span><span class="n">getsentry</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="mi">12345</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Sentry integration requires Graphite-Render to be installed with the
+corresponding extra dependency:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install graphite-render[sentry]
+</pre></div>
+</div>
+</div>
+</div></blockquote>
+<p><em>allowed_origins</em></p>
+<blockquote>
+<div><p>Allows you to do cross-domain (CORS) requests to the Graphite API. Say you
+have a dashboard at <code class="docutils literal notranslate"><span class="pre">dashboard.example.com</span></code> that makes AJAX requests to
+<code class="docutils literal notranslate"><span class="pre">graphite.example.com</span></code>, just set the value accordingly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">allowed_origins</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+</pre></div>
+</div>
+<p>You can specify as many origins as you want. A wildcard can be used to allow
+all origins:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">allowed_origins</span><span class="p">:</span>
+  <span class="o">-</span> <span class="o">*</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><em>cache</em></p>
+<blockquote>
+<div><p>Lets you configure a cache for graph rendering. This is done via
+<a class="reference external" href="http://pythonhosted.org/Flask-Cache/">Flask-Cache</a> which supports a
+number of backends including memcache, Redis, filesystem or in-memory
+caching.</p>
+<p>Cache configuration maps directly to Flask-Cache’s config values. For each
+<code class="docutils literal notranslate"><span class="pre">CACHE_*</span></code> config value, set the lowercased name in the <code class="docutils literal notranslate"><span class="pre">cache</span></code> section,
+without the prefix. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cache</span><span class="p">:</span>
+  <span class="nb">type</span><span class="p">:</span> <span class="n">redis</span>
+  <span class="n">redis_host</span><span class="p">:</span> <span class="n">localhost</span>
+</pre></div>
+</div>
+<p>This would configure Flask-Cache with <code class="docutils literal notranslate"><span class="pre">CACHE_TYPE</span> <span class="pre">=</span> <span class="pre">'redis'</span></code> and
+<code class="docutils literal notranslate"><span class="pre">CACHE_REDIS_HOST</span> <span class="pre">=</span> <span class="pre">'localhost'</span></code>.</p>
+<p>Some cache options have default values defined by Graphite-Render:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">default_timeout</span></code>: 60</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">key_prefix</span></code>: <code class="docutils literal notranslate"><span class="pre">'graphite-render:</span></code>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Caching functionality requires you to install the cache extra dependency
+but also the underlying driver. E.g. for redis, you’ll need:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install graphite-render[cache] redis
+</pre></div>
+</div>
+</div>
+</div></blockquote>
+<p><em>statsd</em></p>
+<blockquote>
+<div><p>Attaches a statsd object to the application, which can be used for
+instrumentation. Currently Graphite-Render itself doesn’t use this,
+but some backends do, like <a class="reference external" href="https://github.com/vimeo/graphite-influxdb">Graphite-Influxdb</a>.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">statsd</span><span class="p">:</span>
+    <span class="n">host</span><span class="p">:</span> <span class="s1">&#39;statsd_host&#39;</span>
+    <span class="n">port</span><span class="p">:</span> <span class="mi">8125</span>  <span class="c1"># not needed if default</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires the statsd module:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install statsd
+</pre></div>
+</div>
+</div>
+</div></blockquote>
+<p><em>render_errors</em></p>
+<blockquote>
+<div><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> (default), full tracebacks are returned in the HTTP
+response in case of application errors.</p>
+</div></blockquote>
+</section>
+</section>
+</section>
+<section id="custom-location">
+<h2>Custom location<a class="headerlink" href="#custom-location" title="Link to this heading">¶</a></h2>
+<p>If you need the Graphite-Render config file to be stored in another place than
+<code class="docutils literal notranslate"><span class="pre">/etc/graphite-render.yaml</span></code>, you can set a custom location using the
+<code class="docutils literal notranslate"><span class="pre">GRAPHITE_API_CONFIG</span></code> environment variable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">GRAPHITE_API_CONFIG</span><span class="o">=/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">graphite</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Configuration</a><ul>
+<li><a class="reference internal" href="#configuration-file-location">Configuration File Location</a><ul>
+<li><a class="reference internal" href="#default-values">Default values</a></li>
+<li><a class="reference internal" href="#config-sections">Config sections</a><ul>
+<li><a class="reference internal" href="#default-sections">Default sections</a></li>
+<li><a class="reference internal" href="#extra-sections">Extra sections</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#custom-location">Custom location</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="installation.html"
+                          title="previous chapter">Installation</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="deployment.html"
+                          title="next chapter">Deployment</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/configuration.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="deployment.html" title="Deployment"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Configuration</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2014, Bruno Renié.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    </div>
+  </body>
+</html>

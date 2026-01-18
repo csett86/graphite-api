@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Custom functions &#8212; Graphite-Render 1.1.8 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=df104e6e"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Graphite-Render releases" href="releases.html" />
+    <link rel="prev" title="Storage finders" href="finders.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="releases.html" title="Graphite-Render releases"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="finders.html" title="Storage finders"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Custom functions</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="custom-functions">
+<h1>Custom functions<a class="headerlink" href="#custom-functions" title="Link to this heading">¶</a></h1>
+<p>Just like with storage finders, it is possible to extend Graphite-Render to add
+custom processing functions.</p>
+<p>To give an example, let’s implement a function that reverses the time series,
+placing old values at the end and recent values at the beginning.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># reverse.py</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">reverseSeries</span><span class="p">(</span><span class="n">requestContex</span><span class="p">,</span> <span class="n">seriesList</span><span class="p">):</span>
+    <span class="n">reverse</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">series</span> <span class="ow">in</span> <span class="n">seriesList</span><span class="p">:</span>
+        <span class="n">reverse</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">series</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">series</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">series</span><span class="o">.</span><span class="n">end</span><span class="p">,</span>
+                                  <span class="n">series</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">series</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">reverse</span>
+</pre></div>
+</div>
+<p>The first argument, <code class="docutils literal notranslate"><span class="pre">requestContext</span></code>, holds some information about the
+request parameters. <code class="docutils literal notranslate"><span class="pre">seriesList</span></code> is the list of paths found for the request
+target.</p>
+<p>Once you’ve created your function, declare it in a dictionnary:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ReverseFunctions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;reverseSeries&#39;</span><span class="p">:</span> <span class="n">reverseSeries</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Add your module to the Graphite-Render Python path and add it to the
+configuration:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">functions</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">graphite_render.functions.SeriesFunctions</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">graphite_render.functions.PieFunctions</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">reverse.ReverseFunctions</span>
+</pre></div>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="finders.html"
+                          title="previous chapter">Storage finders</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="releases.html"
+                          title="next chapter">Graphite-Render releases</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/custom-functions.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="releases.html" title="Graphite-Render releases"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="finders.html" title="Storage finders"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Custom functions</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2014, Bruno Renié.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    </div>
+  </body>
+</html>
