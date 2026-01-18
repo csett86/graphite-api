@@ -32,8 +32,14 @@ def _get_cairo():
     """Lazily import cairocffi when needed for rendering."""
     global cairo
     if cairo is None:
-        import cairocffi as cairo_module
-        cairo = cairo_module
+        try:
+            import cairocffi as cairo_module
+            cairo = cairo_module
+        except ImportError as e:
+            raise ImportError(
+                "cairocffi is required for image rendering but is not installed. "
+                "Install it with: pip install graphite-render[render]"
+            ) from e
     return cairo
 
 
