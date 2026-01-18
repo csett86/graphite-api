@@ -50,7 +50,7 @@
 <ul class="simple">
 <li><p>Python 3 (3.9 and above).</p></li>
 <li><p>Pip, the Python package manager. On debian/ubuntu, install <code class="docutils literal notranslate"><span class="pre">python-pip</span></code>.</p></li>
-<li><p><strong>For image rendering (PNG/SVG/PDF graphs):</strong> Cairo. On debian/ubuntu, install the <code class="docutils literal notranslate"><span class="pre">libcairo2</span></code> package.</p></li>
+<li><p>For image rendering (PNG/SVG/PDF graphs): Cairo. On debian/ubuntu, install the <code class="docutils literal notranslate"><span class="pre">libcairo2</span></code> package.</p></li>
 </ul>
 </section>
 <section id="global-installation">
@@ -59,17 +59,13 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install graphite-render
 </pre></div>
 </div>
-<p>For image rendering support (PNG/SVG/PDF graphs), install with the cairo extra:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install graphite-render[cairo]
-</pre></div>
-</div>
 </section>
 <section id="isolated-installation-virtualenv">
 <h3>Isolated installation (virtualenv)<a class="headerlink" href="#isolated-installation-virtualenv" title="Link to this heading">¶</a></h3>
 <p>If you want to isolate Graphite-Render from the system-wide python environment,
 you can install it in a virtualenv.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ virtualenv /usr/share/python/graphite
-$ /usr/share/python/graphite/bin/pip install graphite-render[cairo]
+$ /usr/share/python/graphite/bin/pip install graphite-render
 </pre></div>
 </div>
 </section>
@@ -79,8 +75,6 @@ $ /usr/share/python/graphite/bin/pip install graphite-render[cairo]
 server that uses Whisper as a storage backend are installed. You can specify
 extra dependencies:</p>
 <ul class="simple">
-<li><p>For image rendering (PNG/SVG/PDF): <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">graphite-render[cairo]</span></code>.
-You’ll also need Cairo installed on your system (<code class="docutils literal notranslate"><span class="pre">libcairo2</span></code> on debian/ubuntu).</p></li>
 <li><p>For <a class="reference external" href="https://docs.getsentry.com">Sentry</a> integration: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">graphite-render[sentry]</span></code>.</p></li>
 <li><p>For <a class="reference external" href="https://github.com/brutasse/graphite-cyanite">Cyanite</a> integration: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">graphite-render[cyanite]</span></code>.</p></li>
 <li><p>For Cache support: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">graphite-render[cache]</span></code>. You’ll also need the
@@ -88,7 +82,7 @@ driver for the type of caching you want to use (Redis, Memcache, etc.). See
 the <a class="reference external" href="http://pythonhosted.org/Flask-Cache/#configuring-flask-cache">Flask-Cache docs</a> for supported cache types.</p></li>
 </ul>
 <p>You can also combine several extra dependencies:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install graphite-render[cairo,sentry,cyanite]
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install graphite-render[sentry,cyanite]
 </pre></div>
 </div>
 </section>
