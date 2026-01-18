@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>HTTP API &#8212; Graphite-Render 1.1.8 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=df104e6e"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Built-in functions" href="functions.html" />
+    <link rel="prev" title="Deployment" href="deployment.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="functions.html" title="Built-in functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="deployment.html" title="Deployment"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">HTTP API</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="http-api">
+<h1>HTTP API<a class="headerlink" href="#http-api" title="Link to this heading">¶</a></h1>
+<p>Here is the general behavior of the API:</p>
+<ul>
+<li><p>When parameters are missing or wrong, an HTTP 400 response is returned with
+the detailed errors in the response body.</p></li>
+<li><p>Request parameters can be passed via:</p>
+<ul class="simple">
+<li><p>JSON data in the request body (<code class="docutils literal notranslate"><span class="pre">application/json</span></code> content-type).</p></li>
+<li><p>Form data in the request body (<code class="docutils literal notranslate"><span class="pre">application/www-form-urlencoded</span></code>
+content-type).</p></li>
+<li><p>Querystring parameters.</p></li>
+</ul>
+<p>You can pass some parameters by querystring and others by json/form data if
+you want to. Parameters are looked up in the order above, meaning that if a
+parameter is present in both the form data and the querystring, only the one
+from the querystring is taken into account.</p>
+</li>
+<li><p>URLs are given without a trailing slash but adding a trailing slash is fine
+for all API calls.</p></li>
+<li><p>Parameters are case-sensitive.</p></li>
+</ul>
+<section id="the-metrics-api">
+<span id="metrics"></span><h2>The Metrics API<a class="headerlink" href="#the-metrics-api" title="Link to this heading">¶</a></h2>
+<p>These API endpoints are useful for finding and listing metrics available in
+the system.</p>
+<section id="metrics-find">
+<h3><code class="docutils literal notranslate"><span class="pre">/metrics/find</span></code><a class="headerlink" href="#metrics-find" title="Link to this heading">¶</a></h3>
+<p>Finds metrics under a given path. Other alias: <code class="docutils literal notranslate"><span class="pre">/metrics</span></code>.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>GET /metrics/find?query=collectd.*
+
+{&quot;metrics&quot;: [{
+    &quot;is_leaf&quot;: 0,
+    &quot;name&quot;: &quot;db01&quot;,
+    &quot;path&quot;: &quot;collectd.db01.&quot;
+}, {
+    &quot;is_leaf&quot;: 1,
+    &quot;name&quot;: &quot;foo&quot;,
+    &quot;path&quot;: &quot;collectd.foo&quot;
+}]}
+</pre></div>
+</div>
+<p>Parameters:</p>
+<dl class="simple">
+<dt><em>query</em> (mandatory)</dt><dd><p>The query to search for.</p>
+</dd>
+<dt><em>format</em></dt><dd><p>The output format to use. Can be <code class="docutils literal notranslate"><span class="pre">completer</span></code> or <code class="docutils literal notranslate"><span class="pre">treejson</span></code> (default).</p>
+</dd>
+<dt><em>wildcards</em> (0 or 1)</dt><dd><p>Whether to add a wildcard result at the end or no. Default: 0.</p>
+</dd>
+<dt><em>from</em></dt><dd><p>Epoch timestamp from which to consider metrics.</p>
+</dd>
+<dt><em>until</em></dt><dd><p>Epoch timestamp until which to consider metrics.</p>
+</dd>
+<dt><em>jsonp</em> (optional)</dt><dd><p>Wraps the response in a JSONP callback.</p>
+</dd>
+</dl>
+</section>
+<section id="metrics-expand">
+<h3><code class="docutils literal notranslate"><span class="pre">/metrics/expand</span></code><a class="headerlink" href="#metrics-expand" title="Link to this heading">¶</a></h3>
+<p>Expands the given query with matching paths.</p>
+<p>Parameters:</p>
+<dl class="simple">
+<dt><em>query</em> (mandatory)</dt><dd><p>The metrics query. Can be specified multiple times.</p>
+</dd>
+<dt><em>groupByExpr</em> (0 or 1)</dt><dd><p>Whether to return a flat list of results or group them by query. Default: 0.</p>
+</dd>
+<dt><em>leavesOnly</em> (0 or 1)</dt><dd><p>Whether to only return leaves or both branches and leaves. Default: 0</p>
+</dd>
+<dt><em>jsonp</em> (optional)</dt><dd><p>Wraps the response in a JSONP callback.</p>
+</dd>
+</dl>
+</section>
+<section id="metrics-index-json">
+<h3><code class="docutils literal notranslate"><span class="pre">/metrics/index.json</span></code><a class="headerlink" href="#metrics-index-json" title="Link to this heading">¶</a></h3>
+<p>Walks the metrics tree and returns every metric found as a sorted JSON array.</p>
+<p>Parameters:</p>
+<dl class="simple">
+<dt><em>jsonp</em> (optional)</dt><dd><p>Wraps the response in a jsonp callback.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GET</span> <span class="o">/</span><span class="n">metrics</span><span class="o">/</span><span class="n">index</span><span class="o">.</span><span class="n">json</span>
+
+<span class="p">[</span>
+    <span class="s2">&quot;collectd.host1.load.longterm&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;collectd.host1.load.midterm&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;collectd.host1.load.shortterm&quot;</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="the-render-api-render">
+<span id="render"></span><h2>The Render API – <code class="docutils literal notranslate"><span class="pre">/render</span></code><a class="headerlink" href="#the-render-api-render" title="Link to this heading">¶</a></h2>
+<p>Graphite-Render provides a <code class="docutils literal notranslate"><span class="pre">/render</span></code> endpoint for generating graphs
+and retrieving raw data. This endpoint accepts various arguments via query
+string parameters, form data or JSON data.</p>
+<p>To verify that the api is running and able to generate images, open
+<code class="docutils literal notranslate"><span class="pre">http://&lt;api-host&gt;:&lt;port&gt;/render?target=test</span></code> in a browser. The api should
+return a simple 600x300 image with the text “No Data”.</p>
+<p>Once the api is running and you’ve begun feeding data into the storage
+backend, use the parameters below to customize your graphs and pull out raw
+data. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># single server load on large graph
+http://graphite/render?target=server.web1.load&amp;height=800&amp;width=600
+
+# average load across web machines over last 12 hours
+http://graphite/render?target=averageSeries(server.web*.load)&amp;from=-12hours
+
+# number of registered users over past day as raw json data
+http://graphite/render?target=app.numUsers&amp;format=json
+
+# rate of new signups per minute
+http://graphite/render?target=summarize(derivative(app.numUsers),&quot;1min&quot;)&amp;title=New_Users_Per_Minute
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Most of the functions and parameters are case sensitive.
+For example <code class="docutils literal notranslate"><span class="pre">&amp;linewidth=2</span></code> will fail silently.
+The correct parameter in this case is <code class="docutils literal notranslate"><span class="pre">&amp;lineWidth=2</span></code></p>
+</div>
+<section id="graphing-metrics">
+<h3>Graphing Metrics<a class="headerlink" href="#graphing-metrics" title="Link to this heading">¶</a></h3>
+<p>To begin graphing specific metrics, pass one or more <a class="reference internal" href="#target">target</a> parameters and
+specify a time window for the graph via <a class="reference internal" href="#from-until">from / until</a>.</p>
+<section id="target">
+<h4>target<a class="headerlink" href="#target" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">target</span></code> parameter specifies a path identifying one or several metrics,
+optionally with functions acting on those metrics. Paths are documented below,
+while functions are listed on the <a class="reference internal" href="functions.html"><span class="doc">functions</span></a> page.</p>
+<section id="paths-and-wildcards">
+<span id="id1"></span><h5>Paths and Wildcards<a class="headerlink" href="#paths-and-wildcards" title="Link to this heading">¶</a></h5>
+<p>Metric paths show the “.” separated path from the root of the metrics
+tree (often starting with <code class="docutils literal notranslate"><span class="pre">servers</span></code>) to a metric, for example
+<code class="docutils literal notranslate"><span class="pre">servers.ix02ehssvc04v.cpu.total.user</span></code>.</p>
+<p>Paths also support the following wildcards, which allows you to identify more
+than one metric in a single path.</p>
+<p><em>Asterisk</em></p>
+<blockquote>
+<div><p>The asterisk (<code class="docutils literal notranslate"><span class="pre">*</span></code>) matches zero or more characters. It is non-greedy, so
+you can have more than one within a single path element.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">servers.ix*ehssvc*v.cpu.total.*</span></code> will return all total CPU
+metrics for all servers matching the given name pattern.</p>
+</div></blockquote>
+<p><em>Character list or range</em></p>
+<blockquote>
+<div><p>Characters in square brackets (<code class="docutils literal notranslate"><span class="pre">[...]</span></code>) specify a single character
+position in the path string, and match if the character in that position
+matches one of the characters in the list or range.</p>
+<p>A character range is indicated by 2 characters separated by a dash (<code class="docutils literal notranslate"><span class="pre">-</span></code>),
+and means that any character between those 2 characters (inclusive) will
+match. More than one range can be included within the square brackets, e.g.
+<code class="docutils literal notranslate"><span class="pre">foo[a-z0-9]bar</span></code> will match <code class="docutils literal notranslate"><span class="pre">foopbar</span></code>, <code class="docutils literal notranslate"><span class="pre">foo7bar</span></code> etc..</p>
+<p>If the characters cannot be read as a range, they are treated as a list
+– any character in the list will match, e.g. <code class="docutils literal notranslate"><span class="pre">foo[bc]ar</span></code> will match
+<code class="docutils literal notranslate"><span class="pre">foobar</span></code> and <code class="docutils literal notranslate"><span class="pre">foocar</span></code>. If you want to include a dash (<code class="docutils literal notranslate"><span class="pre">-</span></code>) in your
+list, put it at the beginning or end, so it’s not interpreted as a range.</p>
+</div></blockquote>
+<p><em>Value list</em></p>
+<blockquote>
+<div><p>Comma-separated values within curly braces (<code class="docutils literal notranslate"><span class="pre">{foo,bar,...}</span></code>)
+are treated as value lists, and match if any of the values
+matches the current point in the path. For example,
+<code class="docutils literal notranslate"><span class="pre">servers.ix01ehssvc04v.cpu.total.{user,system,iowait}</span></code> will match the
+user, system and I/O wait total CPU metrics for the specified server.</p>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All wildcards apply only within a single path element. In other words, they
+do not include or cross dots (<code class="docutils literal notranslate"><span class="pre">.</span></code>) Therefore, <code class="docutils literal notranslate"><span class="pre">servers.*</span></code> will not
+match <code class="docutils literal notranslate"><span class="pre">servers.ix02ehssvc04v.cpu.total.user</span></code>, while <code class="docutils literal notranslate"><span class="pre">servers.*.*.*.*</span></code>
+will.</p>
+</div>
+</section>
+<section id="examples">
+<h5>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h5>
+<p>This will draw one or more metrics</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">target</span><span class="o">=</span><span class="n">company</span><span class="o">.</span><span class="n">server05</span><span class="o">.</span><span class="n">applicationInstance04</span><span class="o">.</span><span class="n">requestsHandled</span>
+<span class="p">(</span><span class="n">draws</span> <span class="n">one</span> <span class="n">metric</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let’s say there are 4 identical application instances running on each server:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">target</span><span class="o">=</span><span class="n">company</span><span class="o">.</span><span class="n">server05</span><span class="o">.</span><span class="n">applicationInstance</span><span class="o">*.</span><span class="n">requestsHandled</span>
+<span class="p">(</span><span class="n">draws</span> <span class="mi">4</span> <span class="n">metrics</span> <span class="o">/</span> <span class="n">lines</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now let’s say you have 10 servers:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">target</span><span class="o">=</span><span class="n">company</span><span class="o">.</span><span class="n">server</span><span class="o">*.</span><span class="n">applicationInstance</span><span class="o">*.</span><span class="n">requestsHandled</span>
+<span class="p">(</span><span class="n">draws</span> <span class="mi">40</span> <span class="n">metrics</span> <span class="o">/</span> <span class="n">lines</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also run any number of <a class="reference internal" href="functions.html"><span class="doc">functions</span></a> on the various
+metrics before graphing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">target</span><span class="o">=</span><span class="n">averageSeries</span><span class="p">(</span><span class="n">company</span><span class="o">.</span><span class="n">server</span><span class="o">*.</span><span class="n">applicationInstance</span><span class="o">.</span><span class="n">requestsHandled</span><span class="p">)</span>
+<span class="p">(</span><span class="n">draws</span> <span class="mi">1</span> <span class="n">aggregate</span> <span class="n">line</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The target param can also be repeated to graph multiple related metrics:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">target</span><span class="o">=</span><span class="n">company</span><span class="o">.</span><span class="n">server1</span><span class="o">.</span><span class="n">loadAvg</span><span class="o">&amp;</span><span class="n">target</span><span class="o">=</span><span class="n">company</span><span class="o">.</span><span class="n">server1</span><span class="o">.</span><span class="n">memUsage</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If more than 10 metrics are drawn the legend is no longer displayed. See the
+<a class="reference internal" href="#hidelegend">hideLegend</a> parameter for details.</p>
+</div>
+</section>
+</section>
+<section id="from-until">
+<h4>from / until<a class="headerlink" href="#from-until" title="Link to this heading">¶</a></h4>
+<p>These are optional parameters that specify the relative or absolute time
+period to graph <code class="docutils literal notranslate"><span class="pre">from</span></code> specifies the beginning, <code class="docutils literal notranslate"><span class="pre">until</span></code> specifies the end.
+If <code class="docutils literal notranslate"><span class="pre">from</span></code> is omitted, it defaults to 24 hours ago If <code class="docutils literal notranslate"><span class="pre">until</span></code> is omitted,
+it defaults to the current time (now).</p>
+<p>There are multiple possible formats for these functions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">from</span><span class="o">=-</span><span class="n">RELATIVE_TIME</span>
+<span class="o">&amp;</span><span class="n">from</span><span class="o">=</span><span class="n">ABSOLUTE_TIME</span>
+</pre></div>
+</div>
+<p>RELATIVE_TIME is a length of time since the current time. It is always
+preceded by a minus sign (<cite>-</cite>) and followed by a unit of time. Valid units of
+time:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Abbreviation</p></th>
+<th class="head"><p>Unit</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>s</p></td>
+<td><p>Seconds</p></td>
+</tr>
+<tr class="row-odd"><td><p>min</p></td>
+<td><p>Minutes</p></td>
+</tr>
+<tr class="row-even"><td><p>h</p></td>
+<td><p>Hours</p></td>
+</tr>
+<tr class="row-odd"><td><p>d</p></td>
+<td><p>Days</p></td>
+</tr>
+<tr class="row-even"><td><p>w</p></td>
+<td><p>Weeks</p></td>
+</tr>
+<tr class="row-odd"><td><p>mon</p></td>
+<td><p>30 Days (month)</p></td>
+</tr>
+<tr class="row-even"><td><p>y</p></td>
+<td><p>365 Days (year)</p></td>
+</tr>
+</tbody>
+</table>
+<p>ABSOLUTE_TIME is in the format HH:MM_YYMMDD, YYYYMMDD, MM/DD/YY, or any other
+<code class="docutils literal notranslate"><span class="pre">at(1)</span></code>-compatible time format.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Abbreviation</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>HH</p></td>
+<td><p>Hours, in 24h clock format.  Times before 12PM must include leading zeroes.</p></td>
+</tr>
+<tr class="row-odd"><td><p>MM</p></td>
+<td><p>Minutes</p></td>
+</tr>
+<tr class="row-even"><td><p>YYYY</p></td>
+<td><p>4 Digit Year.</p></td>
+</tr>
+<tr class="row-odd"><td><p>MM</p></td>
+<td><p>Numeric month representation with leading zero</p></td>
+</tr>
+<tr class="row-even"><td><p>DD</p></td>
+<td><p>Day of month with leading zero</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">&amp;from</span></code> and <code class="docutils literal notranslate"><span class="pre">&amp;until</span></code> can mix absolute and relative time if desired.</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">from</span><span class="o">=-</span><span class="mi">8</span><span class="n">d</span><span class="o">&amp;</span><span class="n">until</span><span class="o">=-</span><span class="mi">7</span><span class="n">d</span>
+<span class="p">(</span><span class="n">shows</span> <span class="n">same</span> <span class="n">day</span> <span class="n">last</span> <span class="n">week</span><span class="p">)</span>
+
+<span class="o">&amp;</span><span class="n">from</span><span class="o">=</span><span class="mi">04</span><span class="p">:</span><span class="mi">00_20110501</span><span class="o">&amp;</span><span class="n">until</span><span class="o">=</span><span class="mi">16</span><span class="p">:</span><span class="mi">00_20110501</span>
+<span class="p">(</span><span class="n">shows</span> <span class="mi">4</span><span class="n">AM</span><span class="o">-</span><span class="mi">4</span><span class="n">PM</span> <span class="n">on</span> <span class="n">May</span> <span class="mi">1</span><span class="n">st</span><span class="p">,</span> <span class="mi">2011</span><span class="p">)</span>
+
+<span class="o">&amp;</span><span class="n">from</span><span class="o">=</span><span class="mi">20091201</span><span class="o">&amp;</span><span class="n">until</span><span class="o">=</span><span class="mi">20091231</span>
+<span class="p">(</span><span class="n">shows</span> <span class="n">December</span> <span class="mi">2009</span><span class="p">)</span>
+
+<span class="o">&amp;</span><span class="n">from</span><span class="o">=</span><span class="n">noon</span><span class="o">+</span><span class="n">yesterday</span>
+<span class="p">(</span><span class="n">shows</span> <span class="n">data</span> <span class="n">since</span> <span class="mi">12</span><span class="p">:</span><span class="mi">00</span><span class="n">pm</span> <span class="n">on</span> <span class="n">the</span> <span class="n">previous</span> <span class="n">day</span><span class="p">)</span>
+
+<span class="o">&amp;</span><span class="n">from</span><span class="o">=</span><span class="mi">6</span><span class="n">pm</span><span class="o">+</span><span class="n">today</span>
+<span class="p">(</span><span class="n">shows</span> <span class="n">data</span> <span class="n">since</span> <span class="mi">6</span><span class="p">:</span><span class="mi">00</span><span class="n">pm</span> <span class="n">on</span> <span class="n">the</span> <span class="n">same</span> <span class="n">day</span><span class="p">)</span>
+
+<span class="o">&amp;</span><span class="n">from</span><span class="o">=</span><span class="n">january</span><span class="o">+</span><span class="mi">1</span>
+<span class="p">(</span><span class="n">shows</span> <span class="n">data</span> <span class="n">since</span> <span class="n">the</span> <span class="n">beginning</span> <span class="n">of</span> <span class="n">the</span> <span class="n">current</span> <span class="n">year</span><span class="p">)</span>
+
+<span class="o">&amp;</span><span class="n">from</span><span class="o">=</span><span class="n">monday</span>
+<span class="p">(</span><span class="n">show</span> <span class="n">data</span> <span class="n">since</span> <span class="n">the</span> <span class="n">previous</span> <span class="n">monday</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="template">
+<h4>template<a class="headerlink" href="#template" title="Link to this heading">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">target</span></code> metrics can use a special <code class="docutils literal notranslate"><span class="pre">template</span></code> function which
+allows the metric paths to contain variables. Values for these variables
+can be provided via the <code class="docutils literal notranslate"><span class="pre">template</span></code> query parameter.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&amp;target=template(hosts.$hostname.cpu)&amp;template[hostname]=worker1
+</pre></div>
+</div>
+<p>Default values for the template variables can also be provided:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&amp;target=template(hosts.$hostname.cpu, hostname=&quot;worker1&quot;)
+</pre></div>
+</div>
+<p>Positional arguments can be used instead of named ones:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&amp;target=template(hosts.$1.cpu, &quot;worker1&quot;)
+&amp;target=template(hosts.$1.cpu, &quot;worker1&quot;)&amp;template[1]=worker*
+</pre></div>
+</div>
+<p>In addition to path substitution, variables can be used for numeric
+and string literals:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&amp;target=template(constantLine($number))&amp;template[number]=123
+&amp;target=template(sinFunction($name))&amp;template[name]=nameOfMySineWaveMetric
+</pre></div>
+</div>
+</section>
+</section>
+<section id="data-display-formats">
+<h3>Data Display Formats<a class="headerlink" href="#data-display-formats" title="Link to this heading">¶</a></h3>
+<p>Along with rendering an image, the api can also generate <a class="reference external" href="http://www.w3.org/Graphics/SVG/">SVG</a> with embedded metadata, PDF, or return the raw
+data in various formats for external graphing, analysis or monitoring.</p>
+<section id="format">
+<h4>format<a class="headerlink" href="#format" title="Link to this heading">¶</a></h4>
+<p>Controls the format of data returned Affects all <code class="docutils literal notranslate"><span class="pre">&amp;targets</span></code> passed in the
+URL.</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="nb">format</span><span class="o">=</span><span class="n">png</span>
+<span class="o">&amp;</span><span class="nb">format</span><span class="o">=</span><span class="n">raw</span>
+<span class="o">&amp;</span><span class="nb">format</span><span class="o">=</span><span class="n">csv</span>
+<span class="o">&amp;</span><span class="nb">format</span><span class="o">=</span><span class="n">json</span>
+<span class="o">&amp;</span><span class="nb">format</span><span class="o">=</span><span class="n">svg</span>
+<span class="o">&amp;</span><span class="nb">format</span><span class="o">=</span><span class="n">pdf</span>
+<span class="o">&amp;</span><span class="nb">format</span><span class="o">=</span><span class="n">dygraph</span>
+<span class="o">&amp;</span><span class="nb">format</span><span class="o">=</span><span class="n">rickshaw</span>
+</pre></div>
+</div>
+<section id="png">
+<h5>png<a class="headerlink" href="#png" title="Link to this heading">¶</a></h5>
+<p>Renders the graph as a PNG image of size determined by <a class="reference internal" href="#width">width</a> and <a class="reference internal" href="#height">height</a></p>
+</section>
+<section id="raw">
+<h5>raw<a class="headerlink" href="#raw" title="Link to this heading">¶</a></h5>
+<p>Renders the data in a custom line-delimited format. Targets are output
+one per line and are of the format <code class="docutils literal notranslate"><span class="pre">&lt;target</span> <span class="pre">name&gt;,&lt;start</span> <span class="pre">timestamp&gt;,&lt;end</span>
+<span class="pre">timestamp&gt;,&lt;series</span> <span class="pre">step&gt;|[data]*</span></code>.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">entries</span><span class="p">,</span><span class="mi">1311836008</span><span class="p">,</span><span class="mi">1311836013</span><span class="p">,</span><span class="mi">1</span><span class="o">|</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">,</span><span class="mf">6.0</span>
+</pre></div>
+</div>
+</section>
+<section id="csv">
+<h5>csv<a class="headerlink" href="#csv" title="Link to this heading">¶</a></h5>
+<p>Renders the data in a CSV format suitable for import into a spreadsheet or for
+processing in a script.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">entries</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">28</span> <span class="mi">01</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mi">28</span><span class="p">,</span><span class="mf">1.0</span>
+<span class="n">entries</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">28</span> <span class="mi">01</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mi">29</span><span class="p">,</span><span class="mf">2.0</span>
+<span class="n">entries</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">28</span> <span class="mi">01</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mi">30</span><span class="p">,</span><span class="mf">3.0</span>
+<span class="n">entries</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">28</span> <span class="mi">01</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mi">31</span><span class="p">,</span><span class="mf">5.0</span>
+<span class="n">entries</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">28</span> <span class="mi">01</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span><span class="mf">6.0</span>
+</pre></div>
+</div>
+</section>
+<section id="json">
+<h5>json<a class="headerlink" href="#json" title="Link to this heading">¶</a></h5>
+<p>Renders the data as a json object. The <a class="reference internal" href="#jsonp">jsonp</a> option can be used to wrap this
+data in a named call for cross-domain access.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span>
+<span class="w">  </span><span class="nt">&quot;target&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;entries&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;datapoints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mi">1311836008</span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mi">1311836009</span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mi">1311836010</span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mi">1311836011</span><span class="p">],</span>
+<span class="w">    </span><span class="p">[</span><span class="mf">6.0</span><span class="p">,</span><span class="w"> </span><span class="mi">1311836012</span><span class="p">]</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}]</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h5>svg<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h5>
+<p>Renders the graph as SVG markup of size determined by <a class="reference internal" href="#width">width</a> and <a class="reference internal" href="#height">height</a>.
+Metadata about the drawn graph is saved as an embedded script with the
+variable <code class="docutils literal notranslate"><span class="pre">metadata</span></code> being set to an object describing the graph.</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;script&gt;</span>
+<span class="w">  </span><span class="cp">&lt;![CDATA[</span>
+<span class="cp">    metadata = {</span>
+<span class="cp">      &quot;area&quot;: {</span>
+<span class="cp">        &quot;xmin&quot;: 39.195507812499997,</span>
+<span class="cp">        &quot;ymin&quot;: 33.96875,</span>
+<span class="cp">        &quot;ymax&quot;: 623.794921875,</span>
+<span class="cp">        &quot;xmax&quot;: 1122</span>
+<span class="cp">      },</span>
+<span class="cp">      &quot;series&quot;: [</span>
+<span class="cp">        {</span>
+<span class="cp">          &quot;start&quot;: 1335398400,</span>
+<span class="cp">          &quot;step&quot;: 1800,</span>
+<span class="cp">          &quot;end&quot;: 1335425400,</span>
+<span class="cp">          &quot;name&quot;: &quot;summarize(test.data, \&quot;30min\&quot;, \&quot;sum\&quot;)&quot;,</span>
+<span class="cp">          &quot;color&quot;: &quot;#859900&quot;,</span>
+<span class="cp">          &quot;data&quot;: [null, null, 1.0, null, 1.0, null, 1.0, null, 1.0, null, 1.0, null, null, null, null],</span>
+<span class="cp">          &quot;options&quot;: {},</span>
+<span class="cp">          &quot;valuesPerPoint&quot;: 1</span>
+<span class="cp">        }</span>
+<span class="cp">      ],</span>
+<span class="cp">      &quot;y&quot;: {</span>
+<span class="cp">        &quot;labelValues&quot;: [0, 0.25, 0.5, 0.75, 1.0],</span>
+<span class="cp">        &quot;top&quot;: 1.0,</span>
+<span class="cp">        &quot;labels&quot;: [&quot;0 &quot;, &quot;0.25 &quot;, &quot;0.50 &quot;, &quot;0.75 &quot;, &quot;1.00  &quot;],</span>
+<span class="cp">        &quot;step&quot;: 0.25,</span>
+<span class="cp">        &quot;bottom&quot;: 0</span>
+<span class="cp">      },</span>
+<span class="cp">      &quot;x&quot;: {</span>
+<span class="cp">        &quot;start&quot;: 1335398400,</span>
+<span class="cp">        &quot;end&quot;: 1335423600</span>
+<span class="cp">      },</span>
+<span class="cp">      &quot;font&quot;: {</span>
+<span class="cp">        &quot;bold&quot;: false,</span>
+<span class="cp">        &quot;name&quot;: &quot;Sans&quot;,</span>
+<span class="cp">        &quot;italic&quot;: false,</span>
+<span class="cp">        &quot;size&quot;: 10</span>
+<span class="cp">      },</span>
+<span class="cp">      &quot;options&quot;: {</span>
+<span class="cp">        &quot;lineWidth&quot;: 1.2</span>
+<span class="cp">      }</span>
+<span class="cp">    }</span>
+<span class="cp">  ]]&gt;</span>
+<span class="nt">&lt;/script&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="pdf">
+<h5>pdf<a class="headerlink" href="#pdf" title="Link to this heading">¶</a></h5>
+<p>Renders the graph as a PDF of size determined by <a class="reference internal" href="#width">width</a> and <a class="reference internal" href="#height">height</a>.</p>
+</section>
+<section id="dygraph">
+<h5>dygraph<a class="headerlink" href="#dygraph" title="Link to this heading">¶</a></h5>
+<p>Renders the data as a json object suitable for passing to a
+<a class="reference external" href="http://dygraphs.com/data.html">Dygraph</a> object.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{
+  &quot;labels&quot; : [
+    &quot;Time&quot;,
+    &quot;entries&quot;
+  ],
+  &quot;data&quot; : [
+    [1468791890000, 0.0],
+    [1468791900000, 0.0]
+  ]
+}
+</pre></div>
+</div>
+</section>
+<section id="rickshaw">
+<h5>rickshaw<a class="headerlink" href="#rickshaw" title="Link to this heading">¶</a></h5>
+<p>Renders the data as a json object suitable for passing to a
+<a class="reference external" href="http://code.shutterstock.com/rickshaw/tutorial/introduction.html">Rickshaw</a> object.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[{
+  &quot;target&quot;: &quot;entries&quot;,
+  &quot;datapoints&quot;: [{
+    &quot;y&quot;: 0.0,
+    &quot;x&quot;: 1468791890
+  }, {
+    &quot;y&quot;: 0.0,
+    &quot;x&quot;: 1468791900
+  }]
+}]
+</pre></div>
+</div>
+</section>
+</section>
+<section id="rawdata">
+<h4>rawData<a class="headerlink" href="#rawdata" title="Link to this heading">¶</a></h4>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.9.9: </span>This option is deprecated in favor of format</p>
+</div>
+<p>Used to get numerical data out of the webapp instead of an image Can be set
+to true, false, csv. Affects all <code class="docutils literal notranslate"><span class="pre">&amp;targets</span></code> passed in the URL.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">target</span><span class="o">=</span><span class="n">carbon</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">graphiteServer01</span><span class="o">.</span><span class="n">cpuUsage</span><span class="o">&amp;</span><span class="n">from</span><span class="o">=-</span><span class="mi">5</span><span class="nb">min</span><span class="o">&amp;</span><span class="n">rawData</span><span class="o">=</span><span class="n">true</span>
+</pre></div>
+</div>
+<p>Returns the following text:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">carbon</span><span class="o">.</span><span class="n">agents</span><span class="o">.</span><span class="n">graphiteServer01</span><span class="o">.</span><span class="n">cpuUsage</span><span class="p">,</span><span class="mi">1306217160</span><span class="p">,</span><span class="mi">1306217460</span><span class="p">,</span><span class="mi">60</span><span class="o">|</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.00666666520965</span><span class="p">,</span><span class="mf">0.00666666624282</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0133345399694</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="graph-parameters">
+<span id="id5"></span><h3>Graph Parameters<a class="headerlink" href="#graph-parameters" title="Link to this heading">¶</a></h3>
+<section id="areaalpha">
+<span id="param-areaalpha"></span><h4>areaAlpha<a class="headerlink" href="#areaalpha" title="Link to this heading">¶</a></h4>
+<p><em>Default: 1.0</em></p>
+<p>Takes a floating point number between 0.0 and 1.0.</p>
+<p>Sets the alpha (transparency) value of filled areas when using an <a class="reference internal" href="#areamode">areaMode</a>.</p>
+</section>
+<section id="areamode">
+<span id="param-areamode"></span><h4>areaMode<a class="headerlink" href="#areamode" title="Link to this heading">¶</a></h4>
+<p><em>Default: none</em></p>
+<p>Enables filling of the area below the graphed lines. Fill area is the same
+color as the line color associated with it. See <a class="reference internal" href="#areaalpha">areaAlpha</a> to make this area
+transparent. Takes one of the following parameters which determines the fill
+mode to use:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">none</span></code></dt><dd><p>Disables areaMode</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">first</span></code></dt><dd><p>Fills the area under the first target and no other</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">all</span></code></dt><dd><p>Fills the areas under each target</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">stacked</span></code></dt><dd><p>Creates a graph where the filled area of each target is stacked on one
+another. Each target line is displayed as the sum of all previous lines
+plus the value of the current line.</p>
+</dd>
+</dl>
+</section>
+<section id="bgcolor">
+<span id="param-bgcolor"></span><h4>bgcolor<a class="headerlink" href="#bgcolor" title="Link to this heading">¶</a></h4>
+<p><em>Default: white</em></p>
+<p>Sets the background color of the graph.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Color Names</p></th>
+<th class="head"><p>RGB Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>black</p></td>
+<td><p>0,0,0</p></td>
+</tr>
+<tr class="row-odd"><td><p>white</p></td>
+<td><p>255,255,255</p></td>
+</tr>
+<tr class="row-even"><td><p>blue</p></td>
+<td><p>100,100,255</p></td>
+</tr>
+<tr class="row-odd"><td><p>green</p></td>
+<td><p>0,200,0</p></td>
+</tr>
+<tr class="row-even"><td><p>red</p></td>
+<td><p>200,0,50</p></td>
+</tr>
+<tr class="row-odd"><td><p>yellow</p></td>
+<td><p>255,255,0</p></td>
+</tr>
+<tr class="row-even"><td><p>orange</p></td>
+<td><p>255, 165, 0</p></td>
+</tr>
+<tr class="row-odd"><td><p>purple</p></td>
+<td><p>200,100,255</p></td>
+</tr>
+<tr class="row-even"><td><p>brown</p></td>
+<td><p>150,100,50</p></td>
+</tr>
+<tr class="row-odd"><td><p>aqua</p></td>
+<td><p>0,150,150</p></td>
+</tr>
+<tr class="row-even"><td><p>gray</p></td>
+<td><p>175,175,175</p></td>
+</tr>
+<tr class="row-odd"><td><p>grey</p></td>
+<td><p>175,175,175</p></td>
+</tr>
+<tr class="row-even"><td><p>magenta</p></td>
+<td><p>255,0,255</p></td>
+</tr>
+<tr class="row-odd"><td><p>pink</p></td>
+<td><p>255,100,100</p></td>
+</tr>
+<tr class="row-even"><td><p>gold</p></td>
+<td><p>200,200,0</p></td>
+</tr>
+<tr class="row-odd"><td><p>rose</p></td>
+<td><p>200,150,200</p></td>
+</tr>
+<tr class="row-even"><td><p>darkblue</p></td>
+<td><p>0,0,255</p></td>
+</tr>
+<tr class="row-odd"><td><p>darkgreen</p></td>
+<td><p>0,255,0</p></td>
+</tr>
+<tr class="row-even"><td><p>darkred</p></td>
+<td><p>255,0,0</p></td>
+</tr>
+<tr class="row-odd"><td><p>darkgray</p></td>
+<td><p>111,111,111</p></td>
+</tr>
+<tr class="row-even"><td><p>darkgrey</p></td>
+<td><p>111,111,111</p></td>
+</tr>
+</tbody>
+</table>
+<p>RGB can be passed directly in the format #RRGGBB where RR, GG, and BB are
+2-digit hex vaules for red, green and blue, respectively.</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">bgcolor</span><span class="o">=</span><span class="n">blue</span>
+<span class="o">&amp;</span><span class="n">bgcolor</span><span class="o">=</span><span class="c1">#2222FF</span>
+</pre></div>
+</div>
+</section>
+<section id="cachetimeout">
+<span id="param-cachetimeout"></span><h4>cacheTimeout<a class="headerlink" href="#cachetimeout" title="Link to this heading">¶</a></h4>
+<p>Default: the value of <code class="docutils literal notranslate"><span class="pre">cache.default_timeout</span></code> in your configuration file. By
+default, 60 seconds.</p>
+</section>
+<section id="colorlist">
+<span id="param-colorlist"></span><h4>colorList<a class="headerlink" href="#colorlist" title="Link to this heading">¶</a></h4>
+<p><em>Default: blue,green,red,purple,brown,yellow,aqua,grey,magenta,pink,gold,rose</em></p>
+<p>Takes one or more comma-separated color names or RGB values (see <a class="reference internal" href="#bgcolor">bgcolor</a> for
+a list of color names) and uses that list in order as the colors of the lines.
+If more lines / metrics are drawn than colors passed, the list is reused in
+order.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">colorList</span><span class="o">=</span><span class="n">green</span><span class="p">,</span><span class="n">yellow</span><span class="p">,</span><span class="n">orange</span><span class="p">,</span><span class="n">red</span><span class="p">,</span><span class="n">purple</span><span class="p">,</span><span class="c1">#DECAFF</span>
+</pre></div>
+</div>
+</section>
+<section id="drawnullaszero">
+<span id="param-drawnullaszero"></span><h4>drawNullAsZero<a class="headerlink" href="#drawnullaszero" title="Link to this heading">¶</a></h4>
+<p><em>Default: false</em></p>
+<p>Converts any None (null) values in the displayed metrics to zero at render
+time.</p>
+</section>
+<section id="fgcolor">
+<span id="param-fgcolor"></span><h4>fgcolor<a class="headerlink" href="#fgcolor" title="Link to this heading">¶</a></h4>
+<p><em>Default: black</em></p>
+<p>Sets the foreground color This only affects the title, legend text, and axis
+labels.</p>
+<p>See <a class="reference internal" href="#majorgridlinecolor">majorGridLineColor</a>, and <a class="reference internal" href="#minorgridlinecolor">minorGridLineColor</a> for further control of
+colors.</p>
+<p>See <a class="reference internal" href="#bgcolor">bgcolor</a> for a list of color names and details on formatting this
+parameter.</p>
+</section>
+<section id="fontbold">
+<span id="param-fontbold"></span><h4>fontBold<a class="headerlink" href="#fontbold" title="Link to this heading">¶</a></h4>
+<p><em>Default: false</em></p>
+<p>If set to true, makes the font bold.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">fontBold</span><span class="o">=</span><span class="n">true</span>
+</pre></div>
+</div>
+</section>
+<section id="fontitalic">
+<span id="param-fontitalic"></span><h4>fontItalic<a class="headerlink" href="#fontitalic" title="Link to this heading">¶</a></h4>
+<p><em>Default: false</em></p>
+<p>If set to true, makes the font italic / oblique.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">fontItalic</span><span class="o">=</span><span class="n">true</span>
+</pre></div>
+</div>
+</section>
+<section id="fontname">
+<span id="param-fontname"></span><h4>fontName<a class="headerlink" href="#fontname" title="Link to this heading">¶</a></h4>
+<p><em>Default: ‘Sans’</em></p>
+<p>Change the font used to render text on the graph The font must be installed
+on the Graphite-Render server.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">fontName</span><span class="o">=</span><span class="n">FreeMono</span>
+</pre></div>
+</div>
+</section>
+<section id="fontsize">
+<span id="param-fontsize"></span><h4>fontSize<a class="headerlink" href="#fontsize" title="Link to this heading">¶</a></h4>
+<p><em>Default: 10</em></p>
+<p>Changes the font size Must be passed a positive floating point number or
+integer equal to or greater than 1.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">fontSize</span><span class="o">=</span><span class="mi">8</span>
+</pre></div>
+</div>
+</section>
+<section id="param-format">
+<span id="id6"></span><h4>format<a class="headerlink" href="#param-format" title="Link to this heading">¶</a></h4>
+<p>See: <a class="reference internal" href="#data-display-formats">Data Display Formats</a></p>
+</section>
+<section id="from">
+<span id="param-from"></span><h4>from<a class="headerlink" href="#from" title="Link to this heading">¶</a></h4>
+<p>See: <a class="reference internal" href="#from-until">from / until</a></p>
+</section>
+<section id="graphonly">
+<span id="param-graphonly"></span><h4>graphOnly<a class="headerlink" href="#graphonly" title="Link to this heading">¶</a></h4>
+<p><em>Default: false</em></p>
+<p>Display only the graph area with no grid lines, axes, or legend.</p>
+</section>
+<section id="graphtype">
+<span id="param-graphtype"></span><h4>graphType<a class="headerlink" href="#graphtype" title="Link to this heading">¶</a></h4>
+<p><em>Default: line</em></p>
+<p>Sets the type of graph to be rendered. Currently there are only two graph
+types:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">line</span></code></dt><dd><p>A line graph displaying metrics as lines over time.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pie</span></code></dt><dd><p>A pie graph with each slice displaying an aggregate of each metric
+calculated using the function specified by <a class="reference internal" href="#piemode">pieMode</a>.</p>
+</dd>
+</dl>
+</section>
+<section id="hidelegend">
+<span id="param-hidelegend"></span><h4>hideLegend<a class="headerlink" href="#hidelegend" title="Link to this heading">¶</a></h4>
+<p><em>Default: &lt;unset&gt;</em></p>
+<p>If set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, the legend is not drawn.</p>
+<p>If set to <code class="docutils literal notranslate"><span class="pre">false</span></code>, the legend is drawn.</p>
+<p>If unset, the legend is displayed if there are less than 10 items.</p>
+<p>Hint: If set to <code class="docutils literal notranslate"><span class="pre">false</span></code> the <code class="docutils literal notranslate"><span class="pre">&amp;height</span></code> parameter may need to be increased
+to accommodate the additional text.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">hideLegend</span><span class="o">=</span><span class="n">false</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="hidenullfromlegend">
+<span id="param-hidenullfromlegend"></span><h3>hideNullFromLegend<a class="headerlink" href="#hidenullfromlegend" title="Link to this heading">¶</a></h3>
+<p><em>Default: False</em></p>
+<p>If set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, series with all null values will not be reported in the legend.</p>
+<p>Example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&amp;hideNullFromLegend=true
+</pre></div>
+</div>
+<section id="hideaxes">
+<span id="param-hideaxes"></span><h4>hideAxes<a class="headerlink" href="#hideaxes" title="Link to this heading">¶</a></h4>
+<p><em>Default: false</em></p>
+<p>If set to <code class="docutils literal notranslate"><span class="pre">true</span></code> the X and Y axes will not be rendered.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">hideAxes</span><span class="o">=</span><span class="n">true</span>
+</pre></div>
+</div>
+</section>
+<section id="hidexaxis">
+<span id="param-hidexaxis"></span><h4>hideXAxis<a class="headerlink" href="#hidexaxis" title="Link to this heading">¶</a></h4>
+<p><em>Default: false</em></p>
+<p>If set to <code class="docutils literal notranslate"><span class="pre">true</span></code> the X Axis will not be rendered.</p>
+</section>
+<section id="hideyaxis">
+<span id="param-hideyaxis"></span><h4>hideYAxis<a class="headerlink" href="#hideyaxis" title="Link to this heading">¶</a></h4>
+<p><em>Default: false</em></p>
+<p>If set to <code class="docutils literal notranslate"><span class="pre">true</span></code> the Y Axis will not be rendered.</p>
+</section>
+<section id="hidegrid">
+<span id="param-hidegrid"></span><h4>hideGrid<a class="headerlink" href="#hidegrid" title="Link to this heading">¶</a></h4>
+<p><em>Default: false</em></p>
+<p>If set to <code class="docutils literal notranslate"><span class="pre">true</span></code> the grid lines will not be rendered.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">hideGrid</span><span class="o">=</span><span class="n">true</span>
+</pre></div>
+</div>
+</section>
+<section id="height">
+<span id="param-height"></span><h4>height<a class="headerlink" href="#height" title="Link to this heading">¶</a></h4>
+<p><em>Default: 300</em></p>
+<p>Sets the height of the generated graph image in pixels.</p>
+<p>See also: <a class="reference internal" href="#width">width</a></p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">width</span><span class="o">=</span><span class="mi">650</span><span class="o">&amp;</span><span class="n">height</span><span class="o">=</span><span class="mi">250</span>
+</pre></div>
+</div>
+</section>
+<section id="jsonp">
+<span id="param-jsonp"></span><h4>jsonp<a class="headerlink" href="#jsonp" title="Link to this heading">¶</a></h4>
+<p><em>Default: &lt;unset&gt;</em></p>
+<p>If set and combined with <code class="docutils literal notranslate"><span class="pre">format=json</span></code>, wraps the JSON response in a
+function call named by the parameter specified.</p>
+</section>
+<section id="leftcolor">
+<span id="param-leftcolor"></span><h4>leftColor<a class="headerlink" href="#leftcolor" title="Link to this heading">¶</a></h4>
+<p><em>Default: color chosen from</em> <a class="reference internal" href="#colorlist">colorList</a>.</p>
+<p>In dual Y-axis mode, sets the color of all metrics associated with the left
+Y-axis.</p>
+</section>
+<section id="leftdashed">
+<span id="param-leftdashed"></span><h4>leftDashed<a class="headerlink" href="#leftdashed" title="Link to this heading">¶</a></h4>
+<p><em>Default: false</em></p>
+<p>In dual Y-axis mode, draws all metrics associated with the left Y-axis using
+dashed lines.</p>
+</section>
+<section id="leftwidth">
+<span id="param-leftwidth"></span><h4>leftWidth<a class="headerlink" href="#leftwidth" title="Link to this heading">¶</a></h4>
+<p><em>Default: value of the parameter</em> <a class="reference internal" href="#linewidth">lineWidth</a></p>
+<p>In dual Y-axis mode, sets the line width of all metrics associated with the
+left Y-axis.</p>
+</section>
+<section id="linemode">
+<span id="param-linemode"></span><h4>lineMode<a class="headerlink" href="#linemode" title="Link to this heading">¶</a></h4>
+<p><em>Default: slope</em></p>
+<p>Sets the line drawing behavior. Takes one of the following parameters:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">slope</span></code></dt><dd><p>Slope line mode draws a line from each point to the next. Periods with Null
+values will not be drawn.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">staircase</span></code></dt><dd><p>Staircase draws a flat line for the duration of a time period and then a
+vertical line up or down to the next value.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">connected</span></code></dt><dd><p>Like a slope line, but values are always connected with a slope line,
+regardless of whether or not there are Null values between them.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">lineMode</span><span class="o">=</span><span class="n">staircase</span>
+</pre></div>
+</div>
+</section>
+<section id="linewidth">
+<span id="param-linewidth"></span><h4>lineWidth<a class="headerlink" href="#linewidth" title="Link to this heading">¶</a></h4>
+<p><em>Default: 1.2</em></p>
+<p>Takes any floating point or integer (negative numbers do not error but will
+cause no line to be drawn). Changes the width of the line in pixels.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">lineWidth</span><span class="o">=</span><span class="mi">2</span>
+</pre></div>
+</div>
+</section>
+<section id="logbase">
+<span id="param-logbase"></span><h4>logBase<a class="headerlink" href="#logbase" title="Link to this heading">¶</a></h4>
+<p><em>Default: &lt;unset&gt;</em></p>
+<p>If set, draws the graph with a logarithmic scale of the specified base (e.g.
+10 for common logarithm).</p>
+</section>
+<section id="majorgridlinecolor">
+<span id="param-majorgridlinecolor"></span><h4>majorGridLineColor<a class="headerlink" href="#majorgridlinecolor" title="Link to this heading">¶</a></h4>
+<p><em>Default: rose</em></p>
+<p>Sets the color of the major grid lines.</p>
+<p>See <a class="reference internal" href="#bgcolor">bgcolor</a> for valid color names and formats.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">majorGridLineColor</span><span class="o">=</span><span class="c1">#FF22FF</span>
+</pre></div>
+</div>
+</section>
+<section id="margin">
+<span id="param-margin"></span><h4>margin<a class="headerlink" href="#margin" title="Link to this heading">¶</a></h4>
+<p><em>Default: 10</em></p>
+<p>Sets the margin around a graph image in pixels on all sides.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">margin</span><span class="o">=</span><span class="mi">20</span>
+</pre></div>
+</div>
+</section>
+<section id="max">
+<span id="param-max"></span><h4>max<a class="headerlink" href="#max" title="Link to this heading">¶</a></h4>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.9.0: </span>See <a class="reference internal" href="#ymax">yMax</a></p>
+</div>
+</section>
+<section id="maxdatapoints">
+<span id="param-maxdatapoints"></span><h4>maxDataPoints<a class="headerlink" href="#maxdatapoints" title="Link to this heading">¶</a></h4>
+<p>Set the maximum numbers of datapoints returned when using json content.</p>
+<p>If the number of datapoints in a selected range exceeds the maxDataPoints
+value then the datapoints over the whole period are consolidated.</p>
+</section>
+<section id="minorgridlinecolor">
+<span id="param-minorgridlinecolor"></span><h4>minorGridLineColor<a class="headerlink" href="#minorgridlinecolor" title="Link to this heading">¶</a></h4>
+<p><em>Default: grey</em></p>
+<p>Sets the color of the minor grid lines.</p>
+<p>See <a class="reference internal" href="#bgcolor">bgcolor</a> for valid color names and formats.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">minorGridLineColor</span><span class="o">=</span><span class="n">darkgrey</span>
+</pre></div>
+</div>
+</section>
+<section id="minory">
+<span id="param-minory"></span><h4>minorY<a class="headerlink" href="#minory" title="Link to this heading">¶</a></h4>
+<p><em>Default: 1</em></p>
+<p>Sets the number of minor grid lines per major line on the y-axis.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">minorY</span><span class="o">=</span><span class="mi">3</span>
+</pre></div>
+</div>
+</section>
+<section id="min">
+<span id="param-min"></span><h4>min<a class="headerlink" href="#min" title="Link to this heading">¶</a></h4>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.9.0: </span>See <a class="reference internal" href="#ymin">yMin</a></p>
+</div>
+</section>
+<section id="minxstep">
+<span id="param-minxstep"></span><h4>minXStep<a class="headerlink" href="#minxstep" title="Link to this heading">¶</a></h4>
+<p><em>Default: 1</em></p>
+<p>Sets the minimum pixel-step to use between datapoints drawn. Any value below
+this will trigger a point consolidation of the series at render time. The
+default value of <code class="docutils literal notranslate"><span class="pre">1</span></code> combined with the default lineWidth of <code class="docutils literal notranslate"><span class="pre">1.2</span></code> will
+cause a minimal amount of line overlap between close-together points. To
+disable render-time point consolidation entirely, set this to <code class="docutils literal notranslate"><span class="pre">0</span></code> though
+note that series with more points than there are pixels in the graph area
+(e.g. a few month’s worth of per-minute data) will look very ‘smooshed’ as
+there will be a good deal of line overlap. In response, one may use <a class="reference internal" href="#linewidth">lineWidth</a>
+to compensate for this.</p>
+</section>
+<section id="nocache">
+<span id="param-nocache"></span><h4>noCache<a class="headerlink" href="#nocache" title="Link to this heading">¶</a></h4>
+<p><em>Default: False</em></p>
+<p>Set it to disable caching in rendered graphs.</p>
+</section>
+</section>
+<section id="nonullpoints">
+<span id="param-nonullpoints"></span><h3>noNullPoints<a class="headerlink" href="#nonullpoints" title="Link to this heading">¶</a></h3>
+<p><em>Default: False</em></p>
+<p>If set and combined with <code class="docutils literal notranslate"><span class="pre">format=json</span></code>, removes all null datapoints from the series returned.</p>
+<section id="pielabels">
+<span id="param-pielabels"></span><h4>pieLabels<a class="headerlink" href="#pielabels" title="Link to this heading">¶</a></h4>
+<p><em>Default: horizontal</em></p>
+<p>Orientation to use for slice labels inside of a pie chart.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">horizontal</span></code></dt><dd><p>Labels are oriented horizontally within each slice</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">rotated</span></code></dt><dd><p>Labels are oriented radially within each slice</p>
+</dd>
+</dl>
+</section>
+<section id="piemode">
+<span id="param-piemode"></span><h4>pieMode<a class="headerlink" href="#piemode" title="Link to this heading">¶</a></h4>
+<p><em>Default: average</em></p>
+<p>The type of aggregation to use to calculate slices of a pie when
+<code class="docutils literal notranslate"><span class="pre">graphType=pie</span></code>. One of:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">average</span></code></dt><dd><p>The average of non-null points in the series.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">maximum</span></code></dt><dd><p>The maximum of non-null points in the series.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">minimum</span></code></dt><dd><p>The minimum of non-null points in the series.</p>
+</dd>
+</dl>
+</section>
+<section id="rightcolor">
+<span id="param-rightcolor"></span><h4>rightColor<a class="headerlink" href="#rightcolor" title="Link to this heading">¶</a></h4>
+<p><em>Default: color chosen from</em> <a class="reference internal" href="#colorlist">colorList</a></p>
+<p>In dual Y-axis mode, sets the color of all metrics associated with the right
+Y-axis.</p>
+</section>
+<section id="rightdashed">
+<span id="param-rightdashed"></span><h4>rightDashed<a class="headerlink" href="#rightdashed" title="Link to this heading">¶</a></h4>
+<p><em>Default: false</em></p>
+<p>In dual Y-axis mode, draws all metrics associated with the right Y-axis using
+dashed lines.</p>
+</section>
+<section id="rightwidth">
+<span id="param-rightwidth"></span><h4>rightWidth<a class="headerlink" href="#rightwidth" title="Link to this heading">¶</a></h4>
+<p><em>Default: value of the parameter</em> <a class="reference internal" href="#linewidth">lineWidth</a></p>
+<p>In dual Y-axis mode, sets the line width of all metrics associated with the
+right Y-axis.</p>
+</section>
+<section id="param-template">
+<span id="id7"></span><h4>template<a class="headerlink" href="#param-template" title="Link to this heading">¶</a></h4>
+<p><em>Default: default</em></p>
+<p>Used to specify a template from <code class="docutils literal notranslate"><span class="pre">graphTemplates.conf</span></code> to use for default
+colors and graph styles.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">template</span><span class="o">=</span><span class="n">plain</span>
+</pre></div>
+</div>
+</section>
+<section id="thickness">
+<span id="param-thickness"></span><h4>thickness<a class="headerlink" href="#thickness" title="Link to this heading">¶</a></h4>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.9.0: </span>See: <a class="reference internal" href="#linewidth">lineWidth</a></p>
+</div>
+</section>
+<section id="title">
+<span id="param-title"></span><h4>title<a class="headerlink" href="#title" title="Link to this heading">¶</a></h4>
+<p><em>Default: &lt;unset&gt;</em></p>
+<p>Puts a title at the top of the graph, center aligned. If unset, no title is
+displayed.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">title</span><span class="o">=</span><span class="n">Apache</span> <span class="n">Busy</span> <span class="n">Threads</span><span class="p">,</span> <span class="n">All</span> <span class="n">Servers</span><span class="p">,</span> <span class="n">Past</span> <span class="mi">24</span><span class="n">h</span>
+</pre></div>
+</div>
+</section>
+<section id="tz">
+<span id="param-tz"></span><h4>tz<a class="headerlink" href="#tz" title="Link to this heading">¶</a></h4>
+<p><em>Default: The timezone specified in the graphite-render configuration</em></p>
+<p>Time zone to convert all times into.</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">tz</span><span class="o">=</span><span class="n">America</span><span class="o">/</span><span class="n">Los_Angeles</span>
+<span class="o">&amp;</span><span class="n">tz</span><span class="o">=</span><span class="n">UTC</span>
+</pre></div>
+</div>
+</section>
+<section id="uniquelegend">
+<span id="param-uniquelegend"></span><h4>uniqueLegend<a class="headerlink" href="#uniquelegend" title="Link to this heading">¶</a></h4>
+<p><em>Default: false</em></p>
+<p>Display only unique legend items, removing any duplicates.</p>
+</section>
+<section id="until">
+<span id="param-until"></span><h4>until<a class="headerlink" href="#until" title="Link to this heading">¶</a></h4>
+<p>See: <a class="reference internal" href="#from-until">from / until</a></p>
+</section>
+<section id="valuelabels">
+<span id="param-valuelabels"></span><h4>valueLabels<a class="headerlink" href="#valuelabels" title="Link to this heading">¶</a></h4>
+<p><em>Default: percent</em></p>
+<p>Determines how slice labels are rendered within a pie chart.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">none</span></code></dt><dd><p>Slice labels are not shown</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">numbers</span></code></dt><dd><p>Slice labels are reported with the original values</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">percent</span></code></dt><dd><p>Slice labels are reported as a percent of the whole</p>
+</dd>
+</dl>
+</section>
+<section id="valuelabelscolor">
+<span id="param-valuelabelscolor"></span><h4>valueLabelsColor<a class="headerlink" href="#valuelabelscolor" title="Link to this heading">¶</a></h4>
+<p><em>Default: black</em></p>
+<p>Color used to draw slice labels within a pie chart.</p>
+</section>
+<section id="valuelabelsmin">
+<span id="param-valuelabelsmin"></span><h4>valueLabelsMin<a class="headerlink" href="#valuelabelsmin" title="Link to this heading">¶</a></h4>
+<p><em>Default: 5</em></p>
+<p>Slice values below this minimum will not have their labels rendered.</p>
+</section>
+<section id="vtitle">
+<span id="param-vtitle"></span><h4>vtitle<a class="headerlink" href="#vtitle" title="Link to this heading">¶</a></h4>
+<p><em>Default: &lt;unset&gt;</em></p>
+<p>Labels the y-axis with vertical text. If unset, no y-axis label is displayed.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">vtitle</span><span class="o">=</span><span class="n">Threads</span>
+</pre></div>
+</div>
+</section>
+<section id="vtitleright">
+<span id="param-vtitleright"></span><h4>vtitleRight<a class="headerlink" href="#vtitleright" title="Link to this heading">¶</a></h4>
+<p><em>Default: &lt;unset&gt;</em></p>
+<p>In dual Y-axis mode, sets the title of the right Y-Axis (see: <a class="reference internal" href="#vtitle">vtitle</a>).</p>
+</section>
+<section id="width">
+<span id="param-width"></span><h4>width<a class="headerlink" href="#width" title="Link to this heading">¶</a></h4>
+<p><em>Default: 330</em></p>
+<p>Sets the width of the generated graph image in pixels.</p>
+<p>See also: <a class="reference internal" href="#height">height</a></p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">width</span><span class="o">=</span><span class="mi">650</span><span class="o">&amp;</span><span class="n">height</span><span class="o">=</span><span class="mi">250</span>
+</pre></div>
+</div>
+</section>
+<section id="xformat">
+<span id="param-xformat"></span><h4>xFormat<a class="headerlink" href="#xformat" title="Link to this heading">¶</a></h4>
+<p><em>Default: Determined automatically based on the time-width of the X axis</em></p>
+<p>Sets the time format used when displaying
+the X-axis. See <a class="reference external" href="http://docs.python.org/library/datetime.html#datetime.date.strftime">datetime.date.strftime()</a> for
+format specification details.</p>
+</section>
+<section id="yaxisside">
+<span id="param-yaxisside"></span><h4>yAxisSide<a class="headerlink" href="#yaxisside" title="Link to this heading">¶</a></h4>
+<p><em>Default: left</em></p>
+<p>Sets the side of the graph on which to render the Y-axis. Accepts values of
+<code class="docutils literal notranslate"><span class="pre">left</span></code> or <code class="docutils literal notranslate"><span class="pre">right</span></code>.</p>
+</section>
+<section id="ydivisors">
+<span id="param-ydivisors"></span><h4>yDivisors<a class="headerlink" href="#ydivisors" title="Link to this heading">¶</a></h4>
+<p><em>Default: 4,5,6</em></p>
+<p>Sets the preferred number of intermediate values to display on the Y-axis (Y
+values between the minimum and maximum). Note that Graphite will ultimately
+choose what values (and how many) to display based on a ‘pretty’ factor,
+which tries to maintain a sensible scale (e.g. preferring intermediary values
+like 25%,50%,75% over 33.3%,66.6%). To explicitly set the Y-axis values, see
+<a class="reference internal" href="#ystep">yStep</a>.</p>
+</section>
+<section id="ylimit">
+<span id="param-ylimit"></span><h4>yLimit<a class="headerlink" href="#ylimit" title="Link to this heading">¶</a></h4>
+<p><em>Reserved for future use</em></p>
+<p>See: <a class="reference internal" href="#ymax">yMax</a></p>
+</section>
+<section id="ylimitleft">
+<span id="param-ylimitleft"></span><h4>yLimitLeft<a class="headerlink" href="#ylimitleft" title="Link to this heading">¶</a></h4>
+<p><em>Reserved for future use</em></p>
+<p>See: <a class="reference internal" href="#ymaxleft">yMaxLeft</a></p>
+</section>
+<section id="ylimitright">
+<span id="param-ylimitright"></span><h4>yLimitRight<a class="headerlink" href="#ylimitright" title="Link to this heading">¶</a></h4>
+<p><em>Reserved for future use</em></p>
+<p>See: <a class="reference internal" href="#ymaxright">yMaxRight</a></p>
+</section>
+<section id="ymin">
+<span id="param-ymin"></span><h4>yMin<a class="headerlink" href="#ymin" title="Link to this heading">¶</a></h4>
+<p><em>Default: The lowest value of any of the series displayed</em></p>
+<p>Manually sets the lower bound of the graph. Can be passed any integer or
+floating point number.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">yMin</span><span class="o">=</span><span class="mi">0</span>
+</pre></div>
+</div>
+</section>
+<section id="ymax">
+<span id="param-ymax"></span><h4>yMax<a class="headerlink" href="#ymax" title="Link to this heading">¶</a></h4>
+<p><em>Default: The highest value of any of the series displayed</em></p>
+<p>Manually sets the upper bound of the graph. Can be passed any integer or
+floating point number.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">yMax</span><span class="o">=</span><span class="mf">0.2345</span>
+</pre></div>
+</div>
+</section>
+<section id="ymaxleft">
+<span id="param-ymaxleft"></span><h4>yMaxLeft<a class="headerlink" href="#ymaxleft" title="Link to this heading">¶</a></h4>
+<p>In dual Y-axis mode, sets the upper bound of the left Y-Axis (see: <a class="reference internal" href="#ymax">yMax</a>).</p>
+</section>
+<section id="ymaxright">
+<span id="param-ymaxright"></span><h4>yMaxRight<a class="headerlink" href="#ymaxright" title="Link to this heading">¶</a></h4>
+<p>In dual Y-axis mode, sets the upper bound of the right Y-Axis (see: <a class="reference internal" href="#ymax">yMax</a>).</p>
+</section>
+<section id="yminleft">
+<span id="param-yminleft"></span><h4>yMinLeft<a class="headerlink" href="#yminleft" title="Link to this heading">¶</a></h4>
+<p>In dual Y-axis mode, sets the lower bound of the left Y-Axis (see: <a class="reference internal" href="#ymin">yMin</a>).</p>
+</section>
+<section id="yminright">
+<span id="param-yminright"></span><h4>yMinRight<a class="headerlink" href="#yminright" title="Link to this heading">¶</a></h4>
+<p>In dual Y-axis mode, sets the lower bound of the right Y-Axis (see: <a class="reference internal" href="#ymin">yMin</a>).</p>
+</section>
+<section id="ystep">
+<span id="param-ystep"></span><h4>yStep<a class="headerlink" href="#ystep" title="Link to this heading">¶</a></h4>
+<p><em>Default: Calculated automatically</em></p>
+<p>Manually set the value step between Y-axis labels and grid lines.</p>
+</section>
+<section id="ystepleft">
+<span id="param-ystepleft"></span><h4>yStepLeft<a class="headerlink" href="#ystepleft" title="Link to this heading">¶</a></h4>
+<p>In dual Y-axis mode, Manually set the value step between the left Y-axis
+labels and grid lines (see: <a class="reference internal" href="#ystep">yStep</a>).</p>
+</section>
+<section id="ystepright">
+<span id="param-ystepright"></span><h4>yStepRight<a class="headerlink" href="#ystepright" title="Link to this heading">¶</a></h4>
+<p>In dual Y-axis mode, Manually set the value step between the right Y-axis
+labels and grid lines (see: <a class="reference internal" href="#ystep">yStep</a>).</p>
+</section>
+<section id="yunitsystem">
+<span id="param-yunitsystem"></span><h4>yUnitSystem<a class="headerlink" href="#yunitsystem" title="Link to this heading">¶</a></h4>
+<p><em>Default: si</em></p>
+<p>Set the unit system for compacting Y-axis values (e.g. 23,000,000 becomes
+23M). Value can be one of:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">si</span></code></dt><dd><p>Use si units (powers of 1000) - K, M, G, T, P.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">binary</span></code></dt><dd><p>Use binary units (powers of 1024) - Ki, Mi, Gi, Ti, Pi.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">sec</span></code></dt><dd><p>Use time units (seconds) - m, H, D, M, Y.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">msec</span></code></dt><dd><p>Use time units (milliseconds) - s, m, H, D, M, Y.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">none</span></code></dt><dd><p>Dont compact values, display the raw number.</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">HTTP API</a><ul>
+<li><a class="reference internal" href="#the-metrics-api">The Metrics API</a><ul>
+<li><a class="reference internal" href="#metrics-find"><code class="docutils literal notranslate"><span class="pre">/metrics/find</span></code></a></li>
+<li><a class="reference internal" href="#metrics-expand"><code class="docutils literal notranslate"><span class="pre">/metrics/expand</span></code></a></li>
+<li><a class="reference internal" href="#metrics-index-json"><code class="docutils literal notranslate"><span class="pre">/metrics/index.json</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#the-render-api-render">The Render API – <code class="docutils literal notranslate"><span class="pre">/render</span></code></a><ul>
+<li><a class="reference internal" href="#graphing-metrics">Graphing Metrics</a><ul>
+<li><a class="reference internal" href="#target">target</a><ul>
+<li><a class="reference internal" href="#paths-and-wildcards">Paths and Wildcards</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#from-until">from / until</a></li>
+<li><a class="reference internal" href="#template">template</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#data-display-formats">Data Display Formats</a><ul>
+<li><a class="reference internal" href="#format">format</a><ul>
+<li><a class="reference internal" href="#png">png</a></li>
+<li><a class="reference internal" href="#raw">raw</a></li>
+<li><a class="reference internal" href="#csv">csv</a></li>
+<li><a class="reference internal" href="#json">json</a></li>
+<li><a class="reference internal" href="#id2">svg</a></li>
+<li><a class="reference internal" href="#pdf">pdf</a></li>
+<li><a class="reference internal" href="#dygraph">dygraph</a></li>
+<li><a class="reference internal" href="#rickshaw">rickshaw</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rawdata">rawData</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#graph-parameters">Graph Parameters</a><ul>
+<li><a class="reference internal" href="#areaalpha">areaAlpha</a></li>
+<li><a class="reference internal" href="#areamode">areaMode</a></li>
+<li><a class="reference internal" href="#bgcolor">bgcolor</a></li>
+<li><a class="reference internal" href="#cachetimeout">cacheTimeout</a></li>
+<li><a class="reference internal" href="#colorlist">colorList</a></li>
+<li><a class="reference internal" href="#drawnullaszero">drawNullAsZero</a></li>
+<li><a class="reference internal" href="#fgcolor">fgcolor</a></li>
+<li><a class="reference internal" href="#fontbold">fontBold</a></li>
+<li><a class="reference internal" href="#fontitalic">fontItalic</a></li>
+<li><a class="reference internal" href="#fontname">fontName</a></li>
+<li><a class="reference internal" href="#fontsize">fontSize</a></li>
+<li><a class="reference internal" href="#param-format">format</a></li>
+<li><a class="reference internal" href="#from">from</a></li>
+<li><a class="reference internal" href="#graphonly">graphOnly</a></li>
+<li><a class="reference internal" href="#graphtype">graphType</a></li>
+<li><a class="reference internal" href="#hidelegend">hideLegend</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hidenullfromlegend">hideNullFromLegend</a><ul>
+<li><a class="reference internal" href="#hideaxes">hideAxes</a></li>
+<li><a class="reference internal" href="#hidexaxis">hideXAxis</a></li>
+<li><a class="reference internal" href="#hideyaxis">hideYAxis</a></li>
+<li><a class="reference internal" href="#hidegrid">hideGrid</a></li>
+<li><a class="reference internal" href="#height">height</a></li>
+<li><a class="reference internal" href="#jsonp">jsonp</a></li>
+<li><a class="reference internal" href="#leftcolor">leftColor</a></li>
+<li><a class="reference internal" href="#leftdashed">leftDashed</a></li>
+<li><a class="reference internal" href="#leftwidth">leftWidth</a></li>
+<li><a class="reference internal" href="#linemode">lineMode</a></li>
+<li><a class="reference internal" href="#linewidth">lineWidth</a></li>
+<li><a class="reference internal" href="#logbase">logBase</a></li>
+<li><a class="reference internal" href="#majorgridlinecolor">majorGridLineColor</a></li>
+<li><a class="reference internal" href="#margin">margin</a></li>
+<li><a class="reference internal" href="#max">max</a></li>
+<li><a class="reference internal" href="#maxdatapoints">maxDataPoints</a></li>
+<li><a class="reference internal" href="#minorgridlinecolor">minorGridLineColor</a></li>
+<li><a class="reference internal" href="#minory">minorY</a></li>
+<li><a class="reference internal" href="#min">min</a></li>
+<li><a class="reference internal" href="#minxstep">minXStep</a></li>
+<li><a class="reference internal" href="#nocache">noCache</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#nonullpoints">noNullPoints</a><ul>
+<li><a class="reference internal" href="#pielabels">pieLabels</a></li>
+<li><a class="reference internal" href="#piemode">pieMode</a></li>
+<li><a class="reference internal" href="#rightcolor">rightColor</a></li>
+<li><a class="reference internal" href="#rightdashed">rightDashed</a></li>
+<li><a class="reference internal" href="#rightwidth">rightWidth</a></li>
+<li><a class="reference internal" href="#param-template">template</a></li>
+<li><a class="reference internal" href="#thickness">thickness</a></li>
+<li><a class="reference internal" href="#title">title</a></li>
+<li><a class="reference internal" href="#tz">tz</a></li>
+<li><a class="reference internal" href="#uniquelegend">uniqueLegend</a></li>
+<li><a class="reference internal" href="#until">until</a></li>
+<li><a class="reference internal" href="#valuelabels">valueLabels</a></li>
+<li><a class="reference internal" href="#valuelabelscolor">valueLabelsColor</a></li>
+<li><a class="reference internal" href="#valuelabelsmin">valueLabelsMin</a></li>
+<li><a class="reference internal" href="#vtitle">vtitle</a></li>
+<li><a class="reference internal" href="#vtitleright">vtitleRight</a></li>
+<li><a class="reference internal" href="#width">width</a></li>
+<li><a class="reference internal" href="#xformat">xFormat</a></li>
+<li><a class="reference internal" href="#yaxisside">yAxisSide</a></li>
+<li><a class="reference internal" href="#ydivisors">yDivisors</a></li>
+<li><a class="reference internal" href="#ylimit">yLimit</a></li>
+<li><a class="reference internal" href="#ylimitleft">yLimitLeft</a></li>
+<li><a class="reference internal" href="#ylimitright">yLimitRight</a></li>
+<li><a class="reference internal" href="#ymin">yMin</a></li>
+<li><a class="reference internal" href="#ymax">yMax</a></li>
+<li><a class="reference internal" href="#ymaxleft">yMaxLeft</a></li>
+<li><a class="reference internal" href="#ymaxright">yMaxRight</a></li>
+<li><a class="reference internal" href="#yminleft">yMinLeft</a></li>
+<li><a class="reference internal" href="#yminright">yMinRight</a></li>
+<li><a class="reference internal" href="#ystep">yStep</a></li>
+<li><a class="reference internal" href="#ystepleft">yStepLeft</a></li>
+<li><a class="reference internal" href="#ystepright">yStepRight</a></li>
+<li><a class="reference internal" href="#yunitsystem">yUnitSystem</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="deployment.html"
+                          title="previous chapter">Deployment</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="functions.html"
+                          title="next chapter">Built-in functions</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="functions.html" title="Built-in functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="deployment.html" title="Deployment"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">HTTP API</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2014, Bruno Renié.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    </div>
+  </body>
+</html>

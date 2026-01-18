@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Installation &#8212; Graphite-Render 1.1.8 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=df104e6e"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Configuration" href="configuration.html" />
+    <link rel="prev" title="Graphite-Render documentation" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Graphite-Render documentation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
+<section id="python-package">
+<h2>Python package<a class="headerlink" href="#python-package" title="Link to this heading">¶</a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h3>
+<p>Installing Graphite-Render requires:</p>
+<ul class="simple">
+<li><p>Python 3 (3.9 and above).</p></li>
+<li><p>Cairo. On debian/ubuntu, install the <code class="docutils literal notranslate"><span class="pre">libcairo2</span></code> package.</p></li>
+<li><p>Pip, the Python package manager. On debian/ubuntu, install <code class="docutils literal notranslate"><span class="pre">python-pip</span></code>.</p></li>
+</ul>
+</section>
+<section id="global-installation">
+<h3>Global installation<a class="headerlink" href="#global-installation" title="Link to this heading">¶</a></h3>
+<p>To install Graphite-Render globally on your system, run as root:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install graphite-render
+</pre></div>
+</div>
+</section>
+<section id="isolated-installation-virtualenv">
+<h3>Isolated installation (virtualenv)<a class="headerlink" href="#isolated-installation-virtualenv" title="Link to this heading">¶</a></h3>
+<p>If you want to isolate Graphite-Render from the system-wide python environment,
+you can install it in a virtualenv.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ virtualenv /usr/share/python/graphite
+$ /usr/share/python/graphite/bin/pip install graphite-render
+</pre></div>
+</div>
+</section>
+<section id="extra-dependencies">
+<span id="extras"></span><h3>Extra dependencies<a class="headerlink" href="#extra-dependencies" title="Link to this heading">¶</a></h3>
+<p>When you install <code class="docutils literal notranslate"><span class="pre">graphite-render</span></code>, all the dependencies for running a Graphite
+server that uses Whisper as a storage backend are installed. You can specify
+extra dependencies:</p>
+<ul class="simple">
+<li><p>For <a class="reference external" href="https://docs.getsentry.com">Sentry</a> integration: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">graphite-render[sentry]</span></code>.</p></li>
+<li><p>For <a class="reference external" href="https://github.com/brutasse/graphite-cyanite">Cyanite</a> integration: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">graphite-render[cyanite]</span></code>.</p></li>
+<li><p>For Cache support: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">graphite-render[cache]</span></code>. You’ll also need the
+driver for the type of caching you want to use (Redis, Memcache, etc.). See
+the <a class="reference external" href="http://pythonhosted.org/Flask-Cache/#configuring-flask-cache">Flask-Cache docs</a> for supported cache types.</p></li>
+</ul>
+<p>You can also combine several extra dependencies:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install graphite-render[sentry,cyanite]
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#python-package">Python package</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#global-installation">Global installation</a></li>
+<li><a class="reference internal" href="#isolated-installation-virtualenv">Isolated installation (virtualenv)</a></li>
+<li><a class="reference internal" href="#extra-dependencies">Extra dependencies</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">Graphite-Render documentation</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="configuration.html"
+                          title="next chapter">Configuration</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/installation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Graphite-Render documentation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2014, Bruno Renié.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    </div>
+  </body>
+</html>

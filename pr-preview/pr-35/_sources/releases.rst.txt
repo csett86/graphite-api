@@ -1,0 +1,169 @@
+Graphite-Render releases
+========================
+
+1.1.8 -- 2026-01-17
+-------------------
+
+* Update to pyparsing >=3 and adapt to pep8 compatible names before the old names brake in pyparsing 4 later
+
+1.1.7 -- 2026-01-17
+-------------------
+
+* Add fallback configuration from /etc/graphite-api.yml for graphite-api compatibility
+* Bump minimal python version to 3.9
+* Replace pytz with standard library zoneinfo (requires python 3.9)
+
+1.1.6 -- 2026-01-17
+-------------------
+
+* No functional changes, just metadata updates.
+
+1.1.5 -- 2026-01-17
+-------------------
+
+* Rename project to graphite-render and module to graphite_render
+* Remove Python 2 compatibility code
+* Remove flake8 usage and references
+
+1.1.4 -- 2026-01-16
+-------------------
+
+* Add Python 3.12, 3.13, 3.14 compatibility
+* Convert to modern Python packaging standards (PEP 517/518/621)
+
+
+Graphite-Api releases
+=====================
+
+1.1.3 -- 2016-05-23
+-------------------
+
+* Remove extra parenthesis from ``aliasByMetric()``.
+* Fix leap year handling in ``graphite_render.render.attime``.
+* Allow colon and hash in node names in ``aliasByNode()``
+* Fix calling ``reduceFunction`` in ``reduceSeries``
+* Revert a whisper patch which broke multiple retentions handling.
+* Specify which function is invalid when providing an invalid consolidation
+  function.
+
+1.1.2 -- 2015-11-19
+-------------------
+
+* Fix regression in multi fetch handling: paths were queried multiple times,
+  leading to erroneous behaviour and slowdown.
+* Continue on IndexError in ``remove{Above,Below}Percentile`` functions.
+
+1.1.1 -- 2015-10-23
+-------------------
+
+* Fix ``areaMode=stacked``.
+
+* Fix error when calling functions that use ``fetchWithBootstrap`` and the
+  bootstrap range isn't available (fill with nulls instead).
+
+1.1 -- 2015-10-05
+-----------------
+
+* Add CarbonLink support.
+
+* Add support for configuring a cache backend and the ``noCache`` and
+  ``cacheTimeout`` API options.
+
+* When no timezone is provided in the configuration file, try to guess from
+  the system's timezone with a fallback to UTC.
+
+* Now supporting Flask >= 0.8 and Pyparsing >= 1.5.7.
+
+* Add support for ``fetch_multi()`` in storage finders. This is useful for
+  database-backed finders such as Cyanite because it allows fetching all time
+  series at once instead of sequentially.
+
+* Add ``multiplySeriesWithWildcards``, ``minimumBelow``, ``changed``,
+  ``timeSlice`` and ``removeEmptySeries`` functions.
+
+* Add optional ``step`` argument to ``time``, ``sin`` and ``randomWalk``
+  functions.
+
+* Add ``/metrics`` API call as an alias to ``/metrics/find``.
+
+* Add missing ``/metrics/index.json`` API call.
+
+* Allow wildcards origins (``*``) in CORS configuration.
+
+* Whisper finder now logs debug information.
+
+* Fix parsing dates such as "feb27" during month days > 28.
+
+* Change ``sum()`` to return ``null`` instead of 0 when all series' datapoints
+  are null at the same time. This is graphite-web's behavior.
+
+* Extract paths of all targets before fetching data. This is a significant
+  optimization for storage backends such as Cyanite that allow bulk-fetching
+  metrics.
+
+* Add JSONP support to all API endpoints that can return JSON.
+
+* Fix 500 error when generating a SVG graph without any data.
+
+* Return tracebacks in the HTTP response when app errors occur. This behavior
+  can be disabled in the configuration.
+
+* Fixes for the following graphite-web issues:
+
+  * `#639 <https://github.com/graphite-project/graphite-web/issues/639>`_ --
+    proper timezone handling of ``from`` and ``until`` with client-supplied
+    timezones.
+  * `#540 <https://github.com/graphite-project/graphite-web/issues/540>`_ --
+    provide the last data point when rendering to JSON format.
+  * `#381 <https://github.com/graphite-project/graphite-web/issues/381>`_ --
+    make ``areaBetween()`` work either when passed 2 arguments or a single
+    wildcard series of length 2.
+  * `#702 <https://github.com/graphite-project/graphite-web/pull/702>`_ --
+    handle backslash as path separator on windows.
+  * `#410 <https://github.com/graphite-project/graphite-web/pull/410>`_ -- SVG
+    output sometimes had an extra ``</g>`` tag.
+
+1.0.1 -- 2014-03-21
+-------------------
+
+* ``time_zone`` set to UTC by default instead of Europe/Berlin.
+* Properly log app exceptions.
+* Fix constantLine for python 3.
+* Create whisper directories if they don't exist.
+* Fixes for the following graphite-web issues:
+
+  * `#645 <https://github.com/graphite-project/graphite-web/pull/645>`_, `#625
+    <https://github.com/graphite-project/graphite-web/issues/625>`_ -- allow
+    ``constantLine`` to work even if there are no other targets in the graph.
+
+1.0.0 -- 2014-03-20
+-------------------
+
+Version 1.0 is based on the master branch of Graphite-web, mid-March 2014,
+with the following modifications:
+
+* New ``/index`` API endpoint for re-building the index (replaces the
+  build-index command-line script from graphite-web).
+
+* Removal of memcache integration.
+
+* Removal of Pickle integration.
+
+* Removal of remote rendering.
+
+* Support for Python 3.
+
+* A lot more tests and test coverage.
+
+* Fixes for the following graphite-web issues:
+
+  * (meta) `#647 <https://github.com/graphite-project/graphite-web/issues/647>`_
+    -- strip out the API from graphite-web.
+  * `#665 <https://github.com/graphite-project/graphite-web/pull/665>`_ --
+    address some DeprecationWarnings.
+  * `#658 <https://github.com/graphite-project/graphite-web/issues/658>`_ --
+    accept a float value in ``maxDataPoints``.
+  * `#654 <https://github.com/graphite-project/graphite-web/pull/654>`_ --
+    ignore invalid ``logBase`` values (<=1).
+  * `#591 <https://github.com/graphite-project/graphite-web/issues/591>`_ --
+    accept JSON data additionaly to querystring params or form data.
