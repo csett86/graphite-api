@@ -47,7 +47,7 @@ cyanite = ["cyanite"]
 cache = ["flask-caching"]
 statsd = ["statsd"]
 docs = ["sphinx"]
-render = ["cairocffi"]
+cairo = ["cairocffi"]
 
 [project.urls]
 Homepage = "https://github.com/csett86/graphite-render"
