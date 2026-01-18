@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Deployment &#8212; Graphite-Render 1.1.8 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=df104e6e"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="HTTP API" href="api.html" />
+    <link rel="prev" title="Configuration" href="configuration.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="api.html" title="HTTP API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Deployment</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="deployment">
+<h1>Deployment<a class="headerlink" href="#deployment" title="Link to this heading">¶</a></h1>
+<p>There are several options available, depending on your setup.</p>
+<section id="gunicorn-nginx">
+<h2>Gunicorn + nginx<a class="headerlink" href="#gunicorn-nginx" title="Link to this heading">¶</a></h2>
+<p>First, you need to install Gunicorn. The easiest way is to use <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install gunicorn
+</pre></div>
+</div>
+<p>If you have installed Graphite-Render in a virtualenv, install Gunicorn in the
+same virtualenv:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ /usr/share/python/graphite/bin/pip install gunicorn
+</pre></div>
+</div>
+<p>Next, create the script that will run Graphite-Render using your process watcher
+of choice.</p>
+<p><em>systemd</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># This is /etc/systemd/system/graphite-render.socket</span>
+<span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="n">Description</span><span class="o">=</span><span class="n">graphite</span><span class="o">-</span><span class="n">render</span> <span class="n">socket</span>
+
+<span class="p">[</span><span class="n">Socket</span><span class="p">]</span>
+<span class="n">ListenStream</span><span class="o">=/</span><span class="n">run</span><span class="o">/</span><span class="n">graphite</span><span class="o">-</span><span class="n">render</span><span class="o">.</span><span class="n">sock</span>
+<span class="n">ListenStream</span><span class="o">=</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">8888</span>
+
+<span class="p">[</span><span class="n">Install</span><span class="p">]</span>
+<span class="n">WantedBy</span><span class="o">=</span><span class="n">sockets</span><span class="o">.</span><span class="n">target</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># This is /etc/systemd/system/graphite-render.service
+[Unit]
+Description=Graphite-Render service
+Requires=graphite-render.socket
+
+[Service]
+ExecStart=/usr/bin/gunicorn -w2 graphite_render.app:app
+Restart=on-failure
+#User=graphite
+#Group=graphite
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you have installed Graphite-Render and Gunicorn in a virtualenv, you
+need to use the full path to Gunicorn. Instead of <code class="docutils literal notranslate"><span class="pre">gunicorn</span></code>, use
+<code class="docutils literal notranslate"><span class="pre">/usr/share/python/graphite/bin/gunicorn</span></code> (assuming your virtualenv is
+at <code class="docutils literal notranslate"><span class="pre">/usr/share/python/graphite</span></code>).</p>
+</div>
+<p>See the <a class="reference external" href="http://docs.gunicorn.org/en/latest/">Gunicorn docs</a> for configuration options and command-line flags.</p>
+<p>Finally, configure the nginx vhost:</p>
+<div class="highlight-nginx notranslate"><div class="highlight"><pre><span></span><span class="c1"># /etc/nginx/sites-available/graphite.conf</span>
+
+<span class="k">upstream</span><span class="w"> </span><span class="s">graphite</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kn">server</span><span class="w"> </span><span class="n">127.0.0.1</span><span class="p">:</span><span class="mi">8888</span><span class="w"> </span><span class="s">fail_timeout=0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">graph</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">80</span><span class="w"> </span><span class="s">default</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">root</span><span class="w"> </span><span class="s">/srv/www/graphite</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="s">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kn">try_files</span><span class="w"> </span><span class="nv">$uri</span><span class="w"> </span><span class="s">@graphite</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="s">@graphite</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kn">proxy_pass</span><span class="w"> </span><span class="s">http://graphite</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Enable the vhost and restart nginx:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ln -s /etc/nginx/sites-available/graphite.conf /etc/nginx/sites-enabled
+$ service nginx restart
+</pre></div>
+</div>
+</section>
+<section id="apache-mod-wsgi">
+<h2>Apache + mod_wsgi<a class="headerlink" href="#apache-mod-wsgi" title="Link to this heading">¶</a></h2>
+<p>First, you need to install mod_wsgi.</p>
+<p>See the <a class="reference external" href="https://code.google.com/p/modwsgi/wiki/InstallationInstructions">mod_wsgi InstallationInstructions</a> for installation instructions.</p>
+<p>Then create the graphite-render.wsgi:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># /var/www/wsgi-scripts/graphite-render.wsgi</span>
+
+from<span class="w"> </span>graphite_render.app<span class="w"> </span>import<span class="w"> </span>app<span class="w"> </span>as<span class="w"> </span>application
+</pre></div>
+</div>
+<p>Finally, configure the apache vhost:</p>
+<div class="highlight-apache notranslate"><div class="highlight"><pre><span></span><span class="c"># /etc/httpd/conf.d/graphite.conf</span>
+
+<span class="nb">LoadModule</span><span class="w"> </span>wsgi_module<span class="w"> </span>modules/mod_wsgi.so
+
+<span class="nb">WSGISocketPrefix</span><span class="w"> </span><span class="sx">/var/run/wsgi</span>
+
+<span class="nb">Listen</span><span class="w"> </span><span class="m">8013</span>
+<span class="nt">&lt;VirtualHost</span><span class="w"> </span><span class="s">*:8013</span><span class="nt">&gt;</span>
+
+<span class="w">    </span><span class="nb">WSGIDaemonProcess</span><span class="w"> </span>graphite-render<span class="w"> </span>processes=5<span class="w"> </span>threads=5<span class="w"> </span>display-name=&#39;%{GROUP}&#39;<span class="w"> </span>inactivity-timeout=120
+<span class="w">    </span><span class="nb">WSGIProcessGroup</span><span class="w"> </span>graphite-render
+<span class="w">    </span><span class="nb">WSGIApplicationGroup</span><span class="w"> </span>%{GLOBAL}
+<span class="w">    </span><span class="nb">WSGIImportScript</span><span class="w"> </span><span class="sx">/var/www/wsgi-scripts/graphite-render.wsgi</span><span class="w"> </span>process-group=graphite-render<span class="w"> </span>application-group=%{GLOBAL}
+
+<span class="w">    </span><span class="nb">WSGIScriptAlias</span><span class="w"> </span>/<span class="w"> </span><span class="sx">/var/www/wsgi-scripts/graphite-render.wsgi</span>
+
+<span class="w">    </span><span class="nt">&lt;Directory</span><span class="w"> </span><span class="s">/var/www/wsgi-scripts/</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nb">Order</span><span class="w"> </span>deny,allow
+<span class="w">        </span><span class="nb">Allow</span><span class="w"> </span>from<span class="w"> </span><span class="k">all</span>
+<span class="w">    </span><span class="nt">&lt;/Directory&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/VirtualHost&gt;</span>
+</pre></div>
+</div>
+<p>Adapt the mod_wsgi configuration to your requirements.</p>
+<p>See the <a class="reference external" href="https://code.google.com/p/modwsgi/wiki/QuickConfigurationGuide">mod_wsgi QuickConfigurationGuide</a> for an overview of configurations and <a class="reference external" href="https://code.google.com/p/modwsgi/wiki/ConfigurationDirectives">mod_wsgi ConfigurationDirectives</a> to see all configuration directives</p>
+<p>Restart apache:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ service httpd restart
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Deployment</a><ul>
+<li><a class="reference internal" href="#gunicorn-nginx">Gunicorn + nginx</a></li>
+<li><a class="reference internal" href="#apache-mod-wsgi">Apache + mod_wsgi</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="configuration.html"
+                          title="previous chapter">Configuration</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="api.html"
+                          title="next chapter">HTTP API</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/deployment.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="api.html" title="HTTP API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="configuration.html" title="Configuration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Deployment</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2014, Bruno Renié.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    </div>
+  </body>
+</html>

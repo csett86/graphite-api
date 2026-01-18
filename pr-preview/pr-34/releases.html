@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Graphite-Render releases &#8212; Graphite-Render 1.1.8 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=df104e6e"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Custom functions" href="custom-functions.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="custom-functions.html" title="Custom functions"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Graphite-Render releases</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="graphite-render-releases">
+<h1>Graphite-Render releases<a class="headerlink" href="#graphite-render-releases" title="Link to this heading">¶</a></h1>
+<section id="id1">
+<h2>1.1.8 – 2026-01-17<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Update to pyparsing &gt;=3 and adapt to pep8 compatible names before the old names brake in pyparsing 4 later</p></li>
+</ul>
+</section>
+<section id="id2">
+<h2>1.1.7 – 2026-01-17<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Add fallback configuration from /etc/graphite-api.yml for graphite-api compatibility</p></li>
+<li><p>Bump minimal python version to 3.9</p></li>
+<li><p>Replace pytz with standard library zoneinfo (requires python 3.9)</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>1.1.6 – 2026-01-17<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>No functional changes, just metadata updates.</p></li>
+</ul>
+</section>
+<section id="id4">
+<h2>1.1.5 – 2026-01-17<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Rename project to graphite-render and module to graphite_render</p></li>
+<li><p>Remove Python 2 compatibility code</p></li>
+<li><p>Remove flake8 usage and references</p></li>
+</ul>
+</section>
+<section id="id5">
+<h2>1.1.4 – 2026-01-16<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Add Python 3.12, 3.13, 3.14 compatibility</p></li>
+<li><p>Convert to modern Python packaging standards (PEP 517/518/621)</p></li>
+</ul>
+</section>
+</section>
+<section id="graphite-api-releases">
+<h1>Graphite-Api releases<a class="headerlink" href="#graphite-api-releases" title="Link to this heading">¶</a></h1>
+<section id="id6">
+<h2>1.1.3 – 2016-05-23<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Remove extra parenthesis from <code class="docutils literal notranslate"><span class="pre">aliasByMetric()</span></code>.</p></li>
+<li><p>Fix leap year handling in <code class="docutils literal notranslate"><span class="pre">graphite_render.render.attime</span></code>.</p></li>
+<li><p>Allow colon and hash in node names in <code class="docutils literal notranslate"><span class="pre">aliasByNode()</span></code></p></li>
+<li><p>Fix calling <code class="docutils literal notranslate"><span class="pre">reduceFunction</span></code> in <code class="docutils literal notranslate"><span class="pre">reduceSeries</span></code></p></li>
+<li><p>Revert a whisper patch which broke multiple retentions handling.</p></li>
+<li><p>Specify which function is invalid when providing an invalid consolidation
+function.</p></li>
+</ul>
+</section>
+<section id="id7">
+<h2>1.1.2 – 2015-11-19<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Fix regression in multi fetch handling: paths were queried multiple times,
+leading to erroneous behaviour and slowdown.</p></li>
+<li><p>Continue on IndexError in <code class="docutils literal notranslate"><span class="pre">remove{Above,Below}Percentile</span></code> functions.</p></li>
+</ul>
+</section>
+<section id="id8">
+<h2>1.1.1 – 2015-10-23<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">areaMode=stacked</span></code>.</p></li>
+<li><p>Fix error when calling functions that use <code class="docutils literal notranslate"><span class="pre">fetchWithBootstrap</span></code> and the
+bootstrap range isn’t available (fill with nulls instead).</p></li>
+</ul>
+</section>
+<section id="id9">
+<h2>1.1 – 2015-10-05<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Add CarbonLink support.</p></li>
+<li><p>Add support for configuring a cache backend and the <code class="docutils literal notranslate"><span class="pre">noCache</span></code> and
+<code class="docutils literal notranslate"><span class="pre">cacheTimeout</span></code> API options.</p></li>
+<li><p>When no timezone is provided in the configuration file, try to guess from
+the system’s timezone with a fallback to UTC.</p></li>
+<li><p>Now supporting Flask &gt;= 0.8 and Pyparsing &gt;= 1.5.7.</p></li>
+<li><p>Add support for <code class="docutils literal notranslate"><span class="pre">fetch_multi()</span></code> in storage finders. This is useful for
+database-backed finders such as Cyanite because it allows fetching all time
+series at once instead of sequentially.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">multiplySeriesWithWildcards</span></code>, <code class="docutils literal notranslate"><span class="pre">minimumBelow</span></code>, <code class="docutils literal notranslate"><span class="pre">changed</span></code>,
+<code class="docutils literal notranslate"><span class="pre">timeSlice</span></code> and <code class="docutils literal notranslate"><span class="pre">removeEmptySeries</span></code> functions.</p></li>
+<li><p>Add optional <code class="docutils literal notranslate"><span class="pre">step</span></code> argument to <code class="docutils literal notranslate"><span class="pre">time</span></code>, <code class="docutils literal notranslate"><span class="pre">sin</span></code> and <code class="docutils literal notranslate"><span class="pre">randomWalk</span></code>
+functions.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">/metrics</span></code> API call as an alias to <code class="docutils literal notranslate"><span class="pre">/metrics/find</span></code>.</p></li>
+<li><p>Add missing <code class="docutils literal notranslate"><span class="pre">/metrics/index.json</span></code> API call.</p></li>
+<li><p>Allow wildcards origins (<code class="docutils literal notranslate"><span class="pre">*</span></code>) in CORS configuration.</p></li>
+<li><p>Whisper finder now logs debug information.</p></li>
+<li><p>Fix parsing dates such as “feb27” during month days &gt; 28.</p></li>
+<li><p>Change <code class="docutils literal notranslate"><span class="pre">sum()</span></code> to return <code class="docutils literal notranslate"><span class="pre">null</span></code> instead of 0 when all series’ datapoints
+are null at the same time. This is graphite-web’s behavior.</p></li>
+<li><p>Extract paths of all targets before fetching data. This is a significant
+optimization for storage backends such as Cyanite that allow bulk-fetching
+metrics.</p></li>
+<li><p>Add JSONP support to all API endpoints that can return JSON.</p></li>
+<li><p>Fix 500 error when generating a SVG graph without any data.</p></li>
+<li><p>Return tracebacks in the HTTP response when app errors occur. This behavior
+can be disabled in the configuration.</p></li>
+<li><p>Fixes for the following graphite-web issues:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/graphite-project/graphite-web/issues/639">#639</a> –
+proper timezone handling of <code class="docutils literal notranslate"><span class="pre">from</span></code> and <code class="docutils literal notranslate"><span class="pre">until</span></code> with client-supplied
+timezones.</p></li>
+<li><p><a class="reference external" href="https://github.com/graphite-project/graphite-web/issues/540">#540</a> –
+provide the last data point when rendering to JSON format.</p></li>
+<li><p><a class="reference external" href="https://github.com/graphite-project/graphite-web/issues/381">#381</a> –
+make <code class="docutils literal notranslate"><span class="pre">areaBetween()</span></code> work either when passed 2 arguments or a single
+wildcard series of length 2.</p></li>
+<li><p><a class="reference external" href="https://github.com/graphite-project/graphite-web/pull/702">#702</a> –
+handle backslash as path separator on windows.</p></li>
+<li><p><a class="reference external" href="https://github.com/graphite-project/graphite-web/pull/410">#410</a> – SVG
+output sometimes had an extra <code class="docutils literal notranslate"><span class="pre">&lt;/g&gt;</span></code> tag.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id15">
+<h2>1.0.1 – 2014-03-21<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">time_zone</span></code> set to UTC by default instead of Europe/Berlin.</p></li>
+<li><p>Properly log app exceptions.</p></li>
+<li><p>Fix constantLine for python 3.</p></li>
+<li><p>Create whisper directories if they don’t exist.</p></li>
+<li><p>Fixes for the following graphite-web issues:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/graphite-project/graphite-web/pull/645">#645</a>, <a class="reference external" href="https://github.com/graphite-project/graphite-web/issues/625">#625</a> – allow
+<code class="docutils literal notranslate"><span class="pre">constantLine</span></code> to work even if there are no other targets in the graph.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id18">
+<h2>1.0.0 – 2014-03-20<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h2>
+<p>Version 1.0 is based on the master branch of Graphite-web, mid-March 2014,
+with the following modifications:</p>
+<ul class="simple">
+<li><p>New <code class="docutils literal notranslate"><span class="pre">/index</span></code> API endpoint for re-building the index (replaces the
+build-index command-line script from graphite-web).</p></li>
+<li><p>Removal of memcache integration.</p></li>
+<li><p>Removal of Pickle integration.</p></li>
+<li><p>Removal of remote rendering.</p></li>
+<li><p>Support for Python 3.</p></li>
+<li><p>A lot more tests and test coverage.</p></li>
+<li><p>Fixes for the following graphite-web issues:</p>
+<ul>
+<li><p>(meta) <a class="reference external" href="https://github.com/graphite-project/graphite-web/issues/647">#647</a>
+– strip out the API from graphite-web.</p></li>
+<li><p><a class="reference external" href="https://github.com/graphite-project/graphite-web/pull/665">#665</a> –
+address some DeprecationWarnings.</p></li>
+<li><p><a class="reference external" href="https://github.com/graphite-project/graphite-web/issues/658">#658</a> –
+accept a float value in <code class="docutils literal notranslate"><span class="pre">maxDataPoints</span></code>.</p></li>
+<li><p><a class="reference external" href="https://github.com/graphite-project/graphite-web/pull/654">#654</a> –
+ignore invalid <code class="docutils literal notranslate"><span class="pre">logBase</span></code> values (&lt;=1).</p></li>
+<li><p><a class="reference external" href="https://github.com/graphite-project/graphite-web/issues/591">#591</a> –
+accept JSON data additionaly to querystring params or form data.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Graphite-Render releases</a><ul>
+<li><a class="reference internal" href="#id1">1.1.8 – 2026-01-17</a></li>
+<li><a class="reference internal" href="#id2">1.1.7 – 2026-01-17</a></li>
+<li><a class="reference internal" href="#id3">1.1.6 – 2026-01-17</a></li>
+<li><a class="reference internal" href="#id4">1.1.5 – 2026-01-17</a></li>
+<li><a class="reference internal" href="#id5">1.1.4 – 2026-01-16</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#graphite-api-releases">Graphite-Api releases</a><ul>
+<li><a class="reference internal" href="#id6">1.1.3 – 2016-05-23</a></li>
+<li><a class="reference internal" href="#id7">1.1.2 – 2015-11-19</a></li>
+<li><a class="reference internal" href="#id8">1.1.1 – 2015-10-23</a></li>
+<li><a class="reference internal" href="#id9">1.1 – 2015-10-05</a></li>
+<li><a class="reference internal" href="#id15">1.0.1 – 2014-03-21</a></li>
+<li><a class="reference internal" href="#id18">1.0.0 – 2014-03-20</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="custom-functions.html"
+                          title="previous chapter">Custom functions</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/releases.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="custom-functions.html" title="Custom functions"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Graphite-Render releases</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2014, Bruno Renié.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    </div>
+  </body>
+</html>

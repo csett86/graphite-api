@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Storage finders &#8212; Graphite-Render 1.1.8 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=df104e6e"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Custom functions" href="custom-functions.html" />
+    <link rel="prev" title="Built-in functions" href="functions.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="custom-functions.html" title="Custom functions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="functions.html" title="Built-in functions"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Storage finders</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="storage-finders">
+<h1>Storage finders<a class="headerlink" href="#storage-finders" title="Link to this heading">¶</a></h1>
+<p>Graphite-Render searches and fetches metrics from time series databases using an
+interface called <em>finders</em>. The default finder provided with Graphite-Render is
+the one that integrates with Whisper databases.</p>
+<p>Customizing finders can be done in the <code class="docutils literal notranslate"><span class="pre">finders</span></code> section of the Graphite-Render
+configuration file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">finders</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">graphite_render.finders.whisper.WhisperFinder</span>
+</pre></div>
+</div>
+<p>Several values are allowed, to let you store different kinds of metrics at
+different places or smoothly handle transitions from one time series database
+to another.</p>
+<p>The default finder reads data from a Whisper database.</p>
+<section id="custom-finders">
+<h2>Custom finders<a class="headerlink" href="#custom-finders" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">finders</span></code> being a list of arbitrary python paths, it is relatively easy to
+write a custom finder if you want to read data from other places than Whisper.
+A finder is a python class with a <code class="docutils literal notranslate"><span class="pre">find_nodes()</span></code> method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CustomFinder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+        <span class="c1"># ...</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">query</span></code> is a <code class="docutils literal notranslate"><span class="pre">FindQuery</span></code> object. <code class="docutils literal notranslate"><span class="pre">find_nodes()</span></code> is the entry point when
+browsing the metrics tree. It must yield leaf or branch nodes matching the
+query:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">graphite_render.node</span><span class="w"> </span><span class="kn">import</span> <span class="n">LeafNode</span><span class="p">,</span> <span class="n">BranchNode</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomFinder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+        <span class="c1"># find some paths matching the query, then yield them</span>
+        <span class="c1"># is_branch or is_leaf are predicates you need to implement</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_branch</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">BranchNode</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_leaf</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">LeafNode</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">CustomReader</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">LeafNode</span></code> is created with a <em>reader</em>, which is the class responsible for
+fetching the datapoints for the given path. It is a simple class with 2
+methods: <code class="docutils literal notranslate"><span class="pre">fetch()</span></code> and <code class="docutils literal notranslate"><span class="pre">get_intervals()</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">graphite_render.intervals</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntervalSet</span><span class="p">,</span> <span class="n">Interval</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">,)</span>  <span class="c1"># __slots__ is recommended to save memory on readers</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">):</span>
+        <span class="c1"># fetch data</span>
+        <span class="n">time_info</span> <span class="o">=</span> <span class="n">_from_</span><span class="p">,</span> <span class="n">_to_</span><span class="p">,</span> <span class="n">_step_</span>
+        <span class="k">return</span> <span class="n">time_info</span><span class="p">,</span> <span class="n">series</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_intervals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">IntervalSet</span><span class="p">([</span><span class="n">Interval</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)])</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">fetch()</span></code> must return a list of 2 elements: the time info for the data and
+the datapoints themselves. The time info is a list of 3 items: the start time
+of the datapoints (in unix time), the end time and the time step (in seconds)
+between the datapoints.</p>
+<p>The datapoints is a list of points found in the database for the required
+interval. There must be <code class="docutils literal notranslate"><span class="pre">(end</span> <span class="pre">-</span> <span class="pre">start)</span> <span class="pre">/</span> <span class="pre">step</span></code> points in the dataset even if
+the database has gaps: gaps can be filled with <code class="docutils literal notranslate"><span class="pre">None</span></code> values.</p>
+<p><code class="docutils literal notranslate"><span class="pre">get_intervals()</span></code> is a method that hints graphite-web about the time range
+available for this given metric in the database. It must return an
+<code class="docutils literal notranslate"><span class="pre">IntervalSet</span></code> of one or more <code class="docutils literal notranslate"><span class="pre">Interval</span></code> objects.</p>
+</section>
+<section id="fetching-multiple-paths-at-once">
+<h2>Fetching multiple paths at once<a class="headerlink" href="#fetching-multiple-paths-at-once" title="Link to this heading">¶</a></h2>
+<p>If your storage backend allows it, fetching multiple paths at once is useful
+to avoid sequential fetches and save time and resources. This can be achieved
+in three steps:</p>
+<ul>
+<li><p>Subclass <code class="docutils literal notranslate"><span class="pre">LeafNode</span></code> and add a <code class="docutils literal notranslate"><span class="pre">__fetch_multi__</span></code> class attribute to your
+subclass:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CustomLeafNode</span><span class="p">(</span><span class="n">LeafNode</span><span class="p">):</span>
+    <span class="n">__fetch_multi__</span> <span class="o">=</span> <span class="s1">&#39;custom&#39;</span>
+</pre></div>
+</div>
+<p>The string <code class="docutils literal notranslate"><span class="pre">'custom'</span></code> is used to identify backends and needs to be unique
+per-backend.</p>
+</li>
+<li><p>Add the <code class="docutils literal notranslate"><span class="pre">__fetch_multi__</span></code> attribute to your finder class:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CustomFinder</span><span class="p">(</span><span class="n">objects</span><span class="p">):</span>
+    <span class="n">__fetch_multi__</span> <span class="o">=</span> <span class="s1">&#39;custom&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Implement a <code class="docutils literal notranslate"><span class="pre">fetch_multi()</span></code> method on your finder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CustomFinder</span><span class="p">(</span><span class="n">objects</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fetch_multi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">):</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
+        <span class="c1"># fetch paths</span>
+        <span class="k">return</span> <span class="n">time_info</span><span class="p">,</span> <span class="n">series</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">time_info</span></code> is the same structure as the one returned by <code class="docutils literal notranslate"><span class="pre">fetch()</span></code>.
+<code class="docutils literal notranslate"><span class="pre">series</span></code> is a dictionnary with paths as keys and datapoints as values.</p>
+</li>
+</ul>
+</section>
+<section id="installing-custom-finders">
+<h2>Installing custom finders<a class="headerlink" href="#installing-custom-finders" title="Link to this heading">¶</a></h2>
+<p>In order for your custom finder to be importable, you need to package it under
+a namespace of your choice. Python packaging won’t be covered here but you can
+look at third-party finders to get some inspiration:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/brutasse/graphite-cyanite">Cyanite finder</a></p></li>
+</ul>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">¶</a></h2>
+<p>Graphite-Render instantiates finders and passes it its whole parsed configuration
+file, as a Python data structure. External finders can require extra sections
+in the configuration file to setup access to the time series database they
+communicate with. For instance, let’s say your <code class="docutils literal notranslate"><span class="pre">CustomFinder</span></code> needs two
+configuration parameters, a host and a user:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CustomFinder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;custom&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;custom&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;custom&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">,</span> <span class="s1">&#39;localhost&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The configuration file would look like:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">finders</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">custom.CustomFinder</span>
+<span class="nt">custom</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myuser</span>
+<span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example.com</span>
+</pre></div>
+</div>
+<p>When possible, try to use sane defaults that would “just work” for most common
+setups. Here if the <code class="docutils literal notranslate"><span class="pre">custom</span></code> section isn’t provided, the finder uses
+<code class="docutils literal notranslate"><span class="pre">default</span></code> as user and <code class="docutils literal notranslate"><span class="pre">localhost</span></code> as host.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Storage finders</a><ul>
+<li><a class="reference internal" href="#custom-finders">Custom finders</a></li>
+<li><a class="reference internal" href="#fetching-multiple-paths-at-once">Fetching multiple paths at once</a></li>
+<li><a class="reference internal" href="#installing-custom-finders">Installing custom finders</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="functions.html"
+                          title="previous chapter">Built-in functions</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="custom-functions.html"
+                          title="next chapter">Custom functions</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/finders.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="custom-functions.html" title="Custom functions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="functions.html" title="Built-in functions"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Storage finders</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2014, Bruno Renié.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    </div>
+  </body>
+</html>

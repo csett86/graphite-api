@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Graphite-Render documentation &#8212; Graphite-Render 1.1.8 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=df104e6e"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Graphite-Render documentation</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="graphite-render-documentation">
+<h1>Graphite-Render documentation<a class="headerlink" href="#graphite-render-documentation" title="Link to this heading">¶</a></h1>
+<p>
+<a class="reference external image-reference" href="https://github.com/csett86/graphite-render"><img alt="GitHub project" src="https://img.shields.io/badge/GitHub-graphite--render-green.svg" style="height: 18px !important; width: auto !important;"></a>
+
+<a class="reference external image-reference" href="https://pypi.org/p/graphite-render"><img alt="PyPI version" src="https://img.shields.io/pypi/v/graphite-render.svg" style="height: 18px !important; width: auto !important;"></a>
+</p><p>Graphite-render is a fork of graphite-api for python3, and would not be possible
+with all the great work of its predecessors.</p>
+<p>Graphite-api itself is an alternative to Graphite-web, without any built-in
+dashboard. Its role is solely to fetch metrics from a time-series database
+(whisper, cyanite, etc.) and rendering graphs or JSON data out of these
+time series. It is meant to be consumed by any of the numerous Graphite
+dashboard applications.</p>
+<p>Graphite-Api is a fork of Graphite-web and couldn’t have existed without the
+fantastic prior work done by the Graphite team.</p>
+<section id="why-should-i-use-it">
+<h2>Why should I use it?<a class="headerlink" href="#why-should-i-use-it" title="Link to this heading">¶</a></h2>
+<p>Graphite-Render is maintained for python3 only. Other than that is offers
+all the things that made graphite-api great:</p>
+<p>Graphite-Api offers a number of improvements over Graphite-web that you might
+find useful. Namely:</p>
+<ul class="simple">
+<li><p>The Graphite-Render application is completely stateless and doesn’t need a SQL
+database. It only needs to talk to a time series database.</p></li>
+<li><p>Python 3.9+ is supported.</p></li>
+<li><p>The HTTP API accepts JSON data additionnaly to form data and querystring
+parameters.</p></li>
+<li><p>The application is extremely simple to <a class="reference internal" href="installation.html"><span class="doc">install</span></a> and
+<a class="reference internal" href="configuration.html"><span class="doc">configure</span></a>.</p></li>
+<li><p>The architecture has been drastically simplified and there are many fewer
+moving parts than in graphite-web:</p>
+<ul>
+<li><p>No memcache integration – rendering is live.</p></li>
+<li><p>No support for the Pickle format when rendering.</p></li>
+<li><p>Plugin architecture for <a class="reference internal" href="finders.html"><span class="doc">integrating with time series databases</span></a> or <a class="reference internal" href="custom-functions.html"><span class="doc">adding more analysis functions</span></a>.</p></li>
+</ul>
+</li>
+<li><p>The codebase has been thoroughly updated with a focus on test coverage and
+code quality.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Graphite-Render does <strong>not</strong> provide any web/graphical interface. If you
+currently rely on the built-in Graphite composer, Graphite-Render might not
+be for you. However, if you’re using a third-party dashboard interface,
+Graphite-Render will do just fine.</p>
+</div>
+</section>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#python-package">Python package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#configuration-file-location">Configuration File Location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#custom-location">Custom location</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deployment.html">Deployment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html#gunicorn-nginx">Gunicorn + nginx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html#apache-mod-wsgi">Apache + mod_wsgi</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">HTTP API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#the-metrics-api">The Metrics API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#the-render-api-render">The Render API – <code class="docutils literal notranslate"><span class="pre">/render</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Built-in functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="functions.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions.html#list-of-functions">List of functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="finders.html">Storage finders</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="finders.html#custom-finders">Custom finders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finders.html#fetching-multiple-paths-at-once">Fetching multiple paths at once</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finders.html#installing-custom-finders">Installing custom finders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finders.html#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom-functions.html">Custom functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Graphite-Render releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#id1">1.1.8 – 2026-01-17</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#id2">1.1.7 – 2026-01-17</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#id3">1.1.6 – 2026-01-17</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#id4">1.1.5 – 2026-01-17</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#id5">1.1.4 – 2026-01-16</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html#graphite-api-releases">Graphite-Api releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#id6">1.1.3 – 2016-05-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#id7">1.1.2 – 2015-11-19</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#id8">1.1.1 – 2015-10-23</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#id9">1.1 – 2015-10-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#id15">1.0.1 – 2014-03-21</a></li>
+<li class="toctree-l2"><a class="reference internal" href="releases.html#id18">1.0.0 – 2014-03-20</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="#">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Graphite-Render documentation</a><ul>
+<li><a class="reference internal" href="#why-should-i-use-it">Why should I use it?</a></li>
+<li><a class="reference internal" href="#contents">Contents</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="installation.html"
+                          title="next chapter">Installation</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Graphite-Render 1.1.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Graphite-Render documentation</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2014, Bruno Renié.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    </div>
+  </body>
+</html>
