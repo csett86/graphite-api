@@ -12,9 +12,9 @@ Installing Graphite-Render requires:
 
 * Python 3 (3.9 and above).
 
-* Cairo. On debian/ubuntu, install the ``libcairo2`` package.
-
 * Pip, the Python package manager. On debian/ubuntu, install ``python-pip``.
+
+* For image rendering (PNG/SVG/PDF graphs): Cairo. On debian/ubuntu, install the ``libcairo2`` package.
 
 Global installation
 -------------------

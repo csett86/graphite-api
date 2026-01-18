@@ -33,6 +33,8 @@ jobs:
             toxenv: py314
           - python-version: "3.x"
             toxenv: no-flask-caching
+          - python-version: "3.12"
+            toxenv: cairo
 
     steps:
       - uses: actions/checkout@v6
