@@ -53,9 +53,5 @@ docs = ["sphinx"]
 Homepage = "https://github.com/csett86/graphite-render"
 Repository = "https://github.com/csett86/graphite-render"
 
-[tool.setuptools]
-zip-safe = false
-include-package-data = true
-
 [tool.setuptools.packages.find]
 exclude = ["tests", "tests.*"]
